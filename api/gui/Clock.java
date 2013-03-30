@@ -3,9 +3,9 @@
 	Author: Matthew Boyette
 	Date:   3/25/2013
 	
-	This class creates a static clock. The clock can be initialized with the current time, a custom time, or a random time. If desired, basic animating routines
-	are included and can be toggled on and off after initialization. The animation however is limited to the current time, which is why the clock does not initialize
-	animated.
+	This class creates a static clock. The clock can be initialized with the current time, a custom time, or a random time.
+	If desired, basic animating routines are included and can be toggled on and off after initialization. The animation however
+	is limited to the current time, which is why the clock does not initialize animated.
 */
 package api.gui;
 

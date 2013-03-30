@@ -3,8 +3,9 @@
 	Author: Matthew Boyette
 	Date:   1/21/2012
 	
-	This class is merely a collection of useful static methods that support code recycling. Specifically, this class offers methods which would
-	be useful for games, animation, and utilities that are meant to accompany games.
+	This class is merely a collection of useful static methods that support code recycling. Specifically, this 
+	class offers methods which would be useful for games, animation, and utilities that are meant to accompany 
+	games.
 */
 package api.util;
 
@@ -44,8 +45,9 @@ public class Games
 	}
 	
 	/*
-		This method is useful in games like Dungeons and Dragons. The user provides the number of dice and the number of sides each die has.
-		The resulting array contains the result of each die separately and the final element in the array is the sum of all the dice.
+		This method is useful in games like Dungeons and Dragons. The user provides the number of dice and the number 
+		of sides each die has. The resulting array contains the result of each die separately and the final element in 
+		the array is the sum of all the dice.
 	*/
 	public static int[] throwDice(final int numberOfDice, final int numberOfSides)
 	{

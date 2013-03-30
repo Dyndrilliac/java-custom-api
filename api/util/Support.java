@@ -3,8 +3,8 @@
 	Author: Matthew Boyette
 	Date:   1/21/2012
 	
-	This class is merely a collection of useful static methods that support code recycling. Specifically, this class offers utility methods
-	which form a uniform support structure for all of my personal projects. 
+	This class is merely a collection of useful static methods that support code recycling. Specifically, 
+	this class offers utility methods which form a uniform support structure for all of my personal projects. 
 */
 package api.util;
 
@@ -29,7 +29,8 @@ public class Support
 		{
 			AWTEvent event = (AWTEvent)object;
 			message += "What: " + event.paramString() + "\n";
-			message += "Where: " + event.getSource().getClass().getSimpleName() + " (" + event.getSource().getClass().getCanonicalName() + ")\n";
+			message += "Where: " + event.getSource().getClass().getSimpleName() + 
+				" (" + event.getSource().getClass().getCanonicalName() + ")\n";
 		}
 		else if (object instanceof String)
 		{
@@ -156,15 +157,18 @@ public class Support
 			{	// Since two and three have been handled, we want to know if 'n' is evenly divisible by two or three and mark it as composite.
 				if ( ((n % 2) != 0) || ((n % 3) != 0) )
 				{
-					// Every prime number can be represented by the form 6k+1 or 6k-1. If 'n' cannot be represented this way, then we mark it as composite.
+					// Every prime number can be represented by the form 6k+1 or 6k-1. If 'n' cannot be represented this way, 
+					// then we mark it as composite.
 					if ( (((n+1) % 6) == 0) || (((n-1) % 6) == 0) )
 					{
 						// If a number can be factored into two numbers, at least one of them should be less than or equal to its square root.
 						long limit = (long)Math.ceil(Math.sqrt((double)n));
-						// Since we have eliminated all primes less than five, and two is the only even prime, we only need to check odd numbers from here on out.
+						// Since we have eliminated all primes less than five, and two is the only even prime, 
+						// we only need to check odd numbers from here on out.
 						for (long i = 5; i <= limit; i += 2)
 						{
-							// Every prime number is only evenly divisible by itself and one. 'i' will never equal 'n' and 'i' will never equal one.
+							// Every prime number is only evenly divisible by itself and one. 
+							// 'i' will never equal 'n' and 'i' will never equal one.
 							// Thus, if 'n' is evenly divisible by 'i' then it cannot be prime.
 							if ( (n % i) == 0 )
 							{
@@ -242,7 +246,8 @@ public class Support
 		return true;
 	}
 	
-	// This method is a wrapper for a specific invocation of JOptionPane.showConfirmDialog that I use frequently to prompt test users for debugging modes.
+	// This method is a wrapper for a specific invocation of JOptionPane.showConfirmDialog that I use frequently to prompt test 
+	// users for debugging modes.
 	public static int promptDebugMode(final Component parent)
 	{
 		return JOptionPane.showConfirmDialog(parent, 

@@ -31,7 +31,8 @@ public class RichTextPane extends JTextPane
 	private Component         parent           = null;
 	private boolean           isDebugging      = false;
 	
-	public RichTextPane(final Component parent, final boolean isReadOnly, final boolean isDebugging, final Font defaultFont)
+	public RichTextPane(final Component parent, final boolean isReadOnly, final boolean isDebugging, 
+		final Font defaultFont)
 	{
 		this.setFocusable(!isReadOnly);
 		this.setEditable(!isReadOnly);
