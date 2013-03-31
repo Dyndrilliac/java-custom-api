@@ -14,12 +14,16 @@ import api.util.Support;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+import javax.swing.UIManager;
 
 public class ApplicationWindow extends JFrame implements ActionListener
 {
@@ -30,25 +34,35 @@ public class ApplicationWindow extends JFrame implements ActionListener
 	private boolean           isDebugging      = false;
 	
 	public ApplicationWindow(final Component parent, final String applicationTitle, final Dimension size, final boolean isDebugging, 
-		final boolean isResizable, final boolean isPrimary, final EventHandler actionPerformed, final EventHandler drawGUI)
+		final boolean isResizable, final EventHandler actionPerformed, final EventHandler drawGUI)
 	{
 		super(applicationTitle);
+		
+		try
+		{
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		}
+		catch (Exception exception) {}
+		
 		this.setDebugging(isDebugging);
 		this.setSize(size);
 		this.setResizable(isResizable);
-		this.setLocationRelativeTo(parent);
 		
-		if (isPrimary)
+		if (parent == null)
 		{
+			this.setLocationByPlatform(true);
 			this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		}
 		else
 		{
+			this.setLocationRelativeTo(parent);
 			this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		}
 		
 		this.setActionPerformed(actionPerformed);
 		this.setDrawGUI(drawGUI);
+		this.drawGUI();
+		this.setVisible(true);
 	}
 	
 	public void actionPerformed(final ActionEvent event)
@@ -124,5 +138,22 @@ public class ApplicationWindow extends JFrame implements ActionListener
 	public void setElements(final List<Component> elements)
 	{
 		this.elements = elements;
+	}
+	
+	public void setIconImageByResourceName(String resourceName)
+	{
+		InputStream input = Support.getResourceByName(resourceName);
+		Image icon = null;
+		
+		try
+		{
+			icon = ImageIO.read(input);
+		}
+		catch (Exception exception)
+		{
+			Support.displayException(this, exception, true);
+		}
+		
+		this.setIconImage(icon);
 	}
 }

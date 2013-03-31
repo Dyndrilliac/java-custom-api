@@ -10,6 +10,7 @@ package api.util;
 
 import java.awt.AWTEvent;
 import java.awt.Component;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -146,6 +147,13 @@ public class Support
 		}
 
 		return filePath;
+	}
+	
+	public static InputStream getResourceByName(String resourceName)
+	{
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		InputStream input = classLoader.getResourceAsStream(resourceName);
+		return input;
 	}
 	
 	public static boolean isPrime(final long n)
