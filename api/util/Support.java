@@ -8,9 +8,14 @@
 */
 package api.util;
 
+import java.applet.Applet;
+import java.applet.AudioClip;
 import java.awt.AWTEvent;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -49,15 +54,18 @@ public class Support
 			Source file is where the error chain ended, which could be null in the case of a function in the Java API.
 			Cause file is where the error chain began, which is the bottom of the stack and where the bad method is likely to be.
 		*/
-		String dialogTitle = null;
+		String dialogTitle     = null;
+		String recoveryMessage = null;
 		
 		if (isFatal)
 		{
 			dialogTitle = "Fatal Exception Occurred";
+			recoveryMessage = "This error is fatal. The program cannot recover from the problem, and will be terminated following this message.";
 		}
 		else
 		{
 			dialogTitle = "Exception Occurred";
+			recoveryMessage = "This error is not fatal. The program has recovered from the problem, and you may continue operating it.";
 		}
 		
 		JOptionPane.showMessageDialog(parent,
@@ -66,7 +74,8 @@ public class Support
 			"\nLine number: " + exception.getStackTrace()[0].getLineNumber() +
 			"\n\nCause file: " + exception.getStackTrace()[exception.getStackTrace().length-1].getFileName() +
 			"\nLine number: " + exception.getStackTrace()[exception.getStackTrace().length-1].getLineNumber() +
-			"\n\nWhen: " + getDateTimeStamp(),
+			"\n\nWhen: " + getDateTimeStamp() +
+			"\n\nRecovery: " + recoveryMessage,
 			dialogTitle,
 			JOptionPane.ERROR_MESSAGE);
 		exception.printStackTrace();
@@ -149,7 +158,7 @@ public class Support
 		return filePath;
 	}
 	
-	public static InputStream getResourceByName(String resourceName)
+	public static InputStream getResourceByName(final String resourceName)
 	{
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		InputStream input = classLoader.getResourceAsStream(resourceName);
@@ -252,6 +261,35 @@ public class Support
 
 		// Base case; return true if the string was parsed without an exception being thrown.
 		return true;
+	}
+	
+	public static void openWebPageInDefaultBrowser(final String s)
+	{
+		if (Desktop.isDesktopSupported())
+		{
+			try
+			{
+				Desktop.getDesktop().browse(new URI(s));
+			}
+			catch (Exception exception)
+			{
+				displayException(null, exception, false);
+			}
+		}
+	}
+	
+	public static void playAudioClipFromURL(final String s)
+	{
+		try
+		{
+			URL url = new URL(s);
+			AudioClip ac = Applet.newAudioClip(url);
+			ac.play();
+	    }
+		catch (Exception exception)
+		{
+			displayException(null, exception, false);
+		}
 	}
 	
 	// This method is a wrapper for a specific invocation of JOptionPane.showConfirmDialog that I use frequently to prompt test 

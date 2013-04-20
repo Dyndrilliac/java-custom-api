@@ -140,7 +140,7 @@ public class ApplicationWindow extends JFrame implements ActionListener
 		this.elements = elements;
 	}
 	
-	public void setIconImageByResourceName(String resourceName)
+	public void setIconImageByResourceName(final String resourceName)
 	{
 		InputStream input = Support.getResourceByName(resourceName);
 		Image icon = null;
