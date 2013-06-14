@@ -1,16 +1,11 @@
 This is a collection of classes and methods that I have found useful or interesting. This code set is a constant
 work in progress and updates happen frequently.
 
-Abstract Classes:
-
-- Graph: forms the standard two-dimensional cartesian coordinate plane.
-
 Object Classes:
 
 - ApplicationWindow: represents a GUI window for an application.
 - Clock: creates simple clocks suitable for presentation inside an application window.
 - EventHandler: simple mechanism for providing event hooks to objects like ApplicationWindow and Plugin.
-- Parabola: a subclass of Graph which models a quadratic equation using the standard parabola curve.
 - Plugin: represents plugins that allow third parties to extend the functionality of an application.
 - RichTextPane: creates text panes for applications with rich formatting capabilities and built-in file I/O.
 
