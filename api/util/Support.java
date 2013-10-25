@@ -297,10 +297,8 @@ public class Support
 	public static int promptDebugMode(final Component parent)
 	{
 		return JOptionPane.showConfirmDialog(parent, 
-			"Do you wish to activate the debugging mode?\n\n" + 
-			"Turning on the debugging mode will cause diagnostic messages to be displayed during special events that are helpful when testing this application.\n\n" + 
-			"Note: This choice has no effect on error messages. Error messages will always be displayed!\n\n" + 
-			"Closing this message without choosing \"Yes\" or \"No\" will close this application.", 
+			"Do you wish to activate debugging mode?\n\n" + 
+			"Turning on debugging mode will enable extra diagnostic features that are helpful when testing this application for errors.",
 			"Debugging Mode", 
 			JOptionPane.YES_NO_OPTION);
 	}
