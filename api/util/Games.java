@@ -229,6 +229,7 @@ public class Games
 				Ellipse2D  v   = null;
 				Edge2D     e   = null;
 				
+				// Draw map.
 				for (int i = 0; i < this.shortestPath.getEdges().size(); i++)
 				{
 					e = this.shortestPath.getEdges().get(i);
@@ -242,18 +243,21 @@ public class Games
 					g2D.draw(e);
 				}
 				
+				// Draw start point.
 				v = new Ellipse2D.Double(this.shortestPath.getStartPoint().getX()*this.magnification, this.shortestPath.getStartPoint().getY()*this.magnification, 3, 3);
 				
 				g2D.draw(v);
 				g2D.fill(v);
 				g2D.drawString("S", (float)(v.getCenterX()-4), (float)(v.getCenterY()+15.0));
 				
+				// Draw goal point.
 				v = new Ellipse2D.Double(this.shortestPath.getGoalPoint().getX()*this.magnification, this.shortestPath.getGoalPoint().getY()*this.magnification, 3, 3);
 				
 				g2D.draw(v);
 				g2D.fill(v);
 				g2D.drawString("G", (float)(v.getCenterX()-4), (float)(v.getCenterY()+15.0));
 				
+				// Draw all vertices adjacent to the start point or the goal point.
 				if (this.debugMode)
 				{
 					Node withinLOS = null;
@@ -415,7 +419,6 @@ public class Games
 				
 				// Add the start point to the list of vertices.
 				this.getVertices().add(this.getStartPoint());
-				
 				
 				// Each additional line contains the pairs of coordinates for the vertices in each polygon.
 				// Each coordinate pair is separated by a semi-colon. The actual coordinates are separated by commas.
