@@ -30,17 +30,9 @@ public class Games
 	{
 		private static final long serialVersionUID = 1L;
 		
-		private LinkedList<Vertex2D> verticesWithinLOS = null;
-		
 		public Vertex2D(final double x, final double y)
 		{
 			super(x,y);
-			this.verticesWithinLOS = new LinkedList<Vertex2D>();
-		}
-		
-		public LinkedList<Vertex2D> getVerticesWithinLOS()
-		{
-			return this.verticesWithinLOS;
 		}
 		
 		public boolean isWithinLineOfSightOf(final Vertex2D destination, final LinkedList<Edge2D> edgesOfObstacles)
@@ -156,27 +148,13 @@ public class Games
 			private static final long serialVersionUID = 1L;
 			
 			private LinkedList<Node> nodesWithinLOS = null;
-			private Node             predecessor = null;
-			private double           cost = 0;
+			private Node             predecessor    = null;
+			private double           cost           = 0;
 			
 			public Node(final double x, final double y)
 			{
 				super(x,y);
 				this.nodesWithinLOS = new LinkedList<Node>();
-				this.convertVerticesToNodes(this.getVerticesWithinLOS(), this.getNodesWithinLOS());
-			}
-			
-			protected void convertVerticesToNodes(final LinkedList<Vertex2D> vertices, final LinkedList<Node> nodes)
-			{
-				Vertex2D vertex = null;
-				Node     node   = null;
-				
-				for (int i = 0; i < vertices.size(); i++)
-				{
-					vertex = vertices.get(i);
-					node = (Node)vertex;
-					nodes.add(node);
-				}
 			}
 			
 			public double getCost()
@@ -248,6 +226,7 @@ public class Games
 			public void paint(final Graphics g)
 			{
 				Graphics2D g2D = (Graphics2D)g;
+				Ellipse2D  v   = null;
 				Edge2D     e   = null;
 				
 				for (int i = 0; i < this.shortestPath.getEdges().size(); i++)
@@ -263,7 +242,7 @@ public class Games
 					g2D.draw(e);
 				}
 				
-				Ellipse2D v = new Ellipse2D.Double(this.shortestPath.getStartPoint().getX()*this.magnification, this.shortestPath.getStartPoint().getY()*this.magnification, 3, 3);
+				v = new Ellipse2D.Double(this.shortestPath.getStartPoint().getX()*this.magnification, this.shortestPath.getStartPoint().getY()*this.magnification, 3, 3);
 				
 				g2D.draw(v);
 				g2D.fill(v);
@@ -346,7 +325,7 @@ public class Games
 					{
 						if (this.getVertices().get(i).isWithinLineOfSightOf(this.getVertices().get(j), this.getEdges()))
 						{
-							this.getVertices().get(i).getVerticesWithinLOS().add(this.getVertices().get(j));
+							this.getVertices().get(i).getNodesWithinLOS().add(this.getVertices().get(j));
 						}
 					}
 				}
@@ -408,11 +387,11 @@ public class Games
 				throw new IllegalArgumentException();
 			}
 			
-			Scanner        inputStream       = null;
-			String         lineOfText        = null;
-			String[]       coordinateStrings = null;
-			String[]       vertexStrings     = null;
-			LinkedList<Vertex2D> tempVertexList    = null;
+			Scanner          inputStream       = null;
+			String           lineOfText        = null;
+			String[]         coordinateStrings = null;
+			String[]         vertexStrings     = null;
+			LinkedList<Node> tempVertexList    = null;
 			
 			try
 			{
@@ -442,7 +421,7 @@ public class Games
 				// Each coordinate pair is separated by a semi-colon. The actual coordinates are separated by commas.
 				while (inputStream.hasNextLine())
 				{
-					tempVertexList = new LinkedList<Vertex2D>();
+					tempVertexList = new LinkedList<Node>();
 					lineOfText = inputStream.nextLine().trim();
 					vertexStrings = lineOfText.split(";");
 					
