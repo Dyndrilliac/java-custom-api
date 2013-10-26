@@ -21,6 +21,7 @@ import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -72,6 +73,11 @@ public class Games
 					boolean destinationIsP2 = ((destination.getX() == e2.getX2()) && (destination.getY() == e2.getY2()));
 					boolean sourceIsP1      = ((this.getX() == e2.getX1()) && (this.getY() == e2.getY1()));
 					boolean sourceIsP2      = ((this.getX() == e2.getX2()) && (this.getY() == e2.getY2()));
+					
+					/*if ((!destinationIsP1 && !destinationIsP2) && (!sourceIsP1 && !sourceIsP2))
+					{
+						isWithinLOS = false;
+					}*/
 					
 					// If either the source or destination are equal to both endpoints of a single edge then an error has occurred.
 					boolean destinationError = (destinationIsP1 && destinationIsP2);
@@ -143,13 +149,14 @@ public class Games
 	public static class AStarShortestPath2D
 	{
 		// This sub-class is merely an extension of the Vertex2D class specifically for the A* algorithm.
-		public static class Node extends Vertex2D
+		public static class Node extends Vertex2D implements Comparable<Node>
 		{
 			private static final long serialVersionUID = 1L;
 			
 			private LinkedList<Node> nodesWithinLOS = null;
 			private Node             predecessor    = null;
 			private double           cost           = 0;
+			private double           estimatedTotal = 0;
 			
 			public Node(final double x, final double y)
 			{
@@ -160,6 +167,11 @@ public class Games
 			public double getCost()
 			{
 				return this.cost;
+			}
+			
+			public double getEstimatedTotal()
+			{
+				return this.estimatedTotal;
 			}
 			
 			public Node getPredecessor()
@@ -177,9 +189,19 @@ public class Games
 				this.cost = cost;
 			}
 			
+			public void setEstimatedTotal(final double estimatedTotal)
+			{
+				this.estimatedTotal = estimatedTotal;
+			}
+			
 			public void setPredecessor(final Node predecessor)
 			{
 				this.predecessor = predecessor;
+			}
+
+			public int compareTo(Node n)
+			{
+				return java.lang.Double.compare(this.getEstimatedTotal(), n.getEstimatedTotal());
 			}
 		}
 		
@@ -281,16 +303,33 @@ public class Games
 					}
 				}
 				
-				// TODO: Draw solution on the canvas.
+				// Draw solution.
+				LinkedList<Node> solution = this.shortestPath.getSolution();
+				
+				if (!solution.isEmpty())
+				{
+					for (int i = 0; i < (solution.size() - 1); i++)
+					{
+						e = new Edge2D(solution.get(i), solution.get(i+1));
+						
+						double origX1 = e.getX1();
+						double origX2 = e.getX2();
+						double origY1 = e.getY1();
+						double origY2 = e.getY2();
+						
+						e.setLine(origX1*this.magnification, origY1*this.magnification, origX2*this.magnification, origY2*this.magnification);
+						g2D.draw(e);
+					}
+				}
 			}
 		}
 		
-		private Node                 startPoint = null; // Start point.
-		private Node                 goalPoint  = null; // Goal point.
-		private LinkedList<Node>     vertices   = null; // List of all vertices/points/nodes of interest (including start and goal point).
-		private LinkedList<Node>     solution   = new LinkedList<Node>(); // List of vertices which comprise the solution.
-		private LinkedList<Edge2D>   edges      = null; // List of all edges for the polygonal obstacles.
-		private boolean              debugMode  = false;
+		private Node               startPoint = null; // Start point.
+		private Node               goalPoint  = null; // Goal point.
+		private LinkedList<Node>   vertices   = null; // List of all vertices/points/nodes of interest (including start and goal point).
+		private LinkedList<Node>   solution   = new LinkedList<Node>(); // List of vertices which comprise the solution.
+		private LinkedList<Edge2D> edges      = null; // List of all edges for the polygonal obstacles.
+		private boolean            debugMode  = false;
 		
 		public AStarShortestPath2D(final boolean debugMode, final Node startPoint, final Node goalPoint, final LinkedList<Node> vertices, final LinkedList<Edge2D> edges)
 		{
@@ -337,7 +376,7 @@ public class Games
 		}
 		
 		// Evaluation function. This method takes a node 'n' and calculates the estimated total cost of the path through 'n' to the goal.
-		protected double f(final Node n)
+		public double f(final Node n)
 		{
 			return (this.g(n) + this.h(n));
 		}
@@ -468,16 +507,87 @@ public class Games
 			}
 		}
 		
-		protected void reconstruct_path()
+		protected void reconstruct_path(Node current)
 		{
+			if (current == null) throw new IllegalArgumentException();
 			
+			while (current != null)
+			{
+				this.getSolution().addFirst(current);
+				current = current.getPredecessor();
+			}
 		}
 		
 		// This method is my implementation of the A* algorithm. It returns true if it reaches the desired destination, otherwise it returns false.
 		// TODO: http://en.wikipedia.org/wiki/A*_search_algorithm
 		protected void solve()
-		{	
+		{
+			// Initial variables setup.
+			PriorityQueue<Node> openset   = new PriorityQueue<Node>();
+			LinkedList<Node>    closedset = new LinkedList<Node>();
+			LinkedList<Node>    neighbors = null;
+			Node                current   = null;
+			double              tempG = 0, tempF = 0;
 			
+			// Set the initial cost values for the start point.
+			this.getStartPoint().setCost(0);
+			this.getStartPoint().setEstimatedTotal(this.f(this.getStartPoint()));
+			
+			// Add the start point to the open set.
+			openset.add(this.getStartPoint());
+			
+			// Keep going until the open set is empty.
+			while (!openset.isEmpty())
+			{
+				// Get the node from the open set with the lowest f() score.
+				current = openset.peek();
+				
+				// Goal test.
+				if ((current.getX() == this.getGoalPoint().getX()) && (current.getY() == this.getGoalPoint().getY()))
+				{
+					if (this.debugMode)
+					{
+						System.out.println("Reached goal!");
+					}
+					
+					reconstruct_path(current);
+					return;
+				}
+				
+				// Remove current from the open set.
+				current = openset.poll();
+				
+				// Add current the closed set.
+				closedset.add(current);
+				
+				// For each neighbor to the current node...
+				neighbors = this.actions(current);
+				for (Node neighbor : neighbors)
+				{
+					tempG = (this.g(current) + current.distance(neighbor));
+					tempF = (tempG + this.h(neighbor));
+					
+					// Ignore neighbors that are in the closed set.
+					if (closedset.contains(neighbor) && (tempF >= this.f(neighbor)))
+					{
+						continue;
+					}
+					
+					if (!openset.contains(neighbor) || (tempF < this.f(neighbor)))
+					{
+						// Set necessary properties for the neighbor.
+						neighbor.setPredecessor(current);
+						neighbor.setCost(tempG);
+						neighbor.setEstimatedTotal(tempF);
+						
+						// Add neighbors to the open set if they haven't been evaluated.
+						if (!openset.contains(neighbor))
+						{
+							openset.add(neighbor);
+						}
+					}
+				}
+			}
 		}
 	}
 	
