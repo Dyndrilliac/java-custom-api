@@ -3,8 +3,8 @@
 	Author: Matthew Boyette
 	Date:   1/21/2012
 	
-	This class is merely a collection of useful static methods that support code recycling. Specifically, 
-	this class offers utility methods which form a uniform support structure for all of my personal projects. 
+	This class is merely a collection of useful static methods that support code recycling. Specifically, this 
+	class offers methods and classes which provides a uniform support structure for all of my personal projects. 
 */
 package api.util;
 

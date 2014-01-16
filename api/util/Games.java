@@ -4,8 +4,8 @@
 	Date:   1/21/2012
 	
 	This class is merely a collection of useful static methods that support code recycling. Specifically, this 
-	class offers methods which would be useful for games, animation, or utilities that are meant to accompany 
-	games and animation.
+	class offers methods and classes which would be useful for games, animation, or utilities that are meant to 
+	accompany games and animation.
 */
 package api.util;
 
