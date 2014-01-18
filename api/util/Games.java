@@ -19,7 +19,6 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Random;
@@ -493,7 +492,7 @@ public class Games
 				// Add the goal point to the list of vertices.
 				this.getVertices().add(this.getGoalPoint());
 			}
-			catch(FileNotFoundException exception)
+			catch (final Exception exception)
 			{
 				Support.displayException(null, exception, false);
 			}

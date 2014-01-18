@@ -42,7 +42,7 @@ public class ApplicationWindow extends JFrame implements ActionListener
 		{
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		}
-		catch (Exception exception) {}
+		catch (final Exception exception) {}
 		
 		this.setDebugging(isDebugging);
 		this.setSize(size);
@@ -78,7 +78,7 @@ public class ApplicationWindow extends JFrame implements ActionListener
 			{   // Execute it in a try/catch block to be safe.
 				this.getActionPerformed().run(event, this);
 			}
-			catch (Exception exception)
+			catch (final Exception exception)
 			{
 				Support.displayException(this, exception, true);
 			}
@@ -93,7 +93,7 @@ public class ApplicationWindow extends JFrame implements ActionListener
 			{   // Execute it in a try/catch block to be safe.
 				this.getDrawGUI().run(this);
 			}
-			catch (Exception exception)
+			catch (final Exception exception)
 			{
 				Support.displayException(this, exception, true);
 			}
@@ -149,7 +149,7 @@ public class ApplicationWindow extends JFrame implements ActionListener
 		{
 			icon = ImageIO.read(input);
 		}
-		catch (Exception exception)
+		catch (final Exception exception)
 		{
 			Support.displayException(this, exception, true);
 		}

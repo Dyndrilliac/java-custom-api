@@ -128,7 +128,7 @@ public class Support
 						filePath = fileDialog.getSelectedFile().getCanonicalPath();
 						isDone = true;
 					}
-					catch (Exception exception)
+					catch (final Exception exception)
 					{
 						filePath = null;
 						isDone = false;
@@ -215,7 +215,7 @@ public class Support
 			// parseBoolean throws an exception if the string can't be parsed.
 			Boolean.parseBoolean(s);
 		}
-		catch (Exception exception)
+		catch (final Exception exception)
 		{
 			// If we catch an exception, then we return false.
 			return false;
@@ -234,7 +234,7 @@ public class Support
 			// parseFloat throws an exception if the string can't be parsed.
 			Float.parseFloat(s);
 		}
-		catch (Exception exception)
+		catch (final Exception exception)
 		{
 			// If we catch an exception, then we return false.
 			return false;
@@ -253,7 +253,7 @@ public class Support
 			// parseInt throws an exception if the string can't be parsed.
 			Integer.parseInt(s);
 		}
-		catch (Exception exception)
+		catch (final Exception exception)
 		{
 			// If we catch an exception, then we return false.
 			return false;
@@ -263,30 +263,29 @@ public class Support
 		return true;
 	}
 	
-	public static void openWebPageInDefaultBrowser(final String s)
+	public static void openWebPageInDefaultBrowser(final String url)
 	{
 		if (Desktop.isDesktopSupported())
 		{
 			try
 			{
-				Desktop.getDesktop().browse(new URI(s));
+				Desktop.getDesktop().browse(new URI(url));
 			}
-			catch (Exception exception)
+			catch (final Exception exception)
 			{
 				displayException(null, exception, false);
 			}
 		}
 	}
 	
-	public static void playAudioClipFromURL(final String s)
+	public static void playAudioClipFromURL(final String url)
 	{
 		try
 		{
-			URL url = new URL(s);
-			AudioClip ac = Applet.newAudioClip(url);
+			AudioClip ac = Applet.newAudioClip(new URL(url));
 			ac.play();
 	    }
-		catch (Exception exception)
+		catch (final Exception exception)
 		{
 			displayException(null, exception, false);
 		}

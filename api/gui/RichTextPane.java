@@ -71,7 +71,7 @@ public class RichTextPane extends JTextPane
 			// Append a string to the current document using the desired attribute set.
 			this.getDocument().insertString(this.getDocument().getLength(), string, attributeSet);
 		}
-		catch (Exception exception)
+		catch (final Exception exception)
 		{
 			Support.displayException(this.parent, exception, true);
 		}
@@ -118,7 +118,7 @@ public class RichTextPane extends JTextPane
 			inputStream = new ObjectInputStream(new FileInputStream(filePath));
 			this.setDocument((StyledDocument)inputStream.readObject());
 		}
-		catch (Exception exception)
+		catch (final Exception exception)
 		{
 			Support.displayException(this.parent, exception, false);
 		}
@@ -128,7 +128,7 @@ public class RichTextPane extends JTextPane
 			{
 				inputStream.close();
 			}
-			catch (Exception exception)
+			catch (final Exception exception)
 			{
 				Support.displayException(this.parent, exception, false);
 			}
@@ -152,7 +152,7 @@ public class RichTextPane extends JTextPane
 			outputStream = new ObjectOutputStream(new FileOutputStream(filePath));
 			outputStream.writeObject(this.getDocument());
 		}
-		catch (Exception exception)
+		catch (final Exception exception)
 		{
 			Support.displayException(this.parent, exception, false);
 		}
@@ -162,7 +162,7 @@ public class RichTextPane extends JTextPane
 			{
 				outputStream.close();
 			}
-			catch (Exception exception)
+			catch (final Exception exception)
 			{
 				Support.displayException(this.parent, exception, false);
 			}
