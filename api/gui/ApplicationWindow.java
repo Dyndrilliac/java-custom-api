@@ -120,6 +120,12 @@ public class ApplicationWindow extends JFrame implements ActionListener
 		return this.isDebugging;
 	}
 	
+	public void reDrawGUI()
+	{
+		this.getContentPane().removeAll();
+		this.drawGUI();
+	}
+	
 	public void setActionPerformed(final EventHandler actionPerformed)
 	{
 		this.actionPerformed = actionPerformed;
