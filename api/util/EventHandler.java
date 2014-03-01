@@ -16,6 +16,7 @@ public class EventHandler implements Runnable
 	
 	public EventHandler() {}
 	public EventHandler(final Object parent) { this.parent = parent; }
+	
 	public void run() {}
 	public void run(final Object... arguments) {}
 }
