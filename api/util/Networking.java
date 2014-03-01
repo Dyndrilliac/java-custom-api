@@ -4,7 +4,7 @@
 	Date:   1/12/2014
 
 	This class is merely a collection of useful static methods that support code recycling. Specifically, this 
-	class offers methods and classes which would be useful to networking applications such as clients and servers. 
+	class offers methods and classes which would be useful to networking applications such as clients and servers.
 */
 
 package api.util;
