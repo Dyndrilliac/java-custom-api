@@ -154,6 +154,19 @@ public class Support
 		return filePath;
 	}
 	
+	public static String getInputString(final Component parent, final String message, final String title)
+	{
+		String s = null;
+		
+		do
+		{
+			s = JOptionPane.showInputDialog(parent, message, title, JOptionPane.INFORMATION_MESSAGE);
+		}
+		while ((s == null) || s.isEmpty());
+		
+		return s;
+	}
+	
 	public static InputStream getResourceByName(final String resourceName)
 	{
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
