@@ -9,8 +9,7 @@
 
 package api.util;
 
-import api.gui.ApplicationWindow;
-import api.gui.RichTextPane;
+import api.gui.*;
 
 import java.net.ServerSocket;
 import java.net.Socket;
