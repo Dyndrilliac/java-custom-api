@@ -11,6 +11,10 @@ package api.util;
 
 import api.gui.*;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
@@ -29,6 +33,8 @@ public class Networking
 	{
 		// Built-in Variables & Objects
 		private boolean					connected	= false;
+		private BufferedReader			input		= null;
+		private BufferedWriter			output		= null;
 		private SimpleServerThread		parent		= null;
 		private Socket					socket		= null;
 		private String					userID		= null;
@@ -49,6 +55,16 @@ public class Networking
 		{
 			try
 			{
+				if (this.getOutput() != null)
+				{
+					this.getOutput().close();
+				}
+				
+				if (this.getInput() != null)
+				{
+					this.getInput().close();
+				}
+				
 				if (this.getSocket() != null)
 				{
 					this.getSocket().close();
@@ -60,10 +76,22 @@ public class Networking
 			}
 			finally
 			{
+				this.setOutput(null);
+				this.setInput(null);
 				this.setSocket(null);
 				this.setUserID(null);
 				this.setConnected(false);
 			}
+		}
+		
+		public final BufferedReader getInput()
+		{
+			return this.input;
+		}
+		
+		public final BufferedWriter getOutput()
+		{
+			return this.output;
 		}
 		
 		public final SimpleServerThread getParent()
@@ -98,6 +126,8 @@ public class Networking
 		{
 			try
 			{
+				this.setInput(new BufferedReader(new InputStreamReader(this.getSocket().getInputStream())));
+				this.setOutput(new BufferedWriter(new OutputStreamWriter(this.getSocket().getOutputStream())));
 				this.setUserID(this.getSocket().getRemoteSocketAddress() + ":" + this.getSocket().getPort());
 				this.setConnected(true);
 			}
@@ -116,6 +146,16 @@ public class Networking
 		public final void setConnected(final boolean connected)
 		{
 			this.connected = connected;
+		}
+		
+		public final void setInput(final BufferedReader input)
+		{
+			this.input = input;
+		}
+		
+		public final void setOutput(final BufferedWriter output)
+		{
+			this.output = output;
 		}
 		
 		public final void setParent(final SimpleServerThread parent)
@@ -146,6 +186,8 @@ public class Networking
 	{
 		// Built-in Variables & Objects
 		private boolean				connected	= false;
+		private BufferedReader		input		= null;
+		private BufferedWriter		output		= null;
 		private String				remoteHost	= null;
 		private int					remotePort	= 0;
 		private Socket				socket		= null;
@@ -166,6 +208,16 @@ public class Networking
 		{
 			try
 			{
+				if (this.getOutput() != null)
+				{
+					this.getOutput().close();
+				}
+				
+				if (this.getInput() != null)
+				{
+					this.getInput().close();
+				}
+				
 				if (this.getSocket() != null)
 				{
 					this.getSocket().close();
@@ -177,9 +229,21 @@ public class Networking
 			}
 			finally
 			{
+				this.setOutput(null);
+				this.setInput(null);
 				this.setSocket(null);
 				this.setConnected(false);
 			}
+		}
+		
+		public final BufferedReader getInput()
+		{
+			return this.input;
+		}
+		
+		public final BufferedWriter getOutput()
+		{
+			return this.output;
 		}
 		
 		// Returns the remote host.
@@ -216,6 +280,8 @@ public class Networking
 			try
 			{
 				this.setSocket(new Socket(this.getRemoteHost(), this.getRemotePort()));
+				this.setInput(new BufferedReader(new InputStreamReader(this.getSocket().getInputStream())));
+				this.setOutput(new BufferedWriter(new OutputStreamWriter(this.getSocket().getOutputStream())));
 				this.setConnected(true);
 			}
 			catch (final Exception e)
@@ -233,6 +299,16 @@ public class Networking
 		public final void setConnected(final boolean connected)
 		{
 			this.connected = connected;
+		}
+		
+		public final void setInput(final BufferedReader input)
+		{
+			this.input = input;
+		}
+		
+		public final void setOutput(final BufferedWriter output)
+		{
+			this.output = output;
 		}
 		
 		// Sets the remote host.
@@ -256,14 +332,6 @@ public class Networking
 		{
 			this.window = window;
 		}
-	}
-	
-	/*
-		This interface specifies the methods necessary to implement a simple socket-based TCP client/server application protocol.
-	*/
-	public static interface SimpleProtocol
-	{
-		public String processInput(final String input);
 	}
 	
 	/*
