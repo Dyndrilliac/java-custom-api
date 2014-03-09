@@ -7,6 +7,7 @@
 	class offers methods and classes which would be useful for games, animation, or utilities that are meant to 
 	accompany games and animation.
 */
+
 package api.util;
 
 import api.util.Support;
