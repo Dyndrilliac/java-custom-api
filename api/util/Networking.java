@@ -128,7 +128,7 @@ public class Networking
 			{
 				this.setInput(new BufferedReader(new InputStreamReader(this.getSocket().getInputStream())));
 				this.setOutput(new BufferedWriter(new OutputStreamWriter(this.getSocket().getOutputStream())));
-				this.setUserID(this.getSocket().getRemoteSocketAddress() + ":" + this.getSocket().getPort());
+				this.setUserID(this.getSocket().getRemoteSocketAddress().toString().substring(1));
 				this.setConnected(true);
 			}
 			catch (final Exception e)
