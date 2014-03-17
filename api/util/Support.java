@@ -51,6 +51,8 @@ public class Support
 	{
 		/*
 			Display error message along with some useful debugging information.
+			Source file is where the error chain ended, which could be null in the case of a function in the Java API.
+			Cause file is where the error chain began, which is the bottom of the stack and where the bad method is likely to be.
 		*/
 		String dialogTitle     = null;
 		String recoveryMessage = null;
@@ -70,6 +72,8 @@ public class Support
 			exception.toString() + 
 			"\n\nSource file: " + exception.getStackTrace()[0].getFileName() +
 			"\nLine number: " + exception.getStackTrace()[0].getLineNumber() +
+			"\n\nCause file: " + exception.getStackTrace()[exception.getStackTrace().length-1].getFileName() +
+			"\nLine number: " + exception.getStackTrace()[exception.getStackTrace().length-1].getLineNumber() +
 			"\n\nWhen: " + getDateTimeStamp() +
 			"\n\nRecovery: " + recoveryMessage,
 			dialogTitle,
