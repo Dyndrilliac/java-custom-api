@@ -12,6 +12,7 @@ Object Classes:
 
 * ApplicationWindow: represents a GUI window for an application.
 * Clock: creates simple clocks suitable for presentation inside an application's GUI window.
+* HealthGrid: provides a graphical display to the user showing a simulation of an initial infection vector spreading through a population operating under certain fundamental rules.
 * EventHandler: simple mechanism for providing event hooks to objects.
 * RichTextPane: creates text panes for applications with rich formatting capabilities and built-in file I/O.
 

@@ -171,6 +171,19 @@ public class Support
 		return s;
 	}
 	
+	public static int getIntegerInputString(final Component parent, final String message, final String title)
+	{
+		String s = null;
+		
+		do
+		{
+			s = Support.getInputString(parent, message, title);
+		}
+		while (Support.isStringParsedAsInteger(s) != true);
+		
+		return Integer.parseInt(s);
+	}
+	
 	public static InputStream getResourceByName(final String resourceName)
 	{
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
