@@ -7,6 +7,7 @@
 	If desired, basic animating routines are included and can be toggled on and off after initialization. The animation however
 	is limited to the current time, which is why the clock does not initialize animated.
 */
+
 package api.gui;
 
 import api.util.Games;

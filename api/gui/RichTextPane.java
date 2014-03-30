@@ -7,6 +7,7 @@
 	and lusted after a text box object with much richer features like the RichTextBox control
 	available in Visual Basic and C#. Thus, RichTextPane was born.
 */
+
 package api.gui;
 
 import api.util.Support;

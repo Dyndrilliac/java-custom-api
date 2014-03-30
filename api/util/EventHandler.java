@@ -8,6 +8,7 @@
 	Alternatively, custom event handling code can be supplied either when the object is created or
 	afterward during application execution as a reaction to another event.
 */
+
 package api.util;
 
 public class EventHandler implements Runnable

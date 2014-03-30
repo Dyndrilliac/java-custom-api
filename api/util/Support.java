@@ -6,6 +6,7 @@
 	This class is merely a collection of useful static methods that support code recycling. Specifically, this 
 	class offers methods and classes which provides a uniform support structure for all of my personal projects. 
 */
+
 package api.util;
 
 import java.applet.Applet;
