@@ -24,16 +24,17 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 
 public class ApplicationWindow extends JFrame implements ActionListener
 {
-	private static final long serialVersionUID = 1L;
-	private List<Component>   elements         = new ArrayList<Component>();
-	private EventHandler      actionPerformed  = null;
-	private EventHandler      drawGUI          = null;
-	private boolean           isDebugging      = false;
+	private static final long	serialVersionUID	= 1L;
+	private List<Component>		elements			= new ArrayList<Component>();
+	private EventHandler		actionPerformed		= null;
+	private EventHandler		drawGUI				= null;
+	private boolean				isDebugging			= false;
 	
-	public ApplicationWindow(final Component parent, final String applicationTitle, final Dimension size, final boolean isDebugging, 
+	public ApplicationWindow(final Component parent, final String applicationTitle, final Dimension size, final boolean isDebugging,
 		final boolean isResizable, final EventHandler actionPerformed, final EventHandler drawGUI)
 	{
 		super(applicationTitle);
@@ -42,7 +43,10 @@ public class ApplicationWindow extends JFrame implements ActionListener
 		{
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		}
-		catch (final Exception exception) {}
+		catch (final Exception exception)
+		{
+			Support.displayException(this, exception, false);
+		}
 		
 		this.setDebugging(isDebugging);
 		this.setSize(size);
@@ -56,7 +60,7 @@ public class ApplicationWindow extends JFrame implements ActionListener
 		else
 		{
 			this.setLocationRelativeTo(parent);
-			this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		}
 		
 		this.setActionPerformed(actionPerformed);
@@ -65,7 +69,8 @@ public class ApplicationWindow extends JFrame implements ActionListener
 		this.setVisible(true);
 	}
 	
-	public void actionPerformed(final ActionEvent event)
+	@Override
+	public final void actionPerformed(final ActionEvent event)
 	{
 		if (this.isDebugging())
 		{
@@ -74,48 +79,48 @@ public class ApplicationWindow extends JFrame implements ActionListener
 		
 		if (this.getActionPerformed() != null)
 		{
-			try // This could be code supplied by a third-party in another module.
-			{   // Execute it in a try/catch block to be safe.
+			try	// This could be code supplied by a third-party in another module.
+			{	// Execute it in a try/catch block to be safe.
 				this.getActionPerformed().run(event, this);
 			}
 			catch (final Exception exception)
 			{
-				Support.displayException(this, exception, true);
+				Support.displayException(this, exception, false);
 			}
 		}
 	}
 	
-	public void drawGUI()
+	public final void drawGUI()
 	{
 		if (this.getDrawGUI() != null)
 		{
-			try // This could be code supplied by a third-party in another module.
-			{   // Execute it in a try/catch block to be safe.
+			try	// This could be code supplied by a third-party in another module.
+			{	// Execute it in a try/catch block to be safe.
 				this.getDrawGUI().run(this);
 			}
 			catch (final Exception exception)
 			{
-				Support.displayException(this, exception, true);
+				Support.displayException(this, exception, false);
 			}
 		}
 	}
 	
-	public EventHandler getActionPerformed()
+	protected final EventHandler getActionPerformed()
 	{
 		return this.actionPerformed;
 	}
 	
-	public EventHandler getDrawGUI()
+	protected final EventHandler getDrawGUI()
 	{
 		return this.drawGUI;
 	}
 	
-	public List<Component> getElements()
+	public final List<Component> getElements()
 	{
 		return this.elements;
 	}
 	
-	public boolean isDebugging()
+	public final boolean isDebugging()
 	{
 		return this.isDebugging;
 	}
@@ -124,42 +129,42 @@ public class ApplicationWindow extends JFrame implements ActionListener
 	{
 		this.getContentPane().removeAll();
 		this.drawGUI();
+		this.validate();
 	}
 	
-	public void setActionPerformed(final EventHandler actionPerformed)
+	protected final void setActionPerformed(final EventHandler actionPerformed)
 	{
 		this.actionPerformed = actionPerformed;
 	}
 	
-	public void setDebugging(final boolean isDebugging)
+	protected final void setDebugging(final boolean isDebugging)
 	{
 		this.isDebugging = isDebugging;
 	}
 	
-	public void setDrawGUI(final EventHandler drawGUI)
+	protected final void setDrawGUI(final EventHandler drawGUI)
 	{
 		this.drawGUI = drawGUI;
 	}
 	
-	public void setElements(final List<Component> elements)
+	protected final void setElements(final List<Component> elements)
 	{
 		this.elements = elements;
 	}
 	
 	public void setIconImageByResourceName(final String resourceName)
 	{
-		InputStream input = Support.getResourceByName(resourceName);
-		Image icon = null;
+		InputStream	input	= Support.getResourceByName(resourceName);
+		Image		icon	= null;
 		
 		try
 		{
 			icon = ImageIO.read(input);
+			this.setIconImage(icon);
 		}
 		catch (final Exception exception)
 		{
-			Support.displayException(this, exception, true);
+			Support.displayException(this, exception, false);
 		}
-		
-		this.setIconImage(icon);
 	}
 }

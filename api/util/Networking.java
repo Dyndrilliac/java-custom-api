@@ -9,7 +9,7 @@
 
 package api.util;
 
-import api.gui.*;
+import api.gui.ApplicationWindow;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -24,7 +24,7 @@ public class Networking
 {
 	/*
 		This object encapsulates part of the necessary networking functionality for a simple socket-based TCP/IP server application.
-	
+		
 		Specifically, this class represents the portion of the server which services a user's requests. Every time a SimpleServerThread object
 		accepts a new client connection, it spawns a SimpleChildServerThread object to handle that client. This allows for concurrency and a
 		more robust server.
@@ -32,13 +32,13 @@ public class Networking
 	public static abstract class SimpleChildServerThread extends Thread
 	{
 		// Built-in Variables & Objects
-		private boolean					connected	= false;
-		private BufferedReader			input		= null;
-		private BufferedWriter			output		= null;
-		private SimpleServerThread		parent		= null;
-		private Socket					socket		= null;
-		private String					userID		= null;
-		private ApplicationWindow		window		= null;
+		private boolean				connected	= false;
+		private BufferedReader		input		= null;
+		private BufferedWriter		output		= null;
+		private SimpleServerThread	parent		= null;
+		private Socket				socket		= null;
+		private String				userID		= null;
+		private ApplicationWindow	window		= null;
 		
 		// Creates a new instance of a SimpleChildServerThread object.
 		public SimpleChildServerThread(final SimpleServerThread parent, final Socket socket, final ApplicationWindow window)
@@ -262,7 +262,7 @@ public class Networking
 		{
 			return this.socket;
 		}
-
+		
 		public final ApplicationWindow getWindow()
 		{
 			return this.window;

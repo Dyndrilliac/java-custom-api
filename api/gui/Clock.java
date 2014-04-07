@@ -25,39 +25,38 @@ import javax.swing.Timer;
 
 public class Clock extends JPanel
 {
-	private static final long serialVersionUID = 1L;
-	
-	private int hour;
-	private int minute;
-	private int second;
-	
-	private boolean isAnimated = false;
-	
-	private Color fgcCircle = Color.BLACK;
-	private Color fgcHour   = Color.RED;
-	private Color fgcMinute = Color.BLUE;
-	private Color fgcSecond = Color.GREEN;
-	
-	private Timer animationTimer = new Timer(500, new ClockListener(this));
-	
-	private class ClockListener implements ActionListener
+	protected final static class ClockListener implements ActionListener
 	{
-		Clock parent = null;
+		Clock	parent	= null;
 		
 		public ClockListener(final Clock clock)
 		{
 			this.parent = clock;
 		}
 		
-		public void actionPerformed(final ActionEvent event)
+		@Override
+		public final void actionPerformed(final ActionEvent event)
 		{
 			// Set the time.
-			parent.setCurrentTime();
+			this.parent.setCurrentTime();
 		}
 	}
 	
+	private static final long	serialVersionUID	= 1L;
+	private int					hour                = 0;
+	private int					minute              = 0;
+	private int					second              = 0;
+	private boolean				isAnimated			= false;
+	private Color				fgcCircle			= Color.BLACK;
+	private Color				fgcHour				= Color.RED;
+	private Color				fgcMinute			= Color.BLUE;
+	private Color				fgcSecond			= Color.GREEN;
+	private final Timer			animationTimer		= new Timer(500, new ClockListener(this));
+	
 	public Clock(final boolean isCurrent)
 	{
+		super();
+		
 		if (isCurrent)
 		{
 			this.setCurrentTime();
@@ -70,37 +69,40 @@ public class Clock extends JPanel
 	
 	public Clock(final int hour, final int minute, final int second)
 	{
+		super();
 		this.setHour(hour);
 		this.setMinute(minute);
 		this.setSecond(second);
 	}
 	
-	public int getHour()
+	public final int getHour()
 	{
 		return this.hour;
 	}
 	
-	public int getMinute()
+	public final int getMinute()
 	{
 		return this.minute;
 	}
 	
-	public Dimension getPreferredSize()
+	@Override
+	public final Dimension getPreferredSize()
 	{
 		return (new Dimension(250, 250));
 	}
 	
-	public int getSecond()
+	public final int getSecond()
 	{
 		return this.second;
 	}
 	
-	public boolean isAnimated()
+	public final boolean isAnimated()
 	{
 		return this.isAnimated;
 	}
 	
-	protected void paintComponent(final Graphics g)
+	@Override
+	public final void paintComponent(final Graphics g)
 	{
 		super.paintComponent(g);
 		
@@ -112,97 +114,93 @@ public class Clock extends JPanel
 		// Draw circle.
 		g.setColor(this.fgcCircle);
 		g.drawOval((xCenter - clockRadius), (yCenter - clockRadius), (2 * clockRadius), (2 * clockRadius));
-		g.drawString("12", (xCenter - 5), (yCenter - clockRadius + 12));
-		g.drawString("9", (xCenter - clockRadius + 3), (yCenter + 5));
-		g.drawString("3", (xCenter + clockRadius - 10), (yCenter + 3));
-		g.drawString("6", (xCenter - 3), (yCenter + clockRadius - 3));
+		g.drawString("12", (xCenter - 5), ((yCenter - clockRadius) + 12));
+		g.drawString("9", ((xCenter - clockRadius) + 3), (yCenter + 5));
+		g.drawString("3", ((xCenter + clockRadius) - 10), (yCenter + 3));
+		g.drawString("6", (xCenter - 3), ((yCenter + clockRadius) - 3));
 		
 		// Draw exact time below the clock.
 		g.drawString(this.toString(), (xCenter - 30), (yCenter + clockRadius + 20));
 		
 		// Draw the second hand.
 		int sLength = (int)(clockRadius * 0.8);
-		int xSecond = (int)(xCenter + sLength * Math.sin(this.getSecond() * (2 * Math.PI / 60)));
-		int ySecond = (int)(yCenter - sLength * Math.cos(this.getSecond() * (2 * Math.PI / 60)));
+		int xSecond = (int)(xCenter + (sLength * Math.sin(this.getSecond() * ((2 * Math.PI) / 60))));
+		int ySecond = (int)(yCenter - (sLength * Math.cos(this.getSecond() * ((2 * Math.PI) / 60))));
 		g.setColor(this.fgcSecond);
 		g.drawLine(xCenter, yCenter, xSecond, ySecond);
 		
 		// Draw the minute hand.
 		int mLength = (int)(clockRadius * 0.65);
-		int xMinute = (int)(xCenter + mLength * Math.sin(this.getMinute() * (2 * Math.PI / 60)));
-		int yMinute = (int)(yCenter - mLength * Math.cos(this.getMinute() * (2 * Math.PI / 60)));
+		int xMinute = (int)(xCenter + (mLength * Math.sin(this.getMinute() * ((2 * Math.PI) / 60))));
+		int yMinute = (int)(yCenter - (mLength * Math.cos(this.getMinute() * ((2 * Math.PI) / 60))));
 		g.setColor(this.fgcMinute);
 		g.drawLine(xCenter, yCenter, xMinute, yMinute);
 		
 		// Draw the hour hand.
 		int hLength = (int)(clockRadius * 0.5);
-		int xHour = (int)(xCenter + hLength * Math.sin((this.getHour() % 12 + this.getMinute() / 60.0) * (2 * Math.PI / 12)));
-		int yHour = (int)(yCenter - hLength * Math.cos((this.getHour() % 12 + this.getMinute() / 60.0) * (2 * Math.PI / 12)));
+		int xHour = (int)(xCenter + (hLength * Math.sin(((this.getHour() % 12) + (this.getMinute() / 60.0)) * ((2 * Math.PI) / 12))));
+		int yHour = (int)(yCenter - (hLength * Math.cos(((this.getHour() % 12) + (this.getMinute() / 60.0)) * ((2 * Math.PI) / 12))));
 		g.setColor(this.fgcHour);
 		g.drawLine(xCenter, yCenter, xHour, yHour);
 	}
 	
-	public void setColors(final Color fgcCircle, final Color fgcHour, final Color fgcMinute, 
-		final Color fgcSecond)
+	public final void setColors(final Color fgcCircle, final Color fgcHour, final Color fgcMinute, final Color fgcSecond)
 	{
-		this.fgcCircle = fgcCircle;
-		this.fgcHour   = fgcHour;
-		this.fgcMinute = fgcMinute;
-		this.fgcSecond = fgcSecond;
+		this.fgcCircle	= fgcCircle;
+		this.fgcHour	= fgcHour;
+		this.fgcMinute	= fgcMinute;
+		this.fgcSecond	= fgcSecond;
 	}
 	
-	public void setCurrentTime()
+	public final void setCurrentTime()
 	{
 		Calendar calendar = new GregorianCalendar();
-		
 		this.setHour(calendar.get(Calendar.HOUR_OF_DAY));
 		this.setMinute(calendar.get(Calendar.MINUTE));
 		this.setSecond(calendar.get(Calendar.SECOND));
 	}
 	
-	public void setHour(final int hour)
+	public final void setHour(final int hour)
 	{
 		this.hour = hour;
 		this.repaint();
 	}
 	
-	public void setMinute(final int minute)
+	public final void setMinute(final int minute)
 	{
 		this.minute = minute;
 		this.repaint();
 	}
 	
-	public void setRandomTime()
+	public final void setRandomTime()
 	{
 		this.setHour(Games.getRandomInteger(0, 23, true));
 		this.setMinute(Games.getRandomInteger(0, 59, true));
 		this.setSecond(Games.getRandomInteger(0, 59, true));
 	}
 	
-	public void setSecond(final int second)
+	public final void setSecond(final int second)
 	{
 		this.second = second;
 		this.repaint();
 	}
 	
-	public void startAnimation()
+	public final void startAnimation()
 	{
 		this.isAnimated = true;
 		this.animationTimer.start();
 	}
 	
-	public void stopAnimation()
+	public final void stopAnimation()
 	{
 		this.isAnimated = false;
 		this.animationTimer.stop();
 	}
 	
-	public String toString()
+	@Override
+	public final String toString()
 	{
-		String hour   = "";
-		String minute = "";
-		String second = "";
-		String ampm   = "";
+		String hour = null, minute = null, second = null, ampm = null;
 		
 		if (this.getHour() < 12)
 		{

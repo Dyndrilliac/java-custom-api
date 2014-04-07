@@ -3,8 +3,8 @@
 	Author: Matthew Boyette
 	Date:   1/21/2012
 	
-	This class is merely a collection of useful static methods that support code recycling. Specifically, this 
-	class offers methods and classes which provides a uniform support structure for all of my personal projects. 
+	This class is merely a collection of useful static methods that support code recycling. Specifically, this
+	class offers methods and classes which provides a uniform support structure for all of my personal projects.
 */
 
 package api.util;
@@ -26,37 +26,38 @@ import javax.swing.JOptionPane;
 public class Support
 {
 	// This method displays special debugging messages to be used for diagnostic purposes.
-	public static void displayDebugMessage(final Component parent, final Object object)
+	public final static void displayDebugMessage(final Component parent, final Object object)
 	{
 		String message = "";
 		
-		if (object == null) displayException(parent, new NullPointerException("displayDebugMessage(): 'object' is null."), true);
+		if (object == null)
+		{
+			Support.displayException(parent, new NullPointerException("displayDebugMessage(): 'object' is null."), false);
+		}
 		
 		if (object instanceof AWTEvent)
 		{
 			AWTEvent event = (AWTEvent)object;
 			message += "What: " + event.paramString() + "\n";
-			message += "Where: " + event.getSource().getClass().getSimpleName() + 
-				" (" + event.getSource().getClass().getCanonicalName() + ")\n";
+			message += "Where: " + event.getSource().getClass().getSimpleName() + " (" + event.getSource().getClass().getCanonicalName() + ")\n";
 		}
 		else if (object instanceof String)
 		{
 			message = (String)object;
 		}
 		
-		message += "When: " + getDateTimeStamp() + "\n";
+		message += "When: " + Support.getDateTimeStamp() + "\n";
 		JOptionPane.showMessageDialog(parent, message, "Debugging Event", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
-	public static void displayException(final Component parent, final Exception exception, final boolean isFatal)
+	public final static void displayException(final Component parent, final Exception exception, final boolean isFatal)
 	{
 		/*
 			Display error message along with some useful debugging information.
 			Source file is where the error chain ended, which could be null in the case of a function in the Java API.
 			Cause file is where the error chain began, which is the bottom of the stack and where the bad method is likely to be.
 		*/
-		String dialogTitle     = null;
-		String recoveryMessage = null;
+		String dialogTitle = null, recoveryMessage = null;
 		
 		if (isFatal)
 		{
@@ -65,21 +66,21 @@ public class Support
 		}
 		else
 		{
-			dialogTitle = "Exception Occurred";
+			dialogTitle = "Non-fatal Exception Occurred";
 			recoveryMessage = "This error is not fatal. The program has recovered from the problem, and you may continue operating it.";
 		}
 		
 		JOptionPane.showMessageDialog(parent,
-			exception.toString() + 
+			exception.toString() +
 			"\n\nSource file: " + exception.getStackTrace()[0].getFileName() +
 			"\nLine number: " + exception.getStackTrace()[0].getLineNumber() +
-			"\n\nCause file: " + exception.getStackTrace()[exception.getStackTrace().length-1].getFileName() +
-			"\nLine number: " + exception.getStackTrace()[exception.getStackTrace().length-1].getLineNumber() +
-			"\n\nWhen: " + getDateTimeStamp() +
+			"\n\nCause file: " + exception.getStackTrace()[exception.getStackTrace().length - 1].getFileName() +
+			"\nLine number: " + exception.getStackTrace()[exception.getStackTrace().length - 1].getLineNumber() +
+			"\n\nWhen: " + Support.getDateTimeStamp() +
 			"\n\nRecovery: " + recoveryMessage,
 			dialogTitle,
 			JOptionPane.ERROR_MESSAGE);
-		exception.printStackTrace();
+			exception.printStackTrace();
 		
 		if (isFatal)
 		{
@@ -88,27 +89,27 @@ public class Support
 	}
 	
 	// Get Date/Time stamp in the default format.
-	public static String getDateTimeStamp()
+	public final static String getDateTimeStamp()
 	{
 		SimpleDateFormat dateFormatter = new SimpleDateFormat("MM.dd.yyyy hh:mm:ss a z");
 		return dateFormatter.format(new Date());
 	}
 	
 	// Get Date/Time stamp in a custom format.
-	public static final String getDateTimeStamp(final String dateFormat)
+	public final static String getDateTimeStamp(final String dateFormat)
 	{
 		SimpleDateFormat dateFormatter = new SimpleDateFormat(dateFormat);
 		return dateFormatter.format(new Date());
 	}
 	
 	// This method prompts the user to either open or save a file using a generic dialog box and returns the path to the selected file.
-	public static String getFilePath(final Component parent, final boolean isOpen, final boolean isDebugging)
+	public final static String getFilePath(final Component parent, final boolean isOpen, final boolean isDebugging)
 	{
 		JFileChooser fileDialog = new JFileChooser();
-		String       filePath   = null;
-		boolean      isDone     = false;
-		int          choice     = 0;
-
+		String filePath = null;
+		boolean isDone = false;
+		int choice = 0;
+		
 		do // Loop while 'isDone' equals false, post-test.
 		{
 			if (isOpen)
@@ -119,11 +120,11 @@ public class Support
 			{
 				choice = fileDialog.showSaveDialog(parent);
 			}
-
+			
 			switch (choice)
 			{
 				case JFileChooser.APPROVE_OPTION:
-
+					
 					try
 					{
 						filePath = fileDialog.getSelectedFile().getCanonicalPath();
@@ -135,44 +136,44 @@ public class Support
 						isDone = false;
 					}
 					break;
-
+				
 				case JFileChooser.CANCEL_OPTION:
-
+					
 					filePath = null;
 					isDone = true;
 					break;
-
+				
 				default:
-
+					
 					filePath = null;
 					isDone = false;
 					break;
 			}
 		}
 		while (!isDone);
-
+		
 		if (isDebugging)
 		{
-			displayDebugMessage(null, "File Path: " + filePath + "\n");
+			Support.displayDebugMessage(null, "File Path: " + filePath + "\n");
 		}
-
+		
 		return filePath;
 	}
 	
-	public static String getInputString(final Component parent, final String message, final String title)
+	public final static String getInputString(final Component parent, final String message, final String title)
 	{
 		String s = null;
 		
 		do
 		{
-			s = JOptionPane.showInputDialog(parent, message, title, JOptionPane.INFORMATION_MESSAGE);
+			s = JOptionPane.showInputDialog(parent, message, title, JOptionPane.QUESTION_MESSAGE);
 		}
 		while ((s == null) || s.isEmpty());
 		
 		return s;
 	}
 	
-	public static int getIntegerInputString(final Component parent, final String message, final String title)
+	public final static int getIntegerInputString(final Component parent, final String message, final String title)
 	{
 		String s = null;
 		
@@ -185,41 +186,41 @@ public class Support
 		return Integer.parseInt(s);
 	}
 	
-	public static InputStream getResourceByName(final String resourceName)
+	public final static InputStream getResourceByName(final String resourceName)
 	{
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		InputStream input = classLoader.getResourceAsStream(resourceName);
 		return input;
 	}
 	
-	public static boolean isPrime(final long n)
+	public final static boolean isPrime(final long n)
 	{
 		// Every prime number is an integer greater than one. If 'n' is less than or equal to one, mark it as composite (not prime).
-		if ( n > 1 )
+		if (n > 1)
 		{	// Check to make sure 'n' is not two or three. If it is either, than we can go ahead and mark it as prime.
-			if ( (n != 2) && (n != 3) )
+			if ((n != 2) && (n != 3))
 			{	// Since two and three have been handled, we want to know if 'n' is evenly divisible by two or three and mark it as composite.
-				if ( ((n % 2) != 0) || ((n % 3) != 0) )
+				if (((n % 2) != 0) || ((n % 3) != 0))
 				{
-					// Every prime number can be represented by the form 6k+1 or 6k-1. If 'n' cannot be represented this way, 
+					// Every prime number can be represented by the form 6k+1 or 6k-1. If 'n' cannot be represented this way,
 					// then we mark it as composite.
-					if ( (((n+1) % 6) == 0) || (((n-1) % 6) == 0) )
+					if ((((n + 1) % 6) == 0) || (((n - 1) % 6) == 0))
 					{
 						// If a number can be factored into two numbers, at least one of them should be less than or equal to its square root.
-						long limit = (long)Math.ceil(Math.sqrt((double)n));
-						// Since we have eliminated all primes less than five, and two is the only even prime, 
+						long limit = (long)Math.ceil(Math.sqrt(n));
+						// Since we have eliminated all primes less than five, and two is the only even prime,
 						// we only need to check odd numbers from here on out.
 						for (long i = 5; i <= limit; i += 2)
 						{
-							// Every prime number is only evenly divisible by itself and one. 
+							// Every prime number is only evenly divisible by itself and one.
 							// 'i' will never equal 'n' and 'i' will never equal one.
 							// Thus, if 'n' is evenly divisible by 'i' then it cannot be prime.
-							if ( (n % i) == 0 )
+							if ((n % i) == 0)
 							{
 								return false;
 							}
 						}
-
+						
 						return true;
 					}
 				}
@@ -229,13 +230,13 @@ public class Support
 				return true;
 			}
 		}
-
+		
 		return false;
 	}
 	
 	// This method takes a string and determines if it can be safely parsed as a boolean.
 	// Return value of true indicates that the string is safe to parse, and false means that the string is not safe to parse.
-	public static boolean isStringParsedAsBoolean(final String s)
+	public final static boolean isStringParsedAsBoolean(final String s)
 	{
 		try
 		{
@@ -247,14 +248,14 @@ public class Support
 			// If we catch an exception, then we return false.
 			return false;
 		}
-
+		
 		// Base case; return true if the string was parsed without an exception being thrown.
 		return true;
 	}
-
+	
 	// This method takes a string and determines if it can be safely parsed as a float.
 	// Return value of true indicates that the string is safe to parse, and false means that the string is not safe to parse.
-	public static boolean isStringParsedAsFloat(final String s)
+	public final static boolean isStringParsedAsFloat(final String s)
 	{
 		try
 		{
@@ -266,14 +267,14 @@ public class Support
 			// If we catch an exception, then we return false.
 			return false;
 		}
-
+		
 		// Base case; return true if the string was parsed without an exception being thrown.
 		return true;
 	}
-
+	
 	// This method takes a string and determines if it can be safely parsed as an integer.
 	// Return value of true indicates that the string is safe to parse, and false means that the string is not safe to parse.
-	public static boolean isStringParsedAsInteger(final String s)
+	public final static boolean isStringParsedAsInteger(final String s)
 	{
 		try
 		{
@@ -285,12 +286,12 @@ public class Support
 			// If we catch an exception, then we return false.
 			return false;
 		}
-
+		
 		// Base case; return true if the string was parsed without an exception being thrown.
 		return true;
 	}
 	
-	public static void openWebPageInDefaultBrowser(final String url)
+	public final static void openWebPageInDefaultBrowser(final String url)
 	{
 		if (Desktop.isDesktopSupported())
 		{
@@ -300,32 +301,31 @@ public class Support
 			}
 			catch (final Exception exception)
 			{
-				displayException(null, exception, false);
+				Support.displayException(null, exception, false);
 			}
 		}
 	}
 	
-	public static void playAudioClipFromURL(final String url)
+	public final static void playAudioClipFromURL(final String url)
 	{
 		try
 		{
 			AudioClip ac = Applet.newAudioClip(new URL(url));
 			ac.play();
-	    }
+		}
 		catch (final Exception exception)
 		{
-			displayException(null, exception, false);
+			Support.displayException(null, exception, false);
 		}
 	}
 	
-	// This method is a wrapper for a specific invocation of JOptionPane.showConfirmDialog that I use frequently to prompt test 
-	// users for debugging modes.
-	public static int promptDebugMode(final Component parent)
+	// This method is a wrapper for a specific invocation of JOptionPane.showConfirmDialog that I use frequently to prompt test users for debugging modes.
+	public final static int promptDebugMode(final Component parent)
 	{
-		return JOptionPane.showConfirmDialog(parent, 
-			"Do you wish to activate debugging mode?\n\n" + 
+		return JOptionPane.showConfirmDialog(parent,
+			"Do you wish to activate debugging mode?\n\n" +
 			"Turning on debugging mode will enable extra diagnostic features that are helpful when testing this application for errors.",
-			"Debugging Mode", 
+			"Debugging Mode",
 			JOptionPane.YES_NO_OPTION);
 	}
 }

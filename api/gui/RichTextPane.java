@@ -28,9 +28,28 @@ import javax.swing.text.StyledDocument;
 
 public class RichTextPane extends JTextPane
 {
-	private static final long serialVersionUID = 1L;
-	private Component         parent           = null;
-	private boolean           isDebugging      = false;
+	private static final long	serialVersionUID	= 1L;
+	
+	public static SimpleAttributeSet getAttributeSet(final Color fgc, final Color bgc, final boolean isBolded, final boolean isItalicized, final boolean isUnderlined)
+	{
+		// Create an attribute set.
+		SimpleAttributeSet attributeSet = new SimpleAttributeSet();
+		
+		// Set styles.
+		attributeSet.addAttribute(StyleConstants.Bold, isBolded);
+		attributeSet.addAttribute(StyleConstants.Italic, isItalicized);
+		attributeSet.addAttribute(StyleConstants.Underline, isUnderlined);
+		
+		// Set colors.
+		attributeSet.addAttribute(StyleConstants.Foreground, fgc);
+		attributeSet.addAttribute(StyleConstants.Background, bgc);
+		
+		// Return the attribute set for use in text formatting.
+		return attributeSet;
+	}
+	
+	private Component	parent		= null;
+	private boolean		isDebugging	= false;
 	
 	public RichTextPane(final Component parent, final boolean isReadOnly, final boolean isDebugging, final Font defaultFont)
 	{
@@ -42,30 +61,11 @@ public class RichTextPane extends JTextPane
 		this.clear();
 	}
 	
-	public void append(final Object... arguments) throws IllegalArgumentException
-	{
-		/*
-			The append() helper method takes three arguments. In order for variable number of arguments
-			to work, the number of arguments must be evenly divisible by three and they must also be in
-			the correct order: Color, Color, String
-		*/
-		if ((arguments.length % 3) != 0)
-		{
-			throw new IllegalArgumentException("The variable argument append method received a number of arguments not evenly divisible by three.");
-		}
-
-		// Call the append() helper method for each set of arguments.
-		for (int i = 0; i < arguments.length; i += 3)
-		{
-			this.append((Color)arguments[i], (Color)arguments[i+1], arguments[i+2].toString());
-		}
-	}
-	
-	public void append(final Color fgc, final Color bgc, final String string)
+	protected final void append(final Color fgc, final Color bgc, final String string)
 	{
 		// Call getAttributeSet to generate the formatting settings for the text.
-		SimpleAttributeSet attributeSet = getAttributeSet(fgc, bgc, false, false, false);
-
+		SimpleAttributeSet attributeSet = RichTextPane.getAttributeSet(fgc, bgc, false, false, false);
+		
 		try
 		{
 			// Append a string to the current document using the desired attribute set.
@@ -77,46 +77,55 @@ public class RichTextPane extends JTextPane
 		}
 	}
 	
-	public void clear()
+	public final void append(final Object... arguments) throws IllegalArgumentException
+	{
+		/*
+			The append() helper method takes three arguments. In order for variable number of arguments
+			to work, the number of arguments must be evenly divisible by three and they must also be in
+			the correct order: Color, Color, String
+		*/
+		if ((arguments.length % 3) != 0)
+		{
+			throw new IllegalArgumentException("The variable argument append method received a number of arguments not evenly divisible by three.");
+		}
+		
+		// Call the append() helper method for each set of arguments.
+		for (int i = 0; i < arguments.length; i += 3)
+		{
+			this.append((Color)arguments[i], (Color)arguments[i + 1], arguments[i + 2].toString());
+		}
+	}
+	
+	public final void clear()
 	{
 		this.setDocument(new DefaultStyledDocument());
 	}
 	
-	public static SimpleAttributeSet getAttributeSet(final Color fgc, final Color bgc, final boolean isBolded, 
-		final boolean isItalicized, final boolean isUnderlined)
+	public final void openOrSaveFile(final boolean isOpen)
 	{
-		// Create an attribute set.
-		SimpleAttributeSet attributeSet = new SimpleAttributeSet();
-
-		// Set styles.
-		attributeSet.addAttribute(StyleConstants.CharacterConstants.Bold, isBolded);
-		attributeSet.addAttribute(StyleConstants.CharacterConstants.Italic, isItalicized);
-		attributeSet.addAttribute(StyleConstants.CharacterConstants.Underline, isUnderlined);
-
-		// Set colors.
-		attributeSet.addAttribute(StyleConstants.CharacterConstants.Foreground, fgc);
-		attributeSet.addAttribute(StyleConstants.CharacterConstants.Background, bgc);
-
-		// Return the attribute set for use in text formatting.
-		return attributeSet;
-	}
-	
-	public void openFile()
-	{
-		String filePath = Support.getFilePath(this.parent, true, this.isDebugging);
-
+		Object stream = null;
+		String filePath = Support.getFilePath(this.parent, isOpen, this.isDebugging);
+		
 		if ((filePath == null) || filePath.isEmpty())
 		{
 			return;
 		}
-
-		ObjectInputStream inputStream = null;
-
+		
 		try
 		{
-			// Use binary file manipulation to import a file containing a Document object.
-			inputStream = new ObjectInputStream(new FileInputStream(filePath));
-			this.setDocument((StyledDocument)inputStream.readObject());
+			if (isOpen)
+			{
+				// Use binary file manipulation to import a file containing a Document object.
+				stream = new ObjectInputStream(new FileInputStream(filePath));
+				this.setDocument((StyledDocument)((ObjectInputStream)stream).readObject());
+			}
+			else
+			{
+				// Use binary file manipulation to export a file containing a Document object.
+				stream = new ObjectOutputStream(new FileOutputStream(filePath));
+				((ObjectOutputStream)stream).writeObject(this.getDocument());
+			}
+			
 		}
 		catch (final Exception exception)
 		{
@@ -124,47 +133,23 @@ public class RichTextPane extends JTextPane
 		}
 		finally
 		{
-			try
+			if (stream != null)
 			{
-				inputStream.close();
-			}
-			catch (final Exception exception)
-			{
-				Support.displayException(this.parent, exception, false);
-			}
-		}
-	}
-	
-	public void saveFile()
-	{
-		String filePath = Support.getFilePath(this.parent, false, this.isDebugging);
-
-		if ((filePath == null) || filePath.isEmpty())
-		{
-			return;
-		}
-
-		ObjectOutputStream outputStream = null;
-
-		try
-		{
-			// Use binary file manipulation to export a file containing a Document object.
-			outputStream = new ObjectOutputStream(new FileOutputStream(filePath));
-			outputStream.writeObject(this.getDocument());
-		}
-		catch (final Exception exception)
-		{
-			Support.displayException(this.parent, exception, false);
-		}
-		finally
-		{
-			try
-			{
-				outputStream.close();
-			}
-			catch (final Exception exception)
-			{
-				Support.displayException(this.parent, exception, false);
+				try
+				{
+					if (isOpen)
+					{
+						((ObjectInputStream)stream).close();
+					}
+					else
+					{
+						((ObjectOutputStream)stream).close();
+					}
+				}
+				catch (final Exception exception)
+				{
+					Support.displayException(this.parent, exception, false);
+				}
 			}
 		}
 	}
