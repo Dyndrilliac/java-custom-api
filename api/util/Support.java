@@ -88,6 +88,11 @@ public class Support
 		}
 	}
 	
+	public final static boolean getChoiceInput(final Component parent, final String message, final String title)
+	{
+		return ((JOptionPane.showConfirmDialog(parent, message, title, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION));
+	}
+	
 	// Get Date/Time stamp in the default format.
 	public final static String getDateTimeStamp()
 	{
@@ -320,12 +325,11 @@ public class Support
 	}
 	
 	// This method is a wrapper for a specific invocation of JOptionPane.showConfirmDialog that I use frequently to prompt test users for debugging modes.
-	public final static int promptDebugMode(final Component parent)
+	public final static boolean promptDebugMode(final Component parent)
 	{
-		return JOptionPane.showConfirmDialog(parent,
+		return getChoiceInput(parent,
 			"Do you wish to activate debugging mode?\n\n" +
 			"Turning on debugging mode will enable extra diagnostic features that are helpful when testing this application for errors.",
-			"Debugging Mode",
-			JOptionPane.YES_NO_OPTION);
+			"Debugging Mode");
 	}
 }

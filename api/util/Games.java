@@ -35,29 +35,19 @@ public class Games
 		// This sub-class is a ready-made template used to display the results from the AStarShortestPath2D algorithm graphically.
 		public final static class MapDisplay extends JPanel
 		{
-			protected static final long		serialVersionUID	= 1L;
+			protected final static long		serialVersionUID	= 1L;
 			protected AStarShortestPath2D	shortestPath		= null;
 			protected boolean				debugMode			= false;
 			protected double				magnification		= 1;
 			
 			public MapDisplay(final AStarShortestPath2D shortestPath)
 			{
-				super();
-				this.setBackground(Color.WHITE);
-				this.setForeground(Color.BLACK);
-				this.shortestPath	= shortestPath;
-				this.debugMode		= shortestPath.getDebugMode();
-				this.repaint();
+				this(Color.WHITE, Color.BLACK, shortestPath);
 			}
 			
 			public MapDisplay(final Color background, final Color foreground, final AStarShortestPath2D shortestPath)
 			{
-				super();
-				this.setBackground(background);
-				this.setForeground(foreground);
-				this.shortestPath	= shortestPath;
-				this.debugMode		= shortestPath.getDebugMode();
-				this.repaint();
+				this(Color.WHITE, Color.BLACK, shortestPath, 1.0);
 			}
 			
 			public MapDisplay(final Color background, final Color foreground, final AStarShortestPath2D shortestPath, final double magnification)
@@ -154,7 +144,7 @@ public class Games
 		// This sub-class is merely an extension of the Vertex2D class specifically for the A* algorithm.
 		public final static class Node extends Vertex2D implements Comparable<Node>
 		{
-			protected static final long	serialVersionUID	= 1L;
+			protected final static long	serialVersionUID	= 1L;
 			protected LinkedList<Node>	nodesWithinLOS		= null;
 			protected Node				predecessor			= null;
 			protected double			cost				= 0;
@@ -480,7 +470,7 @@ public class Games
 	
 	protected static class Edge2D extends Line2D.Double
 	{
-		private static final long	serialVersionUID	= 1L;
+		private final static long	serialVersionUID	= 1L;
 		private double				weight				= 0;
 		
 		public Edge2D(final Vertex2D v1, final Vertex2D v2)
@@ -503,7 +493,7 @@ public class Games
 	
 	protected static class Vertex2D extends Point2D.Double
 	{
-		private static final long	serialVersionUID	= 1L;
+		private final static long	serialVersionUID	= 1L;
 		
 		public Vertex2D(final double x, final double y)
 		{

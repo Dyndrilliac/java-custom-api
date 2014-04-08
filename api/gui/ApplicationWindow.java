@@ -28,7 +28,7 @@ import javax.swing.WindowConstants;
 
 public class ApplicationWindow extends JFrame implements ActionListener
 {
-	private static final long	serialVersionUID	= 1L;
+	private final static long	serialVersionUID	= 1L;
 	private List<Component>		elements			= new ArrayList<Component>();
 	private EventHandler		actionPerformed		= null;
 	private EventHandler		drawGUI				= null;

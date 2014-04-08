@@ -19,20 +19,16 @@ import javax.swing.JPanel;
 
 public class HealthGrid extends JPanel
 {
-	protected static class Cell extends JPanel
+	protected final static class Cell extends JPanel
 	{
-		private static final long	serialVersionUID	= 1L;
+		private final static long	serialVersionUID	= 1L;
 		private CellContent			content				= null;
 		private int					column				= 0;
 		private int					row					= 0;
 		
 		public Cell(final int x, final int y)
 		{
-			super();
-			this.setColumn(x);
-			this.setRow(y);
-			this.setContent(new CellContent(this));
-			this.add(this.getContent());
+			this(x, y, State.EMPTY);
 		}
 		
 		public Cell(final int x, final int y, final State initialState)
@@ -75,17 +71,15 @@ public class HealthGrid extends JPanel
 		}
 	}
 	
-	protected static class CellContent extends JPanel
+	protected final static class CellContent extends JPanel
 	{
-		private static final long	serialVersionUID	= 1L;
+		private final static long	serialVersionUID	= 1L;
 		private Cell				parent				= null;
 		private State				state				= null;
 		
 		public CellContent(final Cell parent)
 		{
-			super();
-			this.setCellParent(parent);
-			this.setState(State.EMPTY);
+			this(parent, State.EMPTY);
 		}
 		
 		public CellContent(final Cell parent, final State initialState)
@@ -175,7 +169,7 @@ public class HealthGrid extends JPanel
 		ALIVE, EMPTY, INFECTED
 	}
 	
-	private static final long	serialVersionUID	= 1L;
+	private final static long	serialVersionUID	= 1L;
 	private Cell[][]			gridOfCells			= null;
 	private int					numColumns			= 0;
 	private int					numRows				= 0;

@@ -42,7 +42,7 @@ public class Clock extends JPanel
 		}
 	}
 	
-	private static final long	serialVersionUID	= 1L;
+	private final static long	serialVersionUID	= 1L;
 	private int					hour                = 0;
 	private int					minute              = 0;
 	private int					second              = 0;

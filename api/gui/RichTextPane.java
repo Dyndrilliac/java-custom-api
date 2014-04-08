@@ -28,7 +28,7 @@ import javax.swing.text.StyledDocument;
 
 public class RichTextPane extends JTextPane
 {
-	private static final long	serialVersionUID	= 1L;
+	private final static long	serialVersionUID	= 1L;
 	
 	public static SimpleAttributeSet getAttributeSet(final Color fgc, final Color bgc, final boolean isBolded, final boolean isItalicized, final boolean isUnderlined)
 	{
