@@ -20,7 +20,8 @@ Static classes:
 
 * Games: contains utility methods useful for games, animated applications, and applications accompanying games.
 * Support: contains utility methods for validating data, displaying GUI components, identify prime numbers, and more.
-* Networking: contains utility classes/interfaces for providing simple socket-based TCP network communication.
+* Sockets: contains utility classes/interfaces for providing simple socket-based TCP network communication.
+* RMI: contains utility classes/interfaces for providing simple RMI-based TCP network communication.
 
 *******************************************
 Using the Custom Java API
