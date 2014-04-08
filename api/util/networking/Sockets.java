@@ -1,15 +1,17 @@
 /*
-	Title:  Networking
+	Title:  Sockets
 	Author: Matthew Boyette
 	Date:   1/12/2014
 	
 	This class is merely a collection of useful static methods that support code recycling. Specifically, this
-	class offers methods and classes which would be useful to networking applications such as clients and servers.
+	class offers methods and classes which would be useful to networking applications that are implemented using
+	sockets.
 */
 
-package api.util;
+package api.util.networking;
 
 import api.gui.ApplicationWindow;
+import api.util.Support;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -20,7 +22,7 @@ import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Networking
+public class Sockets
 {
 	/*
 		This object encapsulates part of the necessary networking functionality for a simple socket-based TCP/IP server application.
@@ -32,7 +34,7 @@ public class Networking
 	public static abstract class SimpleChildServerThread extends Thread
 	{
 		// Built-in Variables & Objects
-		private boolean				connected	= false;
+		private boolean				isConnected	= false;
 		private BufferedReader		input		= null;
 		private BufferedWriter		output		= null;
 		private SimpleServerThread	parent		= null;
@@ -118,7 +120,7 @@ public class Networking
 		// Returns whether or not a connection is open.
 		public final boolean isConnected()
 		{
-			return this.connected;
+			return this.isConnected;
 		}
 		
 		// Opens the connection and allocates needed I/O resources.
@@ -143,37 +145,37 @@ public class Networking
 		public abstract void run();
 		
 		// Sets whether or not a connection is open.
-		public final void setConnected(final boolean connected)
+		protected final void setConnected(final boolean connected)
 		{
-			this.connected = connected;
+			this.isConnected = connected;
 		}
 		
-		public final void setInput(final BufferedReader input)
+		protected final void setInput(final BufferedReader input)
 		{
 			this.input = input;
 		}
 		
-		public final void setOutput(final BufferedWriter output)
+		protected final void setOutput(final BufferedWriter output)
 		{
 			this.output = output;
 		}
 		
-		public final void setParent(final SimpleServerThread parent)
+		protected final void setParent(final SimpleServerThread parent)
 		{
 			this.parent = parent;
 		}
 		
-		public final void setSocket(final Socket socket)
+		protected final void setSocket(final Socket socket)
 		{
 			this.socket = socket;
 		}
 		
-		public final void setUserID(final String userID)
+		protected final void setUserID(final String userID)
 		{
 			this.userID = userID;
 		}
 		
-		public final void setWindow(final ApplicationWindow window)
+		protected final void setWindow(final ApplicationWindow window)
 		{
 			this.window = window;
 		}
@@ -185,7 +187,7 @@ public class Networking
 	public static abstract class SimpleClientThread extends Thread
 	{
 		// Built-in Variables & Objects
-		private boolean				connected	= false;
+		private boolean				isConnected	= false;
 		private BufferedReader		input		= null;
 		private BufferedWriter		output		= null;
 		private String				remoteHost	= null;
@@ -271,7 +273,7 @@ public class Networking
 		// Returns whether or not a connection is open.
 		public final boolean isConnected()
 		{
-			return this.connected;
+			return this.isConnected;
 		}
 		
 		// Opens the connection and allocates needed I/O resources.
@@ -296,39 +298,39 @@ public class Networking
 		public abstract void run();
 		
 		// Sets whether or not a connection is open.
-		public final void setConnected(final boolean connected)
+		protected final void setConnected(final boolean connected)
 		{
-			this.connected = connected;
+			this.isConnected = connected;
 		}
 		
-		public final void setInput(final BufferedReader input)
+		protected final void setInput(final BufferedReader input)
 		{
 			this.input = input;
 		}
 		
-		public final void setOutput(final BufferedWriter output)
+		protected final void setOutput(final BufferedWriter output)
 		{
 			this.output = output;
 		}
 		
 		// Sets the remote host.
-		public final void setRemoteHost(final String remoteHost)
+		protected final void setRemoteHost(final String remoteHost)
 		{
 			this.remoteHost = remoteHost;
 		}
 		
 		// Sets the remote TCP port.
-		public final void setRemotePort(final int remotePort)
+		protected final void setRemotePort(final int remotePort)
 		{
 			this.remotePort = remotePort;
 		}
 		
-		public final void setSocket(final Socket socket)
+		protected final void setSocket(final Socket socket)
 		{
 			this.socket = socket;
 		}
 		
-		public final void setWindow(final ApplicationWindow window)
+		protected final void setWindow(final ApplicationWindow window)
 		{
 			this.window = window;
 		}
@@ -428,29 +430,29 @@ public class Networking
 		@Override
 		public abstract void run();
 		
-		public final void setClientList(final List<SimpleChildServerThread> clientList)
+		protected final void setClientList(final List<SimpleChildServerThread> clientList)
 		{
 			this.clientList = clientList;
 		}
 		
 		// Sets whether or not the server is listening for new connections.
-		public final void setListening(final boolean listening)
+		protected final void setListening(final boolean listening)
 		{
 			this.listening = listening;
 		}
 		
 		// Sets the TCP port which the server is listening on for new connections.
-		public final void setListeningPort(final int listeningPort)
+		protected final void setListeningPort(final int listeningPort)
 		{
 			this.listeningPort = listeningPort;
 		}
 		
-		public final void setListeningSocket(final ServerSocket listeningSocket)
+		protected final void setListeningSocket(final ServerSocket listeningSocket)
 		{
 			this.listeningSocket = listeningSocket;
 		}
 		
-		public final void setWindow(final ApplicationWindow window)
+		protected final void setWindow(final ApplicationWindow window)
 		{
 			this.window = window;
 		}
