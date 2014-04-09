@@ -75,6 +75,8 @@ public class RichTextPane extends JTextPane
 		{
 			Support.displayException(this.parent, exception, true);
 		}
+		
+		this.setCaretPosition(this.getDocument().getLength());
 	}
 	
 	public final void append(final Object... arguments) throws IllegalArgumentException

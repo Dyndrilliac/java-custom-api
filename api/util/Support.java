@@ -25,6 +25,20 @@ import javax.swing.JOptionPane;
 
 public class Support
 {
+	public final static void clearConsole() throws Exception
+	{
+		final String os = System.getProperty("os.name");
+		
+		if (os.contains("Windows"))
+		{
+			Runtime.getRuntime().exec("cls");
+		}
+		else
+		{
+			Runtime.getRuntime().exec("clear");
+		}
+	}
+	
 	// This method displays special debugging messages to be used for diagnostic purposes.
 	public final static void displayDebugMessage(final Component parent, final Object object)
 	{
@@ -324,12 +338,20 @@ public class Support
 		}
 	}
 	
-	// This method is a wrapper for a specific invocation of JOptionPane.showConfirmDialog that I use frequently to prompt test users for debugging modes.
+	/*
+		This method is a wrapper for a specific invocation of JOptionPane.showConfirmDialog that I use frequently to prompt test users
+		for debugging modes. 
+	*/
 	public final static boolean promptDebugMode(final Component parent)
 	{
 		return getChoiceInput(parent,
 			"Do you wish to activate debugging mode?\n\n" +
 			"Turning on debugging mode will enable extra diagnostic features that are helpful when testing this application for errors.",
 			"Debugging Mode");
+	}
+	
+	public final static Process executeShellCommand(final String command) throws Exception
+	{
+		return new ProcessBuilder(command).start();
 	}
 }

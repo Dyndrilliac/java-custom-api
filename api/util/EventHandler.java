@@ -11,9 +11,12 @@
 
 package api.util;
 
-public class EventHandler implements Runnable
+import java.io.Serializable;
+
+public class EventHandler implements Runnable, Serializable
 {
-	protected Object parent = null;
+	private static final long	serialVersionUID	= 1L;
+	protected Object			parent 				= null;
 	
 	public EventHandler()						{ this(null);			}
 	public EventHandler(final Object parent)	{ this.parent = parent;	}
