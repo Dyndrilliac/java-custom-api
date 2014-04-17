@@ -272,6 +272,25 @@ public class Support
 		return true;
 	}
 	
+	// This method takes a string and determines if it can be safely parsed as a double.
+	// Return value of true indicates that the string is safe to parse, and false means that the string is not safe to parse.
+	public final static boolean isStringParsedAsDouble(final String s)
+	{
+		try
+		{
+			// parseDouble throws an exception if the string can't be parsed.
+			Double.parseDouble(s);
+		}
+		catch (final Exception exception)
+		{
+			// If we catch an exception, then we return false.
+			return false;
+		}
+		
+		// Base case; return true if the string was parsed without an exception being thrown.
+		return true;
+	}
+	
 	// This method takes a string and determines if it can be safely parsed as a float.
 	// Return value of true indicates that the string is safe to parse, and false means that the string is not safe to parse.
 	public final static boolean isStringParsedAsFloat(final String s)
@@ -308,6 +327,11 @@ public class Support
 		
 		// Base case; return true if the string was parsed without an exception being thrown.
 		return true;
+	}
+	
+	public final static double logarithm(final double n, final double base)
+	{
+		return (Math.log(n)/Math.log(base));
 	}
 	
 	public final static void openWebPageInDefaultBrowser(final String url)
