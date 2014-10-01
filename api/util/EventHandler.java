@@ -11,17 +11,34 @@
 
 package api.util;
 
+import java.awt.AWTEvent;
 import java.io.Serializable;
 
-public class EventHandler implements Runnable, Serializable
+import api.gui.ApplicationWindow;
+
+public class EventHandler<T> implements Runnable, Serializable
 {
 	private static final long	serialVersionUID	= 1L;
-	protected Object			parent 				= null;
+	private T					parent 				= null;
+	private Class<T>			parentType			= null;
 	
-	public EventHandler()						{ this(null);			}
-	public EventHandler(final Object parent)	{ this.parent = parent;	}
+	@SuppressWarnings("unchecked")
+	public EventHandler(final T parent)
+	{
+		this.setParent(parent);
+		this.setParentType((Class<T>)parent.getClass());
+	}
+
+	public final T			getParent()									{ return this.parent; }
+	public final Class<T>	getParentType()								{ return this.parentType; }
 	
 	@Override
-	public void run()							{}
-	public void run(final Object... arguments)	{}
+	public void				run()										{}
+	public void 			run(final ApplicationWindow	window)			{}
+	public void 			run(final AWTEvent			event)			{}
+	public void 			run(final Object			argument)		{}
+	public void 			run(final Object...			arguments)		{}
+	
+	protected final void 	setParent(final T parent)					{ this.parent = parent; }
+	protected final void 	setParentType(final Class<T> parentType)	{ this.parentType = parentType; }
 }

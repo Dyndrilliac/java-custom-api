@@ -14,34 +14,52 @@ import java.applet.AudioClip;
 import java.awt.AWTEvent;
 import java.awt.Component;
 import java.awt.Desktop;
+import java.awt.Font;
+import java.awt.Image;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
 public class Support
 {
-	public final static void clearConsole() throws Exception
+	public final static Font DEFAULT_TEXT_FONT = new Font("Lucida Console", Font.PLAIN, 14);
+	
+	public final static void clearConsole(final Component parent)
 	{
-		final String os = System.getProperty("os.name");
-		
-		if (os.contains("Windows"))
-		{
-			Runtime.getRuntime().exec("cls");
-		}
-		else
-		{
-			Runtime.getRuntime().exec("clear");
-		}
+	    try
+	    {
+	        final String os = System.getProperty("os.name");
+
+	        if (os.contains("Windows"))
+	        {
+	            Runtime.getRuntime().exec("cls");
+	        }
+	        else
+	        {
+	            Runtime.getRuntime().exec("clear");
+	        }
+	    }
+	    catch (final Exception e)
+	    {
+	        Support.displayException(parent, e, false);
+	    }
 	}
 	
 	// This method displays special debugging messages to be used for diagnostic purposes.
 	public final static void displayDebugMessage(final Component parent, final Object object)
 	{
+		if (parent == null)
+		{
+			Support.normalizeUIX(parent);
+		}
+		
 		String message = "";
 		
 		if (object == null)
@@ -66,6 +84,10 @@ public class Support
 	
 	public final static void displayException(final Component parent, final Exception exception, final boolean isFatal)
 	{
+		if (parent == null)
+		{
+			Support.normalizeUIX(parent);
+		}
 		/*
 			Display error message along with some useful debugging information.
 			Source file is where the error chain ended, which could be null in the case of a function in the Java API.
@@ -104,6 +126,11 @@ public class Support
 	
 	public final static boolean getChoiceInput(final Component parent, final String message, final String title)
 	{
+		if (parent == null)
+		{
+			Support.normalizeUIX(parent);
+		}
+		
 		return ((JOptionPane.showConfirmDialog(parent, message, title, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION));
 	}
 	
@@ -121,13 +148,36 @@ public class Support
 		return dateFormatter.format(new Date());
 	}
 	
+	public final static double getDoubleInputString(final Component parent, final String message, final String title)
+	{
+		if (parent == null)
+		{
+			Support.normalizeUIX(parent);
+		}
+		
+		String s = null;
+		
+		do
+		{
+			s = Support.getInputString(parent, message, title);
+		}
+		while (Support.isStringParsedAsDouble(s) != true);
+		
+		return Double.parseDouble(s);
+	}
+	
 	// This method prompts the user to either open or save a file using a generic dialog box and returns the path to the selected file.
 	public final static String getFilePath(final Component parent, final boolean isOpen, final boolean isDebugging)
 	{
-		JFileChooser fileDialog = new JFileChooser();
-		String filePath = null;
-		boolean isDone = false;
-		int choice = 0;
+		if (parent == null)
+		{
+			Support.normalizeUIX(parent);
+		}
+		
+		JFileChooser	fileDialog	= new JFileChooser();
+		String			filePath	= null;
+		boolean			isDone		= false;
+		int				choice		= 0;
 		
 		do // Loop while 'isDone' equals false, post-test.
 		{
@@ -146,26 +196,26 @@ public class Support
 					
 					try
 					{
-						filePath = fileDialog.getSelectedFile().getCanonicalPath();
-						isDone = true;
+						filePath	= fileDialog.getSelectedFile().getCanonicalPath();
+						isDone 		= true;
 					}
 					catch (final Exception exception)
 					{
-						filePath = null;
-						isDone = false;
+						filePath	= null;
+						isDone		= false;
 					}
 					break;
 				
 				case JFileChooser.CANCEL_OPTION:
 					
-					filePath = null;
-					isDone = true;
+					filePath	= null;
+					isDone		= true;
 					break;
 				
 				default:
 					
-					filePath = null;
-					isDone = false;
+					filePath	= null;
+					isDone		= false;
 					break;
 			}
 		}
@@ -179,8 +229,36 @@ public class Support
 		return filePath;
 	}
 	
+	public final static Image getImageByResourceName(final Component parent, final String resourceName)
+	{
+		if (parent == null)
+		{
+			Support.normalizeUIX(parent);
+		}
+		
+		InputStream	input	= Support.getResourceByName(resourceName);
+		Image		image	= null;
+		
+		try
+		{
+			image = ImageIO.read(input);
+		}
+		catch (final Exception exception)
+		{
+			image = null;
+			Support.displayException(parent, exception, false);
+		}
+		
+		return image;
+	}
+	
 	public final static String getInputString(final Component parent, final String message, final String title)
 	{
+		if (parent == null)
+		{
+			Support.normalizeUIX(parent);
+		}
+		
 		String s = null;
 		
 		do
@@ -194,6 +272,11 @@ public class Support
 	
 	public final static int getIntegerInputString(final Component parent, final String message, final String title)
 	{
+		if (parent == null)
+		{
+			Support.normalizeUIX(parent);
+		}
+		
 		String s = null;
 		
 		do
@@ -207,8 +290,8 @@ public class Support
 	
 	public final static InputStream getResourceByName(final String resourceName)
 	{
-		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		InputStream input = classLoader.getResourceAsStream(resourceName);
+		ClassLoader	classLoader	= Thread.currentThread().getContextClassLoader();
+		InputStream	input		= classLoader.getResourceAsStream(resourceName);
 		return input;
 	}
 	
@@ -334,7 +417,19 @@ public class Support
 		return (Math.log(n)/Math.log(base));
 	}
 	
-	public final static void openWebPageInDefaultBrowser(final String url)
+	public final static void normalizeUIX(final Component parent)
+	{
+		try
+		{
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		}
+		catch (final Exception exception)
+		{
+			Support.displayException(parent, exception, false);
+		}
+	}
+	
+	public final static void openWebPageInDefaultBrowser(final Component parent, final String url)
 	{
 		if (Desktop.isDesktopSupported())
 		{
@@ -344,12 +439,12 @@ public class Support
 			}
 			catch (final Exception exception)
 			{
-				Support.displayException(null, exception, false);
+				Support.displayException(parent, exception, false);
 			}
 		}
 	}
 	
-	public final static void playAudioClipFromURL(final String url)
+	public final static void playAudioClipFromURL(final Component parent, final String url)
 	{
 		try
 		{
@@ -358,7 +453,7 @@ public class Support
 		}
 		catch (final Exception exception)
 		{
-			Support.displayException(null, exception, false);
+			Support.displayException(parent, exception, false);
 		}
 	}
 	
@@ -368,6 +463,11 @@ public class Support
 	*/
 	public final static boolean promptDebugMode(final Component parent)
 	{
+		if (parent == null)
+		{
+			Support.normalizeUIX(parent);
+		}
+		
 		return getChoiceInput(parent,
 			"Do you wish to activate debugging mode?\n\n" +
 			"Turning on debugging mode will enable extra diagnostic features that are helpful when testing this application for errors.",

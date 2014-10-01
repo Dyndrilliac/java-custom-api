@@ -14,7 +14,6 @@ import api.util.Support;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Font;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -28,7 +27,7 @@ import javax.swing.text.StyledDocument;
 
 public class RichTextPane extends JTextPane
 {
-	private final static long	serialVersionUID	= 1L;
+	private final static long serialVersionUID = 1L;
 	
 	public static SimpleAttributeSet getAttributeSet(final Color fgc, final Color bgc, final boolean isBolded, final boolean isItalicized, final boolean isUnderlined)
 	{
@@ -51,12 +50,13 @@ public class RichTextPane extends JTextPane
 	private Component	parent		= null;
 	private boolean		isDebugging	= false;
 	
-	public RichTextPane(final Component parent, final boolean isReadOnly, final boolean isDebugging, final Font defaultFont)
+	public RichTextPane(final Component parent, final boolean isReadOnly, final boolean isDebugging)
 	{
 		this.setFocusable(!isReadOnly);
 		this.setEditable(!isReadOnly);
-		this.setFont(defaultFont);
-		this.isDebugging = isDebugging;
+		this.setFont(Support.DEFAULT_TEXT_FONT);
+		this.setBackground(Color.WHITE);
+		this.setDebugging(isDebugging);
 		this.parent = parent;
 		this.clear();
 	}
@@ -101,6 +101,11 @@ public class RichTextPane extends JTextPane
 	public final void clear()
 	{
 		this.setDocument(new DefaultStyledDocument());
+	}
+	
+	public final boolean isDebugging()
+	{
+		return this.isDebugging;
 	}
 	
 	public final void openOrSaveFile(final boolean isOpen)
@@ -154,5 +159,10 @@ public class RichTextPane extends JTextPane
 				}
 			}
 		}
+	}
+	
+	protected final void setDebugging(boolean isDebugging)
+	{
+		this.isDebugging = isDebugging;
 	}
 }
