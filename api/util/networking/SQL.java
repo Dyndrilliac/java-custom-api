@@ -100,7 +100,7 @@ public final class SQL
 							ResultSetMetaData meta = results.getMetaData();
 							int cols = meta.getColumnCount();
 							
-							for (int i = 0; i < cols; i++)
+							for (int i = 1; i <= cols; i++)
 							{
 								String name = meta.getColumnLabel(i);
 								System.out.print(name + "\t");
@@ -110,7 +110,7 @@ public final class SQL
 							
 							while (results.next())
 							{
-								for (int i = 0; i < cols; i++)
+								for (int i = 1; i <= cols; i++)
 								{
 									String value = results.getString(i);
 									System.out.print(value + "\t");
