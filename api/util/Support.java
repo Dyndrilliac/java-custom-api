@@ -4,7 +4,7 @@
 	Date:   1/21/2012
 	
 	This class is merely a collection of useful static methods that support code recycling. Specifically, this
-	class offers methods and classes which provides a uniform support structure for all of my personal projects.
+	class offers methods and classes which provide a uniform support structure for all of my personal projects.
 */
 
 package api.util;
@@ -27,7 +27,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
-public class Support
+public final class Support
 {
 	public final static Font DEFAULT_TEXT_FONT = new Font("Lucida Console", Font.PLAIN, 14);
 	
@@ -122,6 +122,11 @@ public class Support
 		{
 			System.exit(-1);
 		}
+	}
+	
+	public final static Process executeShellCommand(final String command) throws Exception
+	{
+		return new ProcessBuilder(command).start();
 	}
 	
 	public final static boolean getChoiceInput(final Component parent, final String message, final String title)
@@ -291,49 +296,7 @@ public class Support
 	public final static InputStream getResourceByName(final String resourceName)
 	{
 		ClassLoader	classLoader	= Thread.currentThread().getContextClassLoader();
-		InputStream	input		= classLoader.getResourceAsStream(resourceName);
-		return input;
-	}
-	
-	public final static boolean isPrime(final long n)
-	{
-		// Every prime number is an integer greater than one. If 'n' is less than or equal to one, mark it as composite (not prime).
-		if (n > 1)
-		{	// Check to make sure 'n' is not two or three. If it is either, than we can go ahead and mark it as prime.
-			if ((n != 2) && (n != 3))
-			{	// Since two and three have been handled, we want to know if 'n' is evenly divisible by two or three and mark it as composite.
-				if (((n % 2) != 0) || ((n % 3) != 0))
-				{
-					// Every prime number can be represented by the form 6k+1 or 6k-1. If 'n' cannot be represented this way,
-					// then we mark it as composite.
-					if ((((n + 1) % 6) == 0) || (((n - 1) % 6) == 0))
-					{
-						// If a number can be factored into two numbers, at least one of them should be less than or equal to its square root.
-						long limit = (long)Math.ceil(Math.sqrt(n));
-						// Since we have eliminated all primes less than five, and two is the only even prime,
-						// we only need to check odd numbers from here on out.
-						for (long i = 5; i <= limit; i += 2)
-						{
-							// Every prime number is only evenly divisible by itself and one.
-							// 'i' will never equal 'n' and 'i' will never equal one.
-							// Thus, if 'n' is evenly divisible by 'i' then it cannot be prime.
-							if ((n % i) == 0)
-							{
-								return false;
-							}
-						}
-						
-						return true;
-					}
-				}
-			}
-			else
-			{
-				return true;
-			}
-		}
-		
-		return false;
+		return classLoader.getResourceAsStream(resourceName);
 	}
 	
 	// This method takes a string and determines if it can be safely parsed as a boolean.
@@ -412,11 +375,6 @@ public class Support
 		return true;
 	}
 	
-	public final static double logarithm(final double n, final double base)
-	{
-		return (Math.log(n)/Math.log(base));
-	}
-	
 	public final static void normalizeUIX(final Component parent)
 	{
 		try
@@ -472,10 +430,5 @@ public class Support
 			"Do you wish to activate debugging mode?\n\n" +
 			"Turning on debugging mode will enable extra diagnostic features that are helpful when testing this application for errors.",
 			"Debugging Mode");
-	}
-	
-	public final static Process executeShellCommand(final String command) throws Exception
-	{
-		return new ProcessBuilder(command).start();
 	}
 }

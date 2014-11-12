@@ -17,12 +17,15 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Sockets
+public final class Sockets
 {
 	/*
 		This object encapsulates part of the necessary networking functionality for a simple socket-based TCP/IP server application.
@@ -33,7 +36,6 @@ public class Sockets
 	*/
 	public static abstract class SimpleChildServerThread extends Thread
 	{
-		// Built-in Variables & Objects
 		private boolean				isConnected	= false;
 		private BufferedReader		input		= null;
 		private BufferedWriter		output		= null;
@@ -42,8 +44,7 @@ public class Sockets
 		private String				userID		= null;
 		private ApplicationWindow	window		= null;
 		
-		// Creates a new instance of a SimpleChildServerThread object.
-		public SimpleChildServerThread(final SimpleServerThread parent, final Socket socket, final ApplicationWindow window)
+		public SimpleChildServerThread(final ApplicationWindow window, final SimpleServerThread parent, final Socket socket)
 		{
 			super("SimpleChildServerThread");
 			this.setParent(parent);
@@ -52,7 +53,6 @@ public class Sockets
 			this.open();
 		}
 		
-		// Closes the connection and frees up I/O resources.
 		public void close()
 		{
 			try
@@ -61,7 +61,7 @@ public class Sockets
 				{
 					this.getOutput().close();
 				}
-				
+
 				if (this.getInput() != null)
 				{
 					this.getInput().close();
@@ -90,7 +90,7 @@ public class Sockets
 		{
 			return this.input;
 		}
-		
+
 		public final BufferedWriter getOutput()
 		{
 			return this.output;
@@ -106,7 +106,6 @@ public class Sockets
 			return this.socket;
 		}
 		
-		// Returns the identifier for the user being handled by this server thread, which is a combination of the user's IP address and local TCP port.
 		public final String getUserID()
 		{
 			return this.userID;
@@ -117,13 +116,11 @@ public class Sockets
 			return this.window;
 		}
 		
-		// Returns whether or not a connection is open.
 		public final boolean isConnected()
 		{
 			return this.isConnected;
 		}
 		
-		// Opens the connection and allocates needed I/O resources.
 		public void open()
 		{
 			try
@@ -140,11 +137,32 @@ public class Sockets
 			}
 		}
 		
-		// Empty stub. This method is defined by a sub-class.
+		public final String readFromSocket() throws Exception
+		{
+			try
+			{
+				StringBuilder sb = new StringBuilder();
+				String str;
+				
+				while ((str = this.getInput().readLine()) != null)
+				{
+					sb.append(str + "\n");
+				}
+				
+				this.getInput().close();
+				return sb.toString();
+			}
+			catch (final Exception e) 
+			{
+				Support.displayException(this.getWindow(), e, false);
+			}
+			
+			return "";
+		}
+		
 		@Override
 		public abstract void run();
 		
-		// Sets whether or not a connection is open.
 		protected final void setConnected(final boolean connected)
 		{
 			this.isConnected = connected;
@@ -154,7 +172,7 @@ public class Sockets
 		{
 			this.input = input;
 		}
-		
+
 		protected final void setOutput(final BufferedWriter output)
 		{
 			this.output = output;
@@ -179,6 +197,19 @@ public class Sockets
 		{
 			this.window = window;
 		}
+		
+		public final void writeToSocket(final String s) throws Exception
+		{
+			try
+			{
+				this.getOutput().write(s);
+				this.getOutput().flush();
+			}
+			catch (final Exception e) 
+			{
+				Support.displayException(this.getWindow(), e, false);
+			}
+		}
 	}
 	
 	/*
@@ -186,7 +217,6 @@ public class Sockets
 	*/
 	public static abstract class SimpleClientThread extends Thread
 	{
-		// Built-in Variables & Objects
 		private boolean				isConnected	= false;
 		private BufferedReader		input		= null;
 		private BufferedWriter		output		= null;
@@ -195,8 +225,7 @@ public class Sockets
 		private Socket				socket		= null;
 		private ApplicationWindow	window		= null;
 		
-		// Creates a new instance of a SimpleClientThread object.
-		public SimpleClientThread(final String remoteHost, final int remotePort, final ApplicationWindow window)
+		public SimpleClientThread(final ApplicationWindow window, final String remoteHost, final int remotePort)
 		{
 			super("SimpleClientThread");
 			this.setRemoteHost(remoteHost);
@@ -205,7 +234,6 @@ public class Sockets
 			this.open();
 		}
 		
-		// Closes the connection and frees up I/O resources.
 		public void close()
 		{
 			try
@@ -214,7 +242,7 @@ public class Sockets
 				{
 					this.getOutput().close();
 				}
-				
+
 				if (this.getInput() != null)
 				{
 					this.getInput().close();
@@ -242,19 +270,17 @@ public class Sockets
 		{
 			return this.input;
 		}
-		
+
 		public final BufferedWriter getOutput()
 		{
 			return this.output;
 		}
 		
-		// Returns the remote host.
 		public final String getRemoteHost()
 		{
 			return this.remoteHost;
 		}
 		
-		// Returns the remote TCP port.
 		public final int getRemotePort()
 		{
 			return this.remotePort;
@@ -270,18 +296,16 @@ public class Sockets
 			return this.window;
 		}
 		
-		// Returns whether or not a connection is open.
 		public final boolean isConnected()
 		{
 			return this.isConnected;
 		}
 		
-		// Opens the connection and allocates needed I/O resources.
 		public void open()
 		{
 			try
 			{
-				this.setSocket(new Socket(this.getRemoteHost(), this.getRemotePort()));
+				this.setSocket(Sockets.connectSocketWithTimeout(this.getRemoteHost(), this.getRemotePort(), 10));
 				this.setInput(new BufferedReader(new InputStreamReader(this.getSocket().getInputStream())));
 				this.setOutput(new BufferedWriter(new OutputStreamWriter(this.getSocket().getOutputStream())));
 				this.setConnected(true);
@@ -293,11 +317,32 @@ public class Sockets
 			}
 		}
 		
-		// Empty stub. This method is defined by a sub-class.
+		public final String readFromSocket() throws Exception
+		{
+			try
+			{
+				StringBuilder sb = new StringBuilder();
+				String str;
+				
+				while ((str = this.getInput().readLine()) != null)
+				{
+					sb.append(str + "\n");
+				}
+				
+				this.getInput().close();
+				return sb.toString();
+			}
+			catch (final Exception e) 
+			{
+				Support.displayException(this.getWindow(), e, false);
+			}
+			
+			return "";
+		}
+		
 		@Override
 		public abstract void run();
 		
-		// Sets whether or not a connection is open.
 		protected final void setConnected(final boolean connected)
 		{
 			this.isConnected = connected;
@@ -307,19 +352,17 @@ public class Sockets
 		{
 			this.input = input;
 		}
-		
+
 		protected final void setOutput(final BufferedWriter output)
 		{
 			this.output = output;
 		}
 		
-		// Sets the remote host.
 		protected final void setRemoteHost(final String remoteHost)
 		{
 			this.remoteHost = remoteHost;
 		}
 		
-		// Sets the remote TCP port.
 		protected final void setRemotePort(final int remotePort)
 		{
 			this.remotePort = remotePort;
@@ -334,6 +377,19 @@ public class Sockets
 		{
 			this.window = window;
 		}
+		
+		public final void writeToSocket(final String s) throws Exception
+		{
+			try
+			{
+				this.getOutput().write(s);
+				this.getOutput().flush();
+			}
+			catch (final Exception e) 
+			{
+				Support.displayException(this.getWindow(), e, false);
+			}
+		}
 	}
 	
 	/*
@@ -345,15 +401,13 @@ public class Sockets
 	*/
 	public static abstract class SimpleServerThread extends Thread
 	{
-		// Built-in Variables & Objects
 		private List<SimpleChildServerThread>	clientList		= null;
-		private boolean							listening		= false;
+		private boolean							isListening		= false;
 		private int								listeningPort	= 0;
 		private ServerSocket					listeningSocket	= null;
 		private ApplicationWindow				window			= null;
 		
-		// Creates a new instance of a SimpleServerThread object.
-		public SimpleServerThread(final int listeningPort, final ApplicationWindow window)
+		public SimpleServerThread(final ApplicationWindow window, final int listeningPort)
 		{
 			super("SimpleServerThread");
 			this.setClientList(new LinkedList<SimpleChildServerThread>());
@@ -362,7 +416,6 @@ public class Sockets
 			this.open();
 		}
 		
-		// Closes the socket and stops the listening process.
 		public void close()
 		{
 			try
@@ -383,13 +436,11 @@ public class Sockets
 			}
 		}
 		
-		// Returns the list of clients currently being handled by this server.
 		public final List<SimpleChildServerThread> getClientList()
 		{
 			return this.clientList;
 		}
 		
-		// Returns the TCP port which the server is listening on for new connections.
 		public final int getListeningPort()
 		{
 			return this.listeningPort;
@@ -405,13 +456,11 @@ public class Sockets
 			return this.window;
 		}
 		
-		// Returns whether or not the server is listening for new connections.
 		public final boolean isListening()
 		{
-			return this.listening;
+			return this.isListening;
 		}
 		
-		// Opens the socket and begins the listening process.
 		public void open()
 		{
 			try
@@ -426,7 +475,6 @@ public class Sockets
 			}
 		}
 		
-		// Empty stub. This method is defined by a sub-class.
 		@Override
 		public abstract void run();
 		
@@ -435,13 +483,11 @@ public class Sockets
 			this.clientList = clientList;
 		}
 		
-		// Sets whether or not the server is listening for new connections.
 		protected final void setListening(final boolean listening)
 		{
-			this.listening = listening;
+			this.isListening = listening;
 		}
 		
-		// Sets the TCP port which the server is listening on for new connections.
 		protected final void setListeningPort(final int listeningPort)
 		{
 			this.listeningPort = listeningPort;
@@ -456,5 +502,16 @@ public class Sockets
 		{
 			this.window = window;
 		}
+	}
+	
+	public final static Socket connectSocketWithTimeout(final String remoteHost, final int remotePort, final int seconds) throws Exception
+	{
+		Socket socket = new Socket();
+		
+		InetAddress		internetAddress	= InetAddress.getByName(remoteHost);
+		SocketAddress	socketAddress	= new InetSocketAddress(internetAddress, remotePort);
+		
+		socket.connect(socketAddress, (seconds*1000));
+		return socket;
 	}
 }

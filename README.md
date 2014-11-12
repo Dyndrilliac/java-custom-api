@@ -19,9 +19,11 @@ Object Classes:
 Static classes:
 
 * Games: contains utility methods useful for games, animated applications, and applications accompanying games.
-* Support: contains utility methods for validating data, displaying GUI components, identify prime numbers, and more.
-* Sockets: contains utility classes/interfaces for providing simple socket-based TCP network communication.
-* RMI: contains utility classes/interfaces for providing simple RMI-based TCP network communication.
+* Mathematics: contains utility methods for performing mathematical tasks such as identifying whether an integer is prime and more.
+* Support: contains utility methods for validating data, simple I/O, displaying miscellaneous GUI components, executing shell commands, and more.
+* Sockets: contains utility classes/interfaces and methods for providing simple socket-based TCP network communication.
+* SQL: contains utility classes/interfaces and methods for providing simple Oracle SQL execution using JDBC.
+* RMI: contains utility classes/interfaces and methods for providing simple RMI-based TCP network communication.
 
 *******************************************
 Using the Custom Java API

@@ -9,7 +9,7 @@
 
 package api.gui;
 
-import api.util.Games;
+import api.util.Mathematics;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -132,7 +132,7 @@ public class HealthGrid extends JPanel
 		
 		public void randomize()
 		{
-			final int STATE = Games.getRandomInteger(1, 2, true);
+			final int STATE = Mathematics.getRandomInteger(1, 2, true);
 			
 			switch (STATE)
 			{
@@ -384,8 +384,8 @@ public class HealthGrid extends JPanel
 		
 		do
 		{
-			x = Games.getRandomInteger(0, this.getNumberOfColumns(), false);
-			y = Games.getRandomInteger(0, this.getNumberOfRows(), false);
+			x = Mathematics.getRandomInteger(0, this.getNumberOfColumns(), false);
+			y = Mathematics.getRandomInteger(0, this.getNumberOfRows(), false);
 			z++;
 		}
 		while ((this.getGridOfCells()[x][y].getContent().getState() != State.ALIVE) && (z < MAX_Z));

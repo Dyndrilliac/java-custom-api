@@ -19,12 +19,11 @@ import java.awt.geom.Point2D;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
-import java.util.Random;
 import java.util.Scanner;
 
 import javax.swing.JPanel;
 
-public class Games
+public final class Games
 {
 	/*
 		This class uses the A* search algorithm to find the shortest path from the start point to the goal point
@@ -583,37 +582,6 @@ public class Games
 		}
 	}
 	
-	// Pretty self-explanatory. Returns a random integer between 'min' and 'max'.
-	// The user tells the method whether the desired maximum is inclusive or exclusive.
-	// Exclusive range in interval notation: [min, max)
-	// Inclusive range in interval notation: [min, max]
-	public final static int getRandomInteger(final int min, final int max, final boolean isMaxInclusive)
-	{
-		Random randomGenerator = new Random(System.nanoTime());
-		
-		if (isMaxInclusive)
-		{
-			return (randomGenerator.nextInt((max - min) + 1) + min);
-		}
-		else
-		{
-			return (randomGenerator.nextInt(max - min) + min);
-		}
-	}
-	
-	// Pretty self-explanatory. Takes an array of integers, and returns the sum.
-	public final static int getSumFromIntegerArray(final int[] arrayOfIntegers)
-	{
-		int sum = 0;
-		
-		for (int arrayOfInteger: arrayOfIntegers)
-		{
-			sum += arrayOfInteger;
-		}
-		
-		return sum;
-	}
-	
 	/*
 		This method is useful in games like Dungeons and Dragons. The user provides the number of dice and the number
 		of sides each die has. The resulting array contains the result of each die separately and the final element in
@@ -625,10 +593,10 @@ public class Games
 		
 		for (int i = 0; i < numberOfDice; i++)
 		{
-			resultsArray[i] = Games.getRandomInteger(1, numberOfSides, true);
+			resultsArray[i] = Mathematics.getRandomInteger(1, numberOfSides, true);
 		}
 		
-		resultsArray[numberOfDice] = Games.getSumFromIntegerArray(resultsArray);
+		resultsArray[numberOfDice] = Mathematics.getSumFromIntegerArray(resultsArray);
 		
 		return resultsArray;
 	}

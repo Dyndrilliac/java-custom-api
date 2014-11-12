@@ -10,7 +10,7 @@
 
 package api.gui;
 
-import api.util.Games;
+import api.util.Mathematics;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -174,9 +174,9 @@ public class Clock extends JPanel
 	
 	public final void setRandomTime()
 	{
-		this.setHour(Games.getRandomInteger(0, 23, true));
-		this.setMinute(Games.getRandomInteger(0, 59, true));
-		this.setSecond(Games.getRandomInteger(0, 59, true));
+		this.setHour(Mathematics.getRandomInteger(0, 23, true));
+		this.setMinute(Mathematics.getRandomInteger(0, 59, true));
+		this.setSecond(Mathematics.getRandomInteger(0, 59, true));
 	}
 	
 	public final void setSecond(final int second)
