@@ -32,6 +32,7 @@ public final class SQL
 		public Script(final Connection connection, final boolean isDebugging)
 		{
 			this.setConnection(connection);
+			this.setDebugging(isDebugging);
 		}
 		
 		public Script(final Connection connection, final boolean isDebugging, final Reader reader) throws IOException, SQLException
@@ -68,7 +69,11 @@ public final class SQL
 						query = new StringBuffer();
 					}
 					
-					//String trimmedLine = line.trim();
+					/*
+					*	String trimmedLine = line.trim();
+					*	Leads to [http://stackoverflow.com/questions/3499483/error-unterminated-quoted-string-at-or-near]
+					*/
+					
 					String trimmedLine = line.trim().replaceAll(";$", Matcher.quoteReplacement("; \\"));
 					
 					if (trimmedLine.startsWith("--"))
@@ -102,8 +107,8 @@ public final class SQL
 							
 							for (int i = 1; i <= cols; i++)
 							{
-								String name = meta.getColumnLabel(i);
-								System.out.print(name + "\t");
+								String colName = meta.getColumnLabel(i);
+								System.out.print(colName + "\t");
 							}
 							
 							System.out.println("");
@@ -112,8 +117,8 @@ public final class SQL
 							{
 								for (int i = 1; i <= cols; i++)
 								{
-									String value = results.getString(i);
-									System.out.print(value + "\t");
+									String colValue = results.getString(i);
+									System.out.print(colValue + "\t");
 								}
 								
 								System.out.println("");
@@ -196,7 +201,8 @@ public final class SQL
 		Connection connection = null;
 		
 		/*
-		*	NOTE: You must include the Oracle JDBC driver JAR on the build path in order to get the following code to work!!!  
+		*	NOTE: You must include the Oracle JDBC driver JAR on the build path in order to get the following code to work!!!
+		*	http://www.oracle.com/technetwork/database/features/jdbc/index-091264.html
 		*/
 		
 		DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
