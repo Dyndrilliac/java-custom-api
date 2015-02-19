@@ -1,15 +1,15 @@
 /*
-	Title:  Mathematics
-	Author: Matthew Boyette
-	Date:   11/05/2014
-	
-	This class is merely a collection of useful static methods that support code recycling. Specifically, this
-	class offers methods and classes which provide a means to perform mathematic operations.
-*/
+ * Title: Mathematics
+ * Author: Matthew Boyette
+ * Date: 11/05/2014
+ *
+ * This class is merely a collection of useful static methods that support code recycling. Specifically, this
+ * class offers methods and classes which provide a means to perform mathematic operations.
+ */
 
 package api.util;
 
-import java.util.Random;
+import api.util.stdlib.StdRandom;
 
 public final class Mathematics
 {
@@ -19,31 +19,29 @@ public final class Mathematics
 	// Inclusive range in interval notation: [min, max]
 	public final static int getRandomInteger(final int min, final int max, final boolean isMaxInclusive)
 	{
-		Random randomGenerator = new Random(System.nanoTime());
-		
+		int fMin = min, fMax = max;
+
 		if (isMaxInclusive)
 		{
-			return (randomGenerator.nextInt((max - min) + 1) + min);
+			fMax++;
 		}
-		else
-		{
-			return (randomGenerator.nextInt(max - min) + min);
-		}
+
+		return StdRandom.uniform(fMin, fMax);
 	}
-	
+
 	// Pretty self-explanatory. Takes an array of integers, and returns the sum.
 	public final static int getSumFromIntegerArray(final int[] arrayOfIntegers)
 	{
 		int sum = 0;
-		
+
 		for (int arrayOfInteger: arrayOfIntegers)
 		{
 			sum += arrayOfInteger;
 		}
-		
+
 		return sum;
 	}
-	
+
 	public final static boolean isPrime(final long n)
 	{
 		// Every prime number is an integer greater than one. If 'n' is less than or equal to one, mark it as composite (not prime).
@@ -71,7 +69,7 @@ public final class Mathematics
 								return false;
 							}
 						}
-						
+
 						return true;
 					}
 				}
@@ -81,13 +79,53 @@ public final class Mathematics
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	// Logarithm of arbitrary base.
 	public final static double logarithm(final double n, final double base)
 	{
-		return (Math.log(n)/Math.log(base));
+		return (Math.log(n) / Math.log(base));
+	}
+
+	// This method returns the first prime number greater than a given integer.
+	public final static long makePrimeGreater(final long n)
+	{
+		long retVal = n;
+
+		while (Mathematics.isPrime(retVal) == false)
+		{
+			if ((retVal % 2) == 0)
+			{
+				retVal++;
+			}
+			else
+			{
+				retVal += 2;
+			}
+		}
+
+		return retVal;
+	}
+
+	// This method returns the first prime number less than a given integer.
+	public final static long makePrimeLesser(final long n)
+	{
+		long retVal = n;
+
+		while (Mathematics.isPrime(retVal) == false)
+		{
+			if ((retVal % 2) == 0)
+			{
+				retVal--;
+			}
+			else
+			{
+				retVal -= 2;
+			}
+		}
+
+		return retVal;
 	}
 }
