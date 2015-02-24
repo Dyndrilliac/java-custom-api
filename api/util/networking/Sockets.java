@@ -25,7 +25,7 @@ import java.net.SocketAddress;
 import java.util.LinkedList;
 import java.util.List;
 
-import api.gui.ApplicationWindow;
+import api.gui.swing.ApplicationWindow;
 import api.util.Support;
 
 public final class Sockets
