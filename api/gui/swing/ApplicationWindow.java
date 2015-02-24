@@ -7,7 +7,7 @@
  * it makes little sense to write the same GUI code over and over again when only small changes are needed for each application.
  */
 
-package api.gui;
+package api.gui.swing;
 
 import java.awt.Component;
 import java.awt.Dimension;

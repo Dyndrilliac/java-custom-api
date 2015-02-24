@@ -8,7 +8,7 @@
  * available in Visual Basic and C#. Thus, RichTextPane was born.
  */
 
-package api.gui;
+package api.gui.swing;
 
 import java.awt.Color;
 import java.awt.Component;

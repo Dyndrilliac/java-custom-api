@@ -14,7 +14,7 @@ package api.util;
 import java.awt.AWTEvent;
 import java.io.Serializable;
 
-import api.gui.ApplicationWindow;
+import api.gui.swing.ApplicationWindow;
 
 public class EventHandler<T> implements Runnable, Serializable
 {

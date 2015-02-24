@@ -25,6 +25,8 @@ Static classes:
 * SQL: contains utility classes/interfaces and methods for providing simple Oracle SQL execution using JDBC.
 * RMI: contains utility classes/interfaces and methods for providing simple RMI-based TCP network communication.
 
+Some generic data structures are also included, as well as a modified version of the [Standard Library for Java](http://introcs.cs.princeton.edu/java/stdlib/).
+
 *******************************************
 Using the Custom Java API
 *******************************************

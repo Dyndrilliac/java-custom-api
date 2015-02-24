@@ -8,7 +8,7 @@
  * is limited to the current time, which is why the clock does not initialize animated.
  */
 
-package api.gui;
+package api.gui.draw;
 
 import java.awt.Color;
 import java.awt.Dimension;

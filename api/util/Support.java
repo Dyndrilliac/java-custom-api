@@ -55,6 +55,25 @@ public final class Support
 		}
 	}
 
+	public static final String constructAlphabetString(final int begin, final int end)
+	{
+		boolean badInputs = ((begin < 0) || (begin > end));
+
+		if (badInputs)
+		{
+			Support.displayException(null, new Exception("Invalid alphabet string!"), true);
+		}
+
+		String alphabet = "";
+
+		for (int i = begin; i <= end; i++)
+		{
+			alphabet = (alphabet + (char)i);
+		}
+
+		return alphabet;
+	}
+
 	public final static long countLinesInTextFile(final String fileName)
 	{
 		InputStream is = null;

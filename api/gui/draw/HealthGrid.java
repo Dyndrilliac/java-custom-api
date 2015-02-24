@@ -7,7 +7,7 @@
  * through a population operating under certain fundamental rules.
  */
 
-package api.gui;
+package api.gui.draw;
 
 import java.awt.Color;
 import java.awt.Graphics;
