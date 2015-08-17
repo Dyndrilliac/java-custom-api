@@ -33,11 +33,11 @@ import java.io.IOException;
 public final class BinaryStdOut
 {
 	private static int					buffer;									// 8-bit buffer of bits to write out
-
+																					
 	private static int					N;											// number of bits remaining in buffer
-
+																					
 	private static BufferedOutputStream	out	= new BufferedOutputStream(System.out);
-
+	
 	// write out any remaining bits in buffer to standard output, padding with 0s
 	private static void clearBuffer()
 	{
@@ -60,7 +60,7 @@ public final class BinaryStdOut
 		BinaryStdOut.N = 0;
 		BinaryStdOut.buffer = 0;
 	}
-
+	
 	/**
 	 * Flush and close standard output. Once standard output is closed, you can no
 	 * longer write bits to it.
@@ -77,7 +77,7 @@ public final class BinaryStdOut
 			e.printStackTrace();
 		}
 	}
-
+	
 	/**
 	 * Flush standard output, padding 0s if number of bits written so far
 	 * is not a multiple of 8.
@@ -94,7 +94,7 @@ public final class BinaryStdOut
 			e.printStackTrace();
 		}
 	}
-
+	
 	/**
 	 * Test client.
 	 */
@@ -108,7 +108,7 @@ public final class BinaryStdOut
 		}
 		BinaryStdOut.flush();
 	}
-
+	
 	/**
 	 * Write the specified bit to standard output.
 	 *
@@ -119,7 +119,7 @@ public final class BinaryStdOut
 	{
 		BinaryStdOut.writeBit(x);
 	}
-
+	
 	/**
 	 * Write the 8-bit byte to standard output.
 	 *
@@ -130,7 +130,7 @@ public final class BinaryStdOut
 	{
 		BinaryStdOut.writeByte(x & 0xff);
 	}
-
+	
 	/**
 	 * Write the 8-bit char to standard output.
 	 *
@@ -147,7 +147,7 @@ public final class BinaryStdOut
 		}
 		BinaryStdOut.writeByte(x);
 	}
-
+	
 	/**
 	 * Write the r-bit char to standard output.
 	 *
@@ -181,7 +181,7 @@ public final class BinaryStdOut
 			BinaryStdOut.writeBit(bit);
 		}
 	}
-
+	
 	/**
 	 * Write the 64-bit double to standard output.
 	 *
@@ -192,7 +192,7 @@ public final class BinaryStdOut
 	{
 		BinaryStdOut.write(Double.doubleToRawLongBits(x));
 	}
-
+	
 	/**
 	 * Write the 32-bit float to standard output.
 	 *
@@ -203,7 +203,7 @@ public final class BinaryStdOut
 	{
 		BinaryStdOut.write(Float.floatToRawIntBits(x));
 	}
-
+	
 	/**
 	 * Write the 32-bit int to standard output.
 	 *
@@ -217,7 +217,7 @@ public final class BinaryStdOut
 		BinaryStdOut.writeByte((x >>> 8) & 0xff);
 		BinaryStdOut.writeByte((x >>> 0) & 0xff);
 	}
-
+	
 	/**
 	 * Write the r-bit int to standard output.
 	 *
@@ -251,7 +251,7 @@ public final class BinaryStdOut
 			BinaryStdOut.writeBit(bit);
 		}
 	}
-
+	
 	/**
 	 * Write the 64-bit long to standard output.
 	 *
@@ -269,7 +269,7 @@ public final class BinaryStdOut
 		BinaryStdOut.writeByte((int)((x >>> 8) & 0xff));
 		BinaryStdOut.writeByte((int)((x >>> 0) & 0xff));
 	}
-
+	
 	/**
 	 * Write the 16-bit int to standard output.
 	 *
@@ -281,7 +281,7 @@ public final class BinaryStdOut
 		BinaryStdOut.writeByte((x >>> 8) & 0xff);
 		BinaryStdOut.writeByte((x >>> 0) & 0xff);
 	}
-
+	
 	/**
 	 * Write the string of 8-bit characters to standard output.
 	 *
@@ -298,7 +298,7 @@ public final class BinaryStdOut
 			BinaryStdOut.write(s.charAt(i));
 		}
 	}
-
+	
 	/**
 	 * Write the String of r-bit characters to standard output.
 	 *
@@ -319,7 +319,7 @@ public final class BinaryStdOut
 			BinaryStdOut.write(s.charAt(i), r);
 		}
 	}
-
+	
 	/**
 	 * Write the specified bit to standard output.
 	 */
@@ -331,7 +331,7 @@ public final class BinaryStdOut
 		{
 			BinaryStdOut.buffer |= 1;
 		}
-
+		
 		// if buffer is full (8 bits), write out as a single byte
 		BinaryStdOut.N++;
 		if (BinaryStdOut.N == 8)
@@ -339,14 +339,14 @@ public final class BinaryStdOut
 			BinaryStdOut.clearBuffer();
 		}
 	}
-
+	
 	/**
 	 * Write the 8-bit byte to standard output.
 	 */
 	private static void writeByte(final int x)
 	{
 		assert (x >= 0) && (x < 256);
-
+		
 		// optimized if byte-aligned
 		if (BinaryStdOut.N == 0)
 		{
@@ -360,7 +360,7 @@ public final class BinaryStdOut
 			}
 			return;
 		}
-
+		
 		// otherwise write one bit at a time
 		for (int i = 0; i < 8; i++)
 		{
@@ -368,10 +368,10 @@ public final class BinaryStdOut
 			BinaryStdOut.writeBit(bit);
 		}
 	}
-
+	
 	// don't instantiate
 	private BinaryStdOut()
 	{
 	}
-
+	
 }

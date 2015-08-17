@@ -63,11 +63,11 @@ import java.util.Random;
  */
 public final class StdRandom
 {
-
+	
 	private static Random	random; // pseudo-random number generator
-
+									
 	private static long		seed;	// pseudo-random number generator seed
-
+									
 	// static initializer
 	static
 	{
@@ -75,7 +75,7 @@ public final class StdRandom
 		StdRandom.seed = System.nanoTime();
 		StdRandom.random = new Random(StdRandom.seed);
 	}
-
+	
 	/**
 	 * Returns a boolean, which is true with probability .5, and false otherwise.
 	 */
@@ -83,7 +83,7 @@ public final class StdRandom
 	{
 		return StdRandom.bernoulli(0.5);
 	}
-
+	
 	/**
 	 * Returns a boolean, which is true with probability p, and false otherwise.
 	 *
@@ -98,7 +98,7 @@ public final class StdRandom
 		}
 		return StdRandom.uniform() < p;
 	}
-
+	
 	/**
 	 * Returns a real number with a Cauchy distribution.
 	 */
@@ -106,7 +106,7 @@ public final class StdRandom
 	{
 		return Math.tan(Math.PI * (StdRandom.uniform() - 0.5));
 	}
-
+	
 	/**
 	 * Returns a number from a discrete distribution: i with probability a[i].
 	 * throws IllegalArgumentException if sum of array entries is not (very nearly) equal to <tt>1.0</tt> throws IllegalArgumentException unless
@@ -128,7 +128,7 @@ public final class StdRandom
 		{
 			throw new IllegalArgumentException("sum of array entries does not approximately equal 1.0: " + sum);
 		}
-
+		
 		// the for loop may not return a value when both r is (nearly) 1.0 and when the
 		// cumulative sum is less than 1.0 (as a result of floating-point roundoff error)
 		while (true)
@@ -145,7 +145,7 @@ public final class StdRandom
 			}
 		}
 	}
-
+	
 	/**
 	 * Returns a real number from an exponential distribution with rate lambda.
 	 *
@@ -160,12 +160,12 @@ public final class StdRandom
 		}
 		return -Math.log(1 - StdRandom.uniform()) / lambda;
 	}
-
+	
 	// /////////////////////////////////////////////////////////////////////////
 	// STATIC METHODS BELOW RELY ON JAVA.UTIL.RANDOM ONLY INDIRECTLY VIA
 	// THE STATIC METHODS ABOVE.
 	// /////////////////////////////////////////////////////////////////////////
-
+	
 	/**
 	 * Returns a real number with a standard Gaussian distribution.
 	 */
@@ -181,11 +181,11 @@ public final class StdRandom
 		}
 		while ((r >= 1) || (r == 0));
 		return x * Math.sqrt((-2 * Math.log(r)) / r);
-
+		
 		// Remark: y * Math.sqrt(-2 * Math.log(r) / r)
 		// is an independent random gaussian
 	}
-
+	
 	/**
 	 * Returns a real number from a gaussian distribution with given mean and stddev
 	 */
@@ -193,7 +193,7 @@ public final class StdRandom
 	{
 		return mean + (stddev * StdRandom.gaussian());
 	}
-
+	
 	/**
 	 * Returns an integer with a geometric distribution with mean 1/p.
 	 *
@@ -209,7 +209,7 @@ public final class StdRandom
 		// using algorithm given by Knuth
 		return (int)Math.ceil(Math.log(StdRandom.uniform()) / Math.log(1.0 - p));
 	}
-
+	
 	/**
 	 * Returns the seed of the psedurandom number generator.
 	 */
@@ -217,7 +217,7 @@ public final class StdRandom
 	{
 		return StdRandom.seed;
 	}
-
+	
 	/**
 	 * Unit test.
 	 */
@@ -229,7 +229,7 @@ public final class StdRandom
 			StdRandom.setSeed(Long.parseLong(args[1]));
 		}
 		double[] t = {.5, .3, .1, .1};
-
+		
 		StdOut.println("seed = " + StdRandom.getSeed());
 		for (int i = 0; i < N; i++)
 		{
@@ -240,7 +240,7 @@ public final class StdRandom
 			StdOut.printf("%2d ", StdRandom.discrete(t));
 			StdOut.println();
 		}
-
+		
 		String[] a = "A B C D E F G".split(" ");
 		for (String s: a)
 		{
@@ -248,7 +248,7 @@ public final class StdRandom
 		}
 		StdOut.println();
 	}
-
+	
 	/**
 	 * Returns a real number with a Pareto distribution with parameter alpha.
 	 *
@@ -263,7 +263,7 @@ public final class StdRandom
 		}
 		return Math.pow(1 - StdRandom.uniform(), -1.0 / alpha) - 1.0;
 	}
-
+	
 	/**
 	 * Return an integer with a Poisson distribution with mean lambda.
 	 *
@@ -293,7 +293,7 @@ public final class StdRandom
 		while (p >= L);
 		return k - 1;
 	}
-
+	
 	/**
 	 * Returns a real number uniformly in [0, 1).
 	 *
@@ -304,7 +304,7 @@ public final class StdRandom
 	{
 		return StdRandom.uniform();
 	}
-
+	
 	/**
 	 * Sets the seed of the psedurandom number generator.
 	 */
@@ -313,7 +313,7 @@ public final class StdRandom
 		StdRandom.seed = s;
 		StdRandom.random = new Random(StdRandom.seed);
 	}
-
+	
 	/**
 	 * Rearrange the elements of a double array in random order.
 	 */
@@ -328,7 +328,7 @@ public final class StdRandom
 			a[r] = temp;
 		}
 	}
-
+	
 	/**
 	 * Rearrange the elements of the subarray a[lo..hi] in random order.
 	 */
@@ -346,7 +346,7 @@ public final class StdRandom
 			a[r] = temp;
 		}
 	}
-
+	
 	/**
 	 * Rearrange the elements of an int array in random order.
 	 */
@@ -361,7 +361,7 @@ public final class StdRandom
 			a[r] = temp;
 		}
 	}
-
+	
 	/**
 	 * Rearrange the elements of the subarray a[lo..hi] in random order.
 	 */
@@ -379,7 +379,7 @@ public final class StdRandom
 			a[r] = temp;
 		}
 	}
-
+	
 	/**
 	 * Rearrange the elements of an array in random order.
 	 */
@@ -394,7 +394,7 @@ public final class StdRandom
 			a[r] = temp;
 		}
 	}
-
+	
 	/**
 	 * Rearrange the elements of the subarray a[lo..hi] in random order.
 	 */
@@ -412,7 +412,7 @@ public final class StdRandom
 			a[r] = temp;
 		}
 	}
-
+	
 	/**
 	 * Return real number uniformly in [0, 1).
 	 */
@@ -420,7 +420,7 @@ public final class StdRandom
 	{
 		return StdRandom.random.nextDouble();
 	}
-
+	
 	/**
 	 * Returns a real number uniformly in [a, b).
 	 *
@@ -435,7 +435,7 @@ public final class StdRandom
 		}
 		return a + (StdRandom.uniform() * (b - a));
 	}
-
+	
 	/**
 	 * Returns an integer uniformly between 0 (inclusive) and N (exclusive).
 	 *
@@ -450,7 +450,7 @@ public final class StdRandom
 		}
 		return StdRandom.random.nextInt(N);
 	}
-
+	
 	/**
 	 * Returns an integer uniformly in [a, b).
 	 *
@@ -471,7 +471,7 @@ public final class StdRandom
 		}
 		return a + StdRandom.uniform(b - a);
 	}
-
+	
 	// don't instantiate
 	private StdRandom()
 	{

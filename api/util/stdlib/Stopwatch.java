@@ -17,9 +17,9 @@ package api.util.stdlib;
 
 public class Stopwatch
 {
-
+	
 	private final long	start;
-
+	
 	/**
 	 * Create a stopwatch object.
 	 */
@@ -27,7 +27,7 @@ public class Stopwatch
 	{
 		this.start = System.currentTimeMillis();
 	}
-
+	
 	/**
 	 * Return elapsed time (in seconds) since this object was created.
 	 */
@@ -36,5 +36,5 @@ public class Stopwatch
 		long now = System.currentTimeMillis();
 		return (now - this.start) / 1000.0;
 	}
-
+	
 }

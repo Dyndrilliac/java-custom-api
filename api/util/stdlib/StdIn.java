@@ -44,42 +44,42 @@ import java.util.regex.Pattern;
  */
 public final class StdIn
 {
-
+	
 	/*** begin: section (1 of 2) of code duplicated from In to StdIn */
-
+	
 	// assume Unicode UTF-8 encoding
 	private static final String		CHARSET_NAME		= "UTF-8";
-
+	
 	// makes whitespace characters significant
 	private static final Pattern	EMPTY_PATTERN		= Pattern.compile("");
-
+	
 	// used to read the entire input
 	private static final Pattern	EVERYTHING_PATTERN	= Pattern.compile("\\A");
-
+	
 	// assume language = English, country = US for consistency with System.out.
 	private static final Locale		LOCALE				= Locale.US;
-
+	
 	private static Scanner			scanner;
-
+	
 	// the default token separator; we maintain the invariant that this value
 	// is held by the scanner's delimiter between calls
 	private static final Pattern	WHITESPACE_PATTERN	= Pattern.compile("\\p{javaWhitespace}+");
-
+	
 	/*** end: section (2 of 2) of code duplicated from In to StdIn */
-
+	
 	// do this once when StdIn is initialized
 	static
 	{
 		StdIn.resync();
 	}
-
+	
 	/*** end: section (1 of 2) of code duplicated from In to StdIn */
-
+	
 	/***
 	 * begin: section (2 of 2) of code duplicated from In to StdIn,
 	 * with all methods changed from "public" to "public static"
 	 ***/
-
+	
 	/**
 	 * Is the input empty (including whitespace)? Use this to know
 	 * whether the next call to {@link #readChar()} will succeed.
@@ -95,7 +95,7 @@ public final class StdIn
 		StdIn.scanner.useDelimiter(StdIn.WHITESPACE_PATTERN);
 		return result;
 	}
-
+	
 	/**
 	 * Does the input have a next line? Use this to know whether the
 	 * next call to {@link #readLine()} will succeed.
@@ -108,7 +108,7 @@ public final class StdIn
 	{
 		return StdIn.scanner.hasNextLine();
 	}
-
+	
 	/**
 	 * Is the input empty (except possibly for whitespace)? Use this
 	 * to know whether the next call to {@link #readString()}, {@link #readDouble()}, etc will succeed.
@@ -120,35 +120,35 @@ public final class StdIn
 	{
 		return !StdIn.scanner.hasNext();
 	}
-
+	
 	/**
 	 * Interactive test of basic functionality.
 	 */
 	public static void main(final String[] args)
 	{
-
+		
 		System.out.println("Type a string: ");
 		String s = StdIn.readString();
 		System.out.println("Your string was: " + s);
 		System.out.println();
-
+		
 		System.out.println("Type an int: ");
 		int a = StdIn.readInt();
 		System.out.println("Your int was: " + a);
 		System.out.println();
-
+		
 		System.out.println("Type a boolean: ");
 		boolean b = StdIn.readBoolean();
 		System.out.println("Your boolean was: " + b);
 		System.out.println();
-
+		
 		System.out.println("Type a double: ");
 		double c = StdIn.readDouble();
 		System.out.println("Your double was: " + c);
 		System.out.println();
-
+		
 	}
-
+	
 	/**
 	 * Reads and returns the remainder of the input, as a string.
 	 *
@@ -160,13 +160,13 @@ public final class StdIn
 		{
 			return "";
 		}
-
+		
 		String result = StdIn.scanner.useDelimiter(StdIn.EVERYTHING_PATTERN).next();
 		// not that important to reset delimeter, since now scanner is empty
 		StdIn.scanner.useDelimiter(StdIn.WHITESPACE_PATTERN); // but let's do it anyway
 		return result;
 	}
-
+	
 	/**
 	 * Reads all remaining tokens from standard input, parses them as doubles, and returns
 	 * them as an array of doubles.
@@ -185,7 +185,7 @@ public final class StdIn
 		}
 		return vals;
 	}
-
+	
 	/**
 	 * Reads all remaining tokens from standard input, parses them as integers, and returns
 	 * them as an array of integers.
@@ -204,7 +204,7 @@ public final class StdIn
 		}
 		return vals;
 	}
-
+	
 	/**
 	 * Reads all remaining lines from standard input and returns them as an array of strings.
 	 *
@@ -219,7 +219,7 @@ public final class StdIn
 		}
 		return lines.toArray(new String[0]);
 	}
-
+	
 	/**
 	 * Reads all remaining tokens from standard input and returns them as an array of strings.
 	 *
@@ -234,7 +234,7 @@ public final class StdIn
 		{
 			return tokens;
 		}
-
+		
 		// don't include first token if it is leading whitespace
 		String[] decapitokens = new String[tokens.length - 1];
 		for (int i = 0; i < (tokens.length - 1); i++)
@@ -243,7 +243,7 @@ public final class StdIn
 		}
 		return decapitokens;
 	}
-
+	
 	/**
 	 * Reads the next token from standard input, parses it as a boolean,
 	 * and returns the boolean.
@@ -274,7 +274,7 @@ public final class StdIn
 		}
 		throw new InputMismatchException();
 	}
-
+	
 	/**
 	 * Reads the next token from standard input, parses it as a byte, and returns the byte.
 	 *
@@ -286,7 +286,7 @@ public final class StdIn
 	{
 		return StdIn.scanner.nextByte();
 	}
-
+	
 	/**
 	 * Reads and returns the next character.
 	 *
@@ -297,11 +297,11 @@ public final class StdIn
 		StdIn.scanner.useDelimiter(StdIn.EMPTY_PATTERN);
 		String ch = StdIn.scanner.next();
 		assert (ch.length() == 1) : "Internal (Std)In.readChar() error!"
-		+ " Please contact the authors.";
+			+ " Please contact the authors.";
 		StdIn.scanner.useDelimiter(StdIn.WHITESPACE_PATTERN);
 		return ch.charAt(0);
 	}
-
+	
 	/**
 	 * Reads the next token from standard input, parses it as a double, and returns the double.
 	 *
@@ -313,7 +313,7 @@ public final class StdIn
 	{
 		return StdIn.scanner.nextDouble();
 	}
-
+	
 	/**
 	 * Reads all remaining tokens, parses them as doubles, and returns
 	 * them as an array of doubles.
@@ -328,7 +328,7 @@ public final class StdIn
 	{
 		return StdIn.readAllDoubles();
 	}
-
+	
 	/**
 	 * Reads the next token from standard input, parses it as a float, and returns the float.
 	 *
@@ -340,7 +340,7 @@ public final class StdIn
 	{
 		return StdIn.scanner.nextFloat();
 	}
-
+	
 	/**
 	 * Reads the next token from standard input, parses it as an integer, and returns the integer.
 	 *
@@ -352,7 +352,7 @@ public final class StdIn
 	{
 		return StdIn.scanner.nextInt();
 	}
-
+	
 	/**
 	 * Reads all remaining tokens, parses them as integers, and returns
 	 * them as an array of integers.
@@ -367,7 +367,7 @@ public final class StdIn
 	{
 		return StdIn.readAllInts();
 	}
-
+	
 	/**
 	 * Reads and returns the next line, excluding the line separator if present.
 	 *
@@ -386,7 +386,7 @@ public final class StdIn
 		}
 		return line;
 	}
-
+	
 	/**
 	 * Reads the next token from standard input, parses it as a long integer, and returns the long integer.
 	 *
@@ -398,7 +398,7 @@ public final class StdIn
 	{
 		return StdIn.scanner.nextLong();
 	}
-
+	
 	/**
 	 * Reads the next token from standard input, parses it as a short integer, and returns the short integer.
 	 *
@@ -410,7 +410,7 @@ public final class StdIn
 	{
 		return StdIn.scanner.nextShort();
 	}
-
+	
 	/**
 	 * Reads the next token and returns the <tt>String</tt>.
 	 *
@@ -420,7 +420,7 @@ public final class StdIn
 	{
 		return StdIn.scanner.next();
 	}
-
+	
 	/**
 	 * Reads all remaining tokens and returns them as an array of strings.
 	 *
@@ -432,7 +432,7 @@ public final class StdIn
 	{
 		return StdIn.readAllStrings();
 	}
-
+	
 	/**
 	 * If StdIn changes, use this to reinitialize the scanner.
 	 */
@@ -440,16 +440,16 @@ public final class StdIn
 	{
 		StdIn.setScanner(new Scanner(new java.io.BufferedInputStream(System.in), StdIn.CHARSET_NAME));
 	}
-
+	
 	private static void setScanner(final Scanner scanner)
 	{
 		StdIn.scanner = scanner;
 		StdIn.scanner.useLocale(StdIn.LOCALE);
 	}
-
+	
 	// it doesn't make sense to instantiate this class
 	private StdIn()
 	{
 	}
-
+	
 }

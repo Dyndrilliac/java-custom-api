@@ -69,10 +69,10 @@ import javax.swing.WindowConstants;
 
 public final class Draw implements ActionListener, MouseListener, MouseMotionListener, KeyListener
 {
-
+	
 	// pre-defined colors
 	public static final Color	BLACK				= Color.BLACK;
-
+	
 	public static final Color	BLUE				= Color.BLUE;
 	/**
 	 * Shade of blue used in Introduction to Programming in Java.
@@ -98,32 +98,32 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 	// default canvas size is SIZE-by-SIZE
 	private static final int	DEFAULT_SIZE		= 512;
 	private static final double	DEFAULT_XMAX		= 1.0;
-
+	
 	private static final double	DEFAULT_XMIN		= 0.0;
-
+	
 	private static final double	DEFAULT_YMAX		= 1.0;
-
+	
 	private static final double	DEFAULT_YMIN		= 0.0;
 	public static final Color	GRAY				= Color.GRAY;
-
+	
 	public static final Color	GREEN				= Color.GREEN;
 	public static final Color	LIGHT_GRAY			= Color.LIGHT_GRAY;
 	public static final Color	MAGENTA				= Color.MAGENTA;
 	public static final Color	ORANGE				= Color.ORANGE;
 	public static final Color	PINK				= Color.PINK;
-
+	
 	public static final Color	RED					= Color.RED;
-
+	
 	public static final Color	WHITE				= Color.WHITE;
-
+	
 	public static final Color	YELLOW				= Color.YELLOW;
-
+	
 	/**
 	 * Test client.
 	 */
 	public static void main(final String[] args)
 	{
-
+		
 		// create one drawing window
 		Draw draw1 = new Draw("Test client 1");
 		draw1.square(.2, .8, .1);
@@ -132,7 +132,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		draw1.setPenColor(Draw.MAGENTA);
 		draw1.setPenRadius(.02);
 		draw1.arc(.8, .2, .1, 200, 45);
-
+		
 		// create another one
 		Draw draw2 = new Draw("Test client 2");
 		draw2.setCanvasSize(900, 200);
@@ -142,58 +142,58 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		double[] x = {.1, .2, .3, .2};
 		double[] y = {.2, .3, .2, .1};
 		draw2.filledPolygon(x, y);
-
+		
 		// text
 		draw2.setPenColor(Draw.BLACK);
 		draw2.text(0.2, 0.5, "bdfdfdfdlack text");
 		draw2.setPenColor(Draw.WHITE);
 		draw2.text(0.8, 0.8, "white text");
 	}
-
+	
 	// show we draw immediately or wait until next show?
 	private boolean							defer			= false;
 	// current font
 	private Font							font;
-
+	
 	// the frame for drawing to the screen
 	private JFrame							frame			= new JFrame();
-
+	
 	private int								height			= Draw.DEFAULT_SIZE;
-
+	
 	private final Object					keyLock			= new Object();
-
+	
 	private final TreeSet<Integer>			keysDown		= new TreeSet<Integer>();
-
+	
 	// keyboard state
 	private final LinkedList<Character>		keysTyped		= new LinkedList<Character>();
 	// event-based listeners
 	private final ArrayList<DrawListener>	listeners		= new ArrayList<DrawListener>();
-
+	
 	// for synchronization
 	private final Object					mouseLock		= new Object();
-
+	
 	// mouse state
 	private boolean							mousePressed	= false;
 	private double							mouseX			= 0;
-
+	
 	private double							mouseY			= 0;
-
+	
 	// name of window
 	private String							name			= "Draw";
 	private Graphics2D						offscreen, onscreen;
 	// double buffered graphics
 	private BufferedImage					offscreenImage, onscreenImage;
-
+	
 	// current pen color
 	private Color							penColor;
 	// current pen radius
 	private double							penRadius;
-
+	
 	// canvas size
 	private int								width			= Draw.DEFAULT_SIZE;
-
+	
 	private double							xmin, ymin, xmax, ymax;
-
+	
 	/**
 	 * Create an empty drawing object.
 	 */
@@ -201,7 +201,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 	{
 		this.init();
 	}
-
+	
 	/**
 	 * Create an empty drawing object with the given name.
 	 *
@@ -213,7 +213,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		this.name = name;
 		this.init();
 	}
-
+	
 	/**
 	 * This method cannot be called directly.
 	 */
@@ -228,11 +228,11 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 			this.save(chooser.getDirectory() + File.separator + chooser.getFile());
 		}
 	}
-
+	
 	/*************************************************************************
 	 * Event-based interactions.
 	 *************************************************************************/
-
+	
 	public void addListener(final DrawListener listener)
 	{
 		// ensure there is a window for listenting to events
@@ -243,7 +243,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		this.frame.addMouseMotionListener(this);
 		this.frame.setFocusable(true);
 	}
-
+	
 	/**
 	 * Draw an arc of radius r, centered on (x, y), from angle1 to angle2 (in degrees).
 	 *
@@ -285,11 +285,11 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		}
 		this.draw();
 	}
-
+	
 	/*************************************************************************
 	 * User and screen coordinate systems
 	 *************************************************************************/
-
+	
 	/**
 	 * Draw a circle of radius r, centered on (x, y).
 	 *
@@ -322,7 +322,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		}
 		this.draw();
 	}
-
+	
 	/**
 	 * Clear the screen to the default color (white).
 	 */
@@ -330,7 +330,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 	{
 		this.clear(Draw.DEFAULT_CLEAR_COLOR);
 	}
-
+	
 	/**
 	 * Clear the screen to the given color.
 	 *
@@ -344,7 +344,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		this.offscreen.setColor(this.penColor);
 		this.draw();
 	}
-
+	
 	// create the menu bar (changed to private)
 	private JMenuBar createMenuBar()
 	{
@@ -358,7 +358,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		menu.add(menuItem1);
 		return menuBar;
 	}
-
+	
 	// draw onscreen if defer is false
 	private void draw()
 	{
@@ -369,7 +369,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		this.onscreen.drawImage(this.offscreenImage, 0, 0, null);
 		this.frame.repaint();
 	}
-
+	
 	/**
 	 * Draw an ellipse with given semimajor and semiminor axes, centered on (x, y).
 	 *
@@ -408,17 +408,17 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		}
 		this.draw();
 	}
-
+	
 	private double factorX(final double w)
 	{
 		return (w * this.width) / Math.abs(this.xmax - this.xmin);
 	}
-
+	
 	private double factorY(final double h)
 	{
 		return (h * this.height) / Math.abs(this.ymax - this.ymin);
 	}
-
+	
 	/**
 	 * Draw filled circle of radius r, centered on (x, y).
 	 *
@@ -451,7 +451,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		}
 		this.draw();
 	}
-
+	
 	/**
 	 * Draw an ellipse with given semimajor and semiminor axes, centered on (x, y).
 	 *
@@ -490,7 +490,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		}
 		this.draw();
 	}
-
+	
 	/**
 	 * Draw a filled polygon with the given (x[i], y[i]) coordinates.
 	 *
@@ -512,7 +512,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		this.offscreen.fill(path);
 		this.draw();
 	}
-
+	
 	/**
 	 * Draw a filled rectangle of given half width and half height, centered on (x, y).
 	 *
@@ -551,7 +551,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		}
 		this.draw();
 	}
-
+	
 	/**
 	 * Draw a filled square of side length 2r, centered on (x, y).
 	 *
@@ -584,7 +584,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		}
 		this.draw();
 	}
-
+	
 	/**
 	 * Get the current font.
 	 */
@@ -592,18 +592,18 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 	{
 		return this.font;
 	}
-
+	
 	/*************************************************************************
 	 * Drawing images.
 	 *************************************************************************/
-
+	
 	// get an image from the given filename
 	private Image getImage(final String filename)
 	{
-
+		
 		// to read from file
 		ImageIcon icon = new ImageIcon(filename);
-
+		
 		// try to read from URL
 		if ((icon == null) || (icon.getImageLoadStatus() != MediaTracker.COMPLETE))
 		{
@@ -616,7 +616,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 			{ /* not a url */
 			}
 		}
-
+		
 		// in case file is inside a .jar
 		if ((icon == null) || (icon.getImageLoadStatus() != MediaTracker.COMPLETE))
 		{
@@ -627,10 +627,10 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 			}
 			icon = new ImageIcon(url);
 		}
-
+		
 		return icon.getImage();
 	}
-
+	
 	/**
 	 * Get the current pen color.
 	 */
@@ -638,7 +638,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 	{
 		return this.penColor;
 	}
-
+	
 	/**
 	 * Get the current pen radius.
 	 */
@@ -646,7 +646,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 	{
 		return this.penRadius;
 	}
-
+	
 	/**
 	 * Has the user typed a key?
 	 *
@@ -659,7 +659,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 			return !this.keysTyped.isEmpty();
 		}
 	}
-
+	
 	private void init()
 	{
 		if (this.frame != null)
@@ -679,20 +679,20 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		this.setPenRadius();
 		this.setFont();
 		this.clear();
-
+		
 		// add antialiasing
 		RenderingHints hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING,
 			RenderingHints.VALUE_ANTIALIAS_ON);
 		hints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		this.offscreen.addRenderingHints(hints);
-
+		
 		// frame stuff
 		ImageIcon icon = new ImageIcon(this.onscreenImage);
 		JLabel draw = new JLabel(icon);
-
+		
 		draw.addMouseListener(this);
 		draw.addMouseMotionListener(this);
-
+		
 		this.frame.setContentPane(draw);
 		this.frame.addKeyListener(this);    // JLabel cannot get keyboard focus
 		this.frame.setResizable(false);
@@ -704,7 +704,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		this.frame.requestFocusInWindow();
 		this.frame.setVisible(true);
 	}
-
+	
 	/**
 	 * Is the keycode currently being pressed? This method takes as an argument
 	 * the keycode (corresponding to a physical key). It can handle action keys
@@ -721,7 +721,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 			return this.keysDown.contains(keycode);
 		}
 	}
-
+	
 	/**
 	 * This method cannot be called directly.
 	 */
@@ -733,7 +733,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 			this.keysDown.add(e.getKeyCode());
 		}
 	}
-
+	
 	/**
 	 * This method cannot be called directly.
 	 */
@@ -745,7 +745,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 			this.keysDown.remove(e.getKeyCode());
 		}
 	}
-
+	
 	/**
 	 * This method cannot be called directly.
 	 */
@@ -756,14 +756,14 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		{
 			this.keysTyped.addFirst(e.getKeyChar());
 		}
-
+		
 		// notify all listeners
 		for (DrawListener listener: this.listeners)
 		{
 			listener.keyTyped(e.getKeyChar());
 		}
 	}
-
+	
 	/**
 	 * Draw a line from (x0, y0) to (x1, y1).
 	 *
@@ -781,11 +781,11 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		this.offscreen.draw(new Line2D.Double(this.scaleX(x0), this.scaleY(y0), this.scaleX(x1), this.scaleY(y1)));
 		this.draw();
 	}
-
+	
 	/*************************************************************************
 	 * Drawing geometric shapes.
 	 *************************************************************************/
-
+	
 	/**
 	 * This method cannot be called directly.
 	 */
@@ -793,7 +793,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 	public void mouseClicked(final MouseEvent e)
 	{
 	}
-
+	
 	/**
 	 * This method cannot be called directly.
 	 */
@@ -811,7 +811,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 			listener.mouseDragged(this.userX(e.getX()), this.userY(e.getY()));
 		}
 	}
-
+	
 	/**
 	 * This method cannot be called directly.
 	 */
@@ -819,7 +819,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 	public void mouseEntered(final MouseEvent e)
 	{
 	}
-
+	
 	/**
 	 * This method cannot be called directly.
 	 */
@@ -827,7 +827,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 	public void mouseExited(final MouseEvent e)
 	{
 	}
-
+	
 	/**
 	 * This method cannot be called directly.
 	 */
@@ -840,7 +840,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 			this.mouseY = this.userY(e.getY());
 		}
 	}
-
+	
 	/**
 	 * Is the mouse being pressed?
 	 *
@@ -853,7 +853,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 			return this.mousePressed;
 		}
 	}
-
+	
 	/**
 	 * This method cannot be called directly.
 	 */
@@ -873,9 +873,9 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 				listener.mousePressed(this.userX(e.getX()), this.userY(e.getY()));
 			}
 		}
-
+		
 	}
-
+	
 	/**
 	 * This method cannot be called directly.
 	 */
@@ -894,7 +894,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 			}
 		}
 	}
-
+	
 	/**
 	 * What is the x-coordinate of the mouse?
 	 *
@@ -907,7 +907,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 			return this.mouseX;
 		}
 	}
-
+	
 	/**
 	 * What is the y-coordinate of the mouse?
 	 *
@@ -920,7 +920,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 			return this.mouseY;
 		}
 	}
-
+	
 	/**
 	 * What is the next key that was typed by the user?
 	 *
@@ -933,7 +933,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 			return this.keysTyped.removeLast();
 		}
 	}
-
+	
 	/**
 	 * Draw picture (gif, jpg, or png) centered on (x, y).
 	 *
@@ -957,11 +957,11 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		{
 			throw new RuntimeException("image " + s + " is corrupt");
 		}
-
+		
 		this.offscreen.drawImage(image, (int)Math.round(xs - (ws / 2.0)), (int)Math.round(ys - (hs / 2.0)), null);
 		this.draw();
 	}
-
+	
 	/**
 	 * Draw picture (gif, jpg, or png) centered on (x, y),
 	 * rotated given number of degrees
@@ -988,14 +988,14 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		{
 			throw new RuntimeException("image " + s + " is corrupt");
 		}
-
+		
 		this.offscreen.rotate(Math.toRadians(-degrees), xs, ys);
 		this.offscreen.drawImage(image, (int)Math.round(xs - (ws / 2.0)), (int)Math.round(ys - (hs / 2.0)), null);
 		this.offscreen.rotate(Math.toRadians(+degrees), xs, ys);
-
+		
 		this.draw();
 	}
-
+	
 	/**
 	 * Draw picture (gif, jpg, or png) centered on (x, y), rescaled to w-by-h.
 	 *
@@ -1036,7 +1036,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		}
 		this.draw();
 	}
-
+	
 	/**
 	 * Draw picture (gif, jpg, or png) centered on (x, y), rotated
 	 * given number of degrees, rescaled to w-by-h.
@@ -1071,17 +1071,17 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		{
 			this.pixel(x, y);
 		}
-
+		
 		this.offscreen.rotate(Math.toRadians(-degrees), xs, ys);
 		this.offscreen.drawImage(image, (int)Math.round(xs - (ws / 2.0)),
 			(int)Math.round(ys - (hs / 2.0)),
 			(int)Math.round(ws),
 			(int)Math.round(hs), null);
 		this.offscreen.rotate(Math.toRadians(+degrees), xs, ys);
-
+		
 		this.draw();
 	}
-
+	
 	/**
 	 * Draw one pixel at (x, y).
 	 *
@@ -1094,7 +1094,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 	{
 		this.offscreen.fillRect((int)Math.round(this.scaleX(x)), (int)Math.round(this.scaleY(y)), 1, 1);
 	}
-
+	
 	/**
 	 * Draw a point at (x, y).
 	 *
@@ -1121,7 +1121,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		}
 		this.draw();
 	}
-
+	
 	/**
 	 * Draw a polygon with the given (x[i], y[i]) coordinates.
 	 *
@@ -1143,7 +1143,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		this.offscreen.draw(path);
 		this.draw();
 	}
-
+	
 	/**
 	 * Draw a rectangle of given half width and half height, centered on (x, y).
 	 *
@@ -1182,11 +1182,11 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		}
 		this.draw();
 	}
-
+	
 	/*************************************************************************
 	 * Drawing text.
 	 *************************************************************************/
-
+	
 	/**
 	 * Save to file - suffix must be png, jpg, or gif.
 	 *
@@ -1197,7 +1197,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 	{
 		File file = new File(filename);
 		String suffix = filename.substring(filename.lastIndexOf('.') + 1);
-
+		
 		// png files
 		if (suffix.toLowerCase().equals("png"))
 		{
@@ -1210,7 +1210,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 				e.printStackTrace();
 			}
 		}
-
+		
 		// need to change from ARGB to RGB for jpeg
 		// reference: http://archives.java.sun.com/cgi-bin/wa?A2=ind0404&L=java2d-interest&D=0&P=2727
 		else
@@ -1234,24 +1234,24 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 					e.printStackTrace();
 				}
 			}
-
+			
 			else
 			{
 				System.out.println("Invalid image file type: " + suffix);
 			}
 	}
-
+	
 	// helper functions that scale from user coordinates to screen coordinates and back
 	private double scaleX(final double x)
 	{
 		return (this.width * (x - this.xmin)) / (this.xmax - this.xmin);
 	}
-
+	
 	private double scaleY(final double y)
 	{
 		return (this.height * (this.ymax - y)) / (this.ymax - this.ymin);
 	}
-
+	
 	/**
 	 * Set the window size to w-by-h pixels.
 	 *
@@ -1272,7 +1272,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		this.height = h;
 		this.init();
 	}
-
+	
 	/**
 	 * Set the font to the default font (sans serif, 16 point).
 	 */
@@ -1280,7 +1280,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 	{
 		this.setFont(Draw.DEFAULT_FONT);
 	}
-
+	
 	/**
 	 * Set the font to the given value.
 	 *
@@ -1291,11 +1291,11 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 	{
 		this.font = f;
 	}
-
+	
 	/*************************************************************************
 	 * Save drawing to a file.
 	 *************************************************************************/
-
+	
 	/**
 	 * Set the upper-left hand corner of the drawing window to be (x, y), where (0, 0) is upper left.
 	 *
@@ -1310,7 +1310,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 	{
 		this.frame.setLocation(x, y);
 	}
-
+	
 	/**
 	 * Set the pen color to the default color (black).
 	 */
@@ -1318,7 +1318,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 	{
 		this.setPenColor(Draw.DEFAULT_PEN_COLOR);
 	}
-
+	
 	/**
 	 * Set the pen color to the given color.
 	 *
@@ -1330,11 +1330,11 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		this.penColor = color;
 		this.offscreen.setColor(this.penColor);
 	}
-
+	
 	/*************************************************************************
 	 * Mouse interactions.
 	 *************************************************************************/
-
+	
 	/**
 	 * Set the pen color to the given RGB color.
 	 *
@@ -1363,7 +1363,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		}
 		this.setPenColor(new Color(red, green, blue));
 	}
-
+	
 	/**
 	 * Set the pen size to the default (.002).
 	 */
@@ -1371,7 +1371,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 	{
 		this.setPenRadius(Draw.DEFAULT_PEN_RADIUS);
 	}
-
+	
 	/**
 	 * Set the radius of the pen to the given size.
 	 *
@@ -1391,7 +1391,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		// BasicStroke stroke = new BasicStroke((float) penRadius);
 		this.offscreen.setStroke(stroke);
 	}
-
+	
 	/**
 	 * Set the x-scale to be the default (between 0.0 and 1.0).
 	 */
@@ -1399,7 +1399,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 	{
 		this.setXscale(Draw.DEFAULT_XMIN, Draw.DEFAULT_XMAX);
 	}
-
+	
 	/**
 	 * Set the x-scale (a 10% border is added to the values)
 	 *
@@ -1414,7 +1414,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		this.xmin = min - (Draw.BORDER * size);
 		this.xmax = max + (Draw.BORDER * size);
 	}
-
+	
 	/**
 	 * Set the y-scale to be the default (between 0.0 and 1.0).
 	 */
@@ -1422,7 +1422,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 	{
 		this.setYscale(Draw.DEFAULT_YMIN, Draw.DEFAULT_YMAX);
 	}
-
+	
 	/**
 	 * Set the y-scale (a 10% border is added to the values).
 	 *
@@ -1437,7 +1437,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		this.ymin = min - (Draw.BORDER * size);
 		this.ymax = max + (Draw.BORDER * size);
 	}
-
+	
 	/**
 	 * Display on-screen and turn off animation mode:
 	 * subsequent calls to
@@ -1448,7 +1448,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		this.defer = false;
 		this.draw();
 	}
-
+	
 	/**
 	 * Display on screen, pause for t milliseconds, and turn on <em>animation mode</em>: subsequent calls to
 	 * drawing methods such as <tt>line()</tt>, <tt>circle()</tt>, and <tt>square()</tt> will not be displayed on screen until the next call to <tt>show()</tt>.
@@ -1475,7 +1475,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		}
 		this.defer = true;
 	}
-
+	
 	/**
 	 * Draw a square of side length 2r, centered on (x, y).
 	 *
@@ -1508,11 +1508,11 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		}
 		this.draw();
 	}
-
+	
 	/*************************************************************************
 	 * Keyboard interactions.
 	 *************************************************************************/
-
+	
 	/**
 	 * Write the given text string in the current font, centered on (x, y).
 	 *
@@ -1534,7 +1534,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		this.offscreen.drawString(s, (float)(xs - (ws / 2.0)), (float)(ys + hs));
 		this.draw();
 	}
-
+	
 	/**
 	 * Write the given text string in the current font, centered on (x, y) and
 	 * rotated by the specified number of degrees
@@ -1556,7 +1556,7 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		this.text(x, y, s);
 		this.offscreen.rotate(Math.toRadians(+degrees), xs, ys);
 	}
-
+	
 	/**
 	 * Write the given text string in the current font, left-aligned at (x, y).
 	 *
@@ -1578,25 +1578,25 @@ public final class Draw implements ActionListener, MouseListener, MouseMotionLis
 		this.offscreen.drawString(s, (float)(xs), (float)(ys + hs));
 		this.show();
 	}
-
+	
 	private double userX(final double x)
 	{
 		return this.xmin + ((x * (this.xmax - this.xmin)) / this.width);
 	}
-
+	
 	private double userY(final double y)
 	{
 		return this.ymax - ((y * (this.ymax - this.ymin)) / this.height);
 	}
-
+	
 	public void xorOff()
 	{
 		this.offscreen.setPaintMode();
 	}
-
+	
 	public void xorOn()
 	{
 		this.offscreen.setXORMode(Draw.DEFAULT_CLEAR_COLOR);
 	}
-
+	
 }

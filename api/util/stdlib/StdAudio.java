@@ -44,32 +44,32 @@ import javax.sound.sampled.SourceDataLine;
  */
 public final class StdAudio
 {
-
+	
 	private static final int		BITS_PER_SAMPLE		= 16;				// 16-bit audio
-
+																			
 	private static byte[]			buffer;								// our internal buffer
-
+																			
 	private static int				bufferSize			= 0;				// number of samples currently in internal buffer
-
+																			
 	private static final int		BYTES_PER_SAMPLE	= 2;				// 16-bit audio
-
+																			
 	private static SourceDataLine	line;									// to play the sound
-
+																			
 	private static final double		MAX_16_BIT			= Short.MAX_VALUE;	// 32,767
-
+																			
 	private static final int		SAMPLE_BUFFER_SIZE	= 4096;
-
+	
 	/**
 	 * The sample rate - 44,100 Hz for CD quality audio.
 	 */
 	public static final int			SAMPLE_RATE			= 44100;
-
+	
 	// static initializer
 	static
 	{
 		StdAudio.init();
 	}
-
+	
 	/**
 	 * Close standard audio.
 	 */
@@ -78,7 +78,7 @@ public final class StdAudio
 		StdAudio.line.drain();
 		StdAudio.line.stop();
 	}
-
+	
 	// open up an audio stream
 	private static void init()
 	{
@@ -87,10 +87,10 @@ public final class StdAudio
 			// 44,100 samples per second, 16-bit audio, mono, signed PCM, little Endian
 			AudioFormat format = new AudioFormat(StdAudio.SAMPLE_RATE, StdAudio.BITS_PER_SAMPLE, 1, true, false);
 			DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
-
+			
 			StdAudio.line = (SourceDataLine)AudioSystem.getLine(info);
 			StdAudio.line.open(format, StdAudio.SAMPLE_BUFFER_SIZE * StdAudio.BYTES_PER_SAMPLE);
-
+			
 			// the internal buffer is a fraction of the actual buffer size, this choice is arbitrary
 			// it gets divided because we can't expect the buffered data to line up exactly with when
 			// the sound card decides to push out its samples.
@@ -101,11 +101,11 @@ public final class StdAudio
 			System.out.println(e.getMessage());
 			System.exit(1);
 		}
-
+		
 		// no sound gets made before this call
 		StdAudio.line.start();
 	}
-
+	
 	/**
 	 * Loop a sound file (in .wav, .mid, or .au format) in a background thread.
 	 */
@@ -132,20 +132,20 @@ public final class StdAudio
 		AudioClip clip = Applet.newAudioClip(url);
 		clip.loop();
 	}
-
+	
 	/**
 	 * Test client - play an A major scale to standard audio.
 	 */
 	public static void main(final String[] args)
 	{
-
+		
 		// 440 Hz for 1 sec
 		double freq = 440.0;
 		for (int i = 0; i <= StdAudio.SAMPLE_RATE; i++)
 		{
 			StdAudio.play(0.5 * Math.sin((2 * Math.PI * freq * i) / StdAudio.SAMPLE_RATE));
 		}
-
+		
 		// scale increments
 		int[] steps = {0, 2, 4, 5, 7, 9, 11, 12};
 		for (int step: steps)
@@ -153,19 +153,19 @@ public final class StdAudio
 			double hz = 440.0 * Math.pow(2, step / 12.0);
 			StdAudio.play(StdAudio.note(hz, 1.0, 0.5));
 		}
-
+		
 		// need to call this in non-interactive stuff so the program doesn't terminate
 		// until all the sound leaves the speaker.
 		StdAudio.close();
-
+		
 		// need to terminate a Java program with sound
 		System.exit(0);
 	}
-
+	
 	/***********************************************************************
 	 * sample test client
 	 ***********************************************************************/
-
+	
 	// create a note (sine wave) of the given frequency (Hz), for the given
 	// duration (seconds) scaled to the given volume (amplitude)
 	private static double[] note(final double hz, final double duration, final double amplitude)
@@ -178,14 +178,14 @@ public final class StdAudio
 		}
 		return a;
 	}
-
+	
 	/**
 	 * Write one sample (between -1.0 and +1.0) to standard audio. If the sample
 	 * is outside the range, it will be clipped.
 	 */
 	public static void play(double in)
 	{
-
+		
 		// clip if outside [-1, +1]
 		if (in < -1.0)
 		{
@@ -195,12 +195,12 @@ public final class StdAudio
 		{
 			in = +1.0;
 		}
-
+		
 		// convert to bytes
 		short s = (short)(StdAudio.MAX_16_BIT * in);
 		StdAudio.buffer[StdAudio.bufferSize++] = (byte)s;
 		StdAudio.buffer[StdAudio.bufferSize++] = (byte)(s >> 8);   // little Endian
-
+		
 		// send to sound card if buffer is full
 		if (StdAudio.bufferSize >= StdAudio.buffer.length)
 		{
@@ -208,7 +208,7 @@ public final class StdAudio
 			StdAudio.bufferSize = 0;
 		}
 	}
-
+	
 	/**
 	 * Write an array of samples (between -1.0 and +1.0) to standard audio. If a sample
 	 * is outside the range, it will be clipped.
@@ -220,7 +220,7 @@ public final class StdAudio
 			StdAudio.play(element);
 		}
 	}
-
+	
 	/**
 	 * Play a sound file (in .wav, .mid, or .au format) in a background thread.
 	 */
@@ -247,7 +247,7 @@ public final class StdAudio
 		AudioClip clip = Applet.newAudioClip(url);
 		clip.play();
 	}
-
+	
 	/**
 	 * Read audio samples from a file (in .wav or .au format) and return them as a double array
 	 * with values between -1.0 and +1.0.
@@ -263,7 +263,7 @@ public final class StdAudio
 		}
 		return d;
 	}
-
+	
 	// return data as a byte array
 	private static byte[] readByte(final String filename)
 	{
@@ -271,7 +271,7 @@ public final class StdAudio
 		AudioInputStream ais = null;
 		try
 		{
-
+			
 			// try to read from file
 			File file = new File(filename);
 			if (file.exists())
@@ -280,7 +280,7 @@ public final class StdAudio
 				data = new byte[ais.available()];
 				ais.read(data);
 			}
-
+			
 			// try to read from URL
 			else
 			{
@@ -295,16 +295,16 @@ public final class StdAudio
 			System.out.println(e.getMessage());
 			throw new RuntimeException("Could not read " + filename);
 		}
-
+		
 		return data;
 	}
-
+	
 	/**
 	 * Save the double array as a sound file (using .wav or .au format).
 	 */
 	public static void save(final String filename, final double[] input)
 	{
-
+		
 		// assumes 44,100 samples per second
 		// use 16-bit audio, mono, signed PCM, little Endian
 		AudioFormat format = new AudioFormat(StdAudio.SAMPLE_RATE, 16, 1, true, false);
@@ -315,7 +315,7 @@ public final class StdAudio
 			data[(2 * i) + 0] = (byte)temp;
 			data[(2 * i) + 1] = (byte)(temp >> 8);
 		}
-
+		
 		// now save the file
 		try
 		{
@@ -341,7 +341,7 @@ public final class StdAudio
 			System.exit(1);
 		}
 	}
-
+	
 	// do not instantiate
 	private StdAudio()
 	{

@@ -40,19 +40,19 @@ import java.net.Socket;
  */
 public final class BinaryOut
 {
-
+	
 	/**
 	 * Test client. Read bits from standard input and write to the file
 	 * specified on command line.
 	 */
 	public static void main(final String[] args)
 	{
-
+		
 		// create binary output stream to write to file
 		String filename = args[0];
 		BinaryOut out = new BinaryOut(filename);
 		BinaryIn in = new BinaryIn();
-
+		
 		// read from standard input and write to file
 		while (!in.isEmpty())
 		{
@@ -61,12 +61,12 @@ public final class BinaryOut
 		}
 		out.flush();
 	}
-
+	
 	private int						buffer;                // 8-bit buffer of bits to write out
 	private int						N;		// number of bits remaining in buffer
-
+											
 	private BufferedOutputStream	out;	// the output stream
-
+											
 	/**
 	 * Create a binary output stream from standard output.
 	 */
@@ -74,7 +74,7 @@ public final class BinaryOut
 	{
 		this.out = new BufferedOutputStream(System.out);
 	}
-
+	
 	/**
 	 * Create a binary output stream from an OutputStream.
 	 */
@@ -82,7 +82,7 @@ public final class BinaryOut
 	{
 		this.out = new BufferedOutputStream(os);
 	}
-
+	
 	/**
 	 * Create a binary output stream from a Socket.
 	 */
@@ -98,7 +98,7 @@ public final class BinaryOut
 			e.printStackTrace();
 		}
 	}
-
+	
 	/**
 	 * Create a binary output stream from a filename.
 	 */
@@ -114,7 +114,7 @@ public final class BinaryOut
 			e.printStackTrace();
 		}
 	}
-
+	
 	// write out any remaining bits in buffer to the binary output stream, padding with 0s
 	private void clearBuffer()
 	{
@@ -137,7 +137,7 @@ public final class BinaryOut
 		this.N = 0;
 		this.buffer = 0;
 	}
-
+	
 	/**
 	 * Close and flush the binary output stream. Once it is closed, you can no longer write bits.
 	 */
@@ -153,7 +153,7 @@ public final class BinaryOut
 			e.printStackTrace();
 		}
 	}
-
+	
 	/**
 	 * Flush the binary output stream, padding 0s if number of bits written so far
 	 * is not a multiple of 8.
@@ -170,7 +170,7 @@ public final class BinaryOut
 			e.printStackTrace();
 		}
 	}
-
+	
 	/**
 	 * Write the specified bit to the binary output stream.
 	 *
@@ -181,7 +181,7 @@ public final class BinaryOut
 	{
 		this.writeBit(x);
 	}
-
+	
 	/**
 	 * Write the 8-bit byte to the binary output stream.
 	 *
@@ -192,7 +192,7 @@ public final class BinaryOut
 	{
 		this.writeByte(x & 0xff);
 	}
-
+	
 	/**
 	 * Write the 8-bit char to the binary output stream.
 	 *
@@ -209,7 +209,7 @@ public final class BinaryOut
 		}
 		this.writeByte(x);
 	}
-
+	
 	/**
 	 * Write the r-bit char to the binary output stream.
 	 *
@@ -243,7 +243,7 @@ public final class BinaryOut
 			this.writeBit(bit);
 		}
 	}
-
+	
 	/**
 	 * Write the 64-bit double to the binary output stream.
 	 *
@@ -254,7 +254,7 @@ public final class BinaryOut
 	{
 		this.write(Double.doubleToRawLongBits(x));
 	}
-
+	
 	/**
 	 * Write the 32-bit float to the binary output stream.
 	 *
@@ -265,7 +265,7 @@ public final class BinaryOut
 	{
 		this.write(Float.floatToRawIntBits(x));
 	}
-
+	
 	/**
 	 * Write the 32-bit int to the binary output stream.
 	 *
@@ -279,7 +279,7 @@ public final class BinaryOut
 		this.writeByte((x >>> 8) & 0xff);
 		this.writeByte((x >>> 0) & 0xff);
 	}
-
+	
 	/**
 	 * Write the r-bit int to the binary output stream.
 	 *
@@ -313,7 +313,7 @@ public final class BinaryOut
 			this.writeBit(bit);
 		}
 	}
-
+	
 	/**
 	 * Write the 64-bit long to the binary output stream.
 	 *
@@ -331,7 +331,7 @@ public final class BinaryOut
 		this.writeByte((int)((x >>> 8) & 0xff));
 		this.writeByte((int)((x >>> 0) & 0xff));
 	}
-
+	
 	/**
 	 * Write the 16-bit int to the binary output stream.
 	 *
@@ -343,7 +343,7 @@ public final class BinaryOut
 		this.writeByte((x >>> 8) & 0xff);
 		this.writeByte((x >>> 0) & 0xff);
 	}
-
+	
 	/**
 	 * Write the string of 8-bit characters to the binary output stream.
 	 *
@@ -360,7 +360,7 @@ public final class BinaryOut
 			this.write(s.charAt(i));
 		}
 	}
-
+	
 	/**
 	 * Write the String of r-bit characters to the binary output stream.
 	 *
@@ -381,7 +381,7 @@ public final class BinaryOut
 			this.write(s.charAt(i), r);
 		}
 	}
-
+	
 	/**
 	 * Write the specified bit to the binary output stream.
 	 */
@@ -393,7 +393,7 @@ public final class BinaryOut
 		{
 			this.buffer |= 1;
 		}
-
+		
 		// if buffer is full (8 bits), write out as a single byte
 		this.N++;
 		if (this.N == 8)
@@ -401,14 +401,14 @@ public final class BinaryOut
 			this.clearBuffer();
 		}
 	}
-
+	
 	/**
 	 * Write the 8-bit byte to the binary output stream.
 	 */
 	private void writeByte(final int x)
 	{
 		assert (x >= 0) && (x < 256);
-
+		
 		// optimized if byte-aligned
 		if (this.N == 0)
 		{
@@ -422,7 +422,7 @@ public final class BinaryOut
 			}
 			return;
 		}
-
+		
 		// otherwise write one bit at a time
 		for (int i = 0; i < 8; i++)
 		{
@@ -430,5 +430,5 @@ public final class BinaryOut
 			this.writeBit(bit);
 		}
 	}
-
+	
 }

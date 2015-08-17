@@ -26,16 +26,16 @@ import java.util.Locale;
  */
 public final class StdOut
 {
-
+	
 	// force Unicode UTF-8 encoding; otherwise it's system dependent
 	private static final String	CHARSET_NAME	= "UTF-8";
-
+	
 	// assume language = English, country = US for consistency with StdIn
 	private static final Locale	LOCALE			= Locale.US;
-
+	
 	// send output here
 	private static PrintWriter	out;
-
+	
 	// this is called before invoking any methods
 	static
 	{
@@ -48,7 +48,7 @@ public final class StdOut
 			System.out.println(e);
 		}
 	}
-
+	
 	// close the output stream (not required)
 	/**
 	 * Close standard output.
@@ -57,18 +57,18 @@ public final class StdOut
 	{
 		StdOut.out.close();
 	}
-
+	
 	// This method is just here to test the class
 	public static void main(final String[] args)
 	{
-
+		
 		// write to stdout
 		StdOut.println("Test");
 		StdOut.println(17);
 		StdOut.println(true);
 		StdOut.printf("%.6f\n", 1.0 / 7.0);
 	}
-
+	
 	/**
 	 * Flush standard output.
 	 */
@@ -76,7 +76,7 @@ public final class StdOut
 	{
 		StdOut.out.flush();
 	}
-
+	
 	/**
 	 * Print a boolean to standard output and flush standard output.
 	 */
@@ -85,7 +85,7 @@ public final class StdOut
 		StdOut.out.print(x);
 		StdOut.out.flush();
 	}
-
+	
 	/**
 	 * Print a byte to standard output and flush standard output.
 	 */
@@ -94,7 +94,7 @@ public final class StdOut
 		StdOut.out.print(x);
 		StdOut.out.flush();
 	}
-
+	
 	/**
 	 * Print a char to standard output and flush standard output.
 	 */
@@ -103,7 +103,7 @@ public final class StdOut
 		StdOut.out.print(x);
 		StdOut.out.flush();
 	}
-
+	
 	/**
 	 * Print a double to standard output and flush standard output.
 	 */
@@ -112,7 +112,7 @@ public final class StdOut
 		StdOut.out.print(x);
 		StdOut.out.flush();
 	}
-
+	
 	/**
 	 * Print a float to standard output and flush standard output.
 	 */
@@ -121,7 +121,7 @@ public final class StdOut
 		StdOut.out.print(x);
 		StdOut.out.flush();
 	}
-
+	
 	/**
 	 * Print an int to standard output and flush standard output.
 	 */
@@ -130,7 +130,7 @@ public final class StdOut
 		StdOut.out.print(x);
 		StdOut.out.flush();
 	}
-
+	
 	/**
 	 * Print a long to standard output and flush standard output.
 	 */
@@ -139,7 +139,7 @@ public final class StdOut
 		StdOut.out.print(x);
 		StdOut.out.flush();
 	}
-
+	
 	/**
 	 * Print an Object to standard output and flush standard output.
 	 */
@@ -148,7 +148,7 @@ public final class StdOut
 		StdOut.out.print(x);
 		StdOut.out.flush();
 	}
-
+	
 	/**
 	 * Print a short to standard output and flush standard output.
 	 */
@@ -157,7 +157,7 @@ public final class StdOut
 		StdOut.out.print(x);
 		StdOut.out.flush();
 	}
-
+	
 	/**
 	 * Print a formatted string to standard output using the specified
 	 * locale, format string, and arguments, and flush standard output.
@@ -167,7 +167,7 @@ public final class StdOut
 		StdOut.out.printf(locale, format, args);
 		StdOut.out.flush();
 	}
-
+	
 	/**
 	 * Print a formatted string to standard output using the specified
 	 * format string and arguments, and flush standard output.
@@ -177,7 +177,7 @@ public final class StdOut
 		StdOut.out.printf(StdOut.LOCALE, format, args);
 		StdOut.out.flush();
 	}
-
+	
 	/**
 	 * Terminate the current line by printing the line separator string.
 	 */
@@ -185,7 +185,7 @@ public final class StdOut
 	{
 		StdOut.out.println();
 	}
-
+	
 	/**
 	 * Print a boolean to standard output and then terminate the line.
 	 */
@@ -193,7 +193,7 @@ public final class StdOut
 	{
 		StdOut.out.println(x);
 	}
-
+	
 	/**
 	 * Print a byte to standard output and then terminate the line.
 	 */
@@ -201,7 +201,7 @@ public final class StdOut
 	{
 		StdOut.out.println(x);
 	}
-
+	
 	/**
 	 * Print a char to standard output and then terminate the line.
 	 */
@@ -209,7 +209,7 @@ public final class StdOut
 	{
 		StdOut.out.println(x);
 	}
-
+	
 	/**
 	 * Print a double to standard output and then terminate the line.
 	 */
@@ -217,7 +217,7 @@ public final class StdOut
 	{
 		StdOut.out.println(x);
 	}
-
+	
 	/**
 	 * Print a float to standard output and then terminate the line.
 	 */
@@ -225,7 +225,7 @@ public final class StdOut
 	{
 		StdOut.out.println(x);
 	}
-
+	
 	/**
 	 * Print an int to standard output and then terminate the line.
 	 */
@@ -233,7 +233,7 @@ public final class StdOut
 	{
 		StdOut.out.println(x);
 	}
-
+	
 	/**
 	 * Print a long to standard output and then terminate the line.
 	 */
@@ -241,7 +241,7 @@ public final class StdOut
 	{
 		StdOut.out.println(x);
 	}
-
+	
 	/**
 	 * Print an object to standard output and then terminate the line.
 	 */
@@ -249,7 +249,7 @@ public final class StdOut
 	{
 		StdOut.out.println(x);
 	}
-
+	
 	/**
 	 * Print a short to standard output and then terminate the line.
 	 */
@@ -257,10 +257,10 @@ public final class StdOut
 	{
 		StdOut.out.println(x);
 	}
-
+	
 	// don't instantiate
 	private StdOut()
 	{
 	}
-
+	
 }

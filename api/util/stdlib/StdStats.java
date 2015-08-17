@@ -46,7 +46,7 @@ package api.util.stdlib;
  */
 public final class StdStats
 {
-
+	
 	/**
 	 * Test client.
 	 * Convert command-line arguments to array of doubles and call various methods.
@@ -63,7 +63,7 @@ public final class StdStats
 		StdOut.printf("   stddevp %10.3f\n", StdStats.stddevp(a));
 		StdOut.printf("      varp %10.3f\n", StdStats.varp(a));
 	}
-
+	
 	/**
 	 * Returns the maximum value in the array a[], -infinity if no such value.
 	 */
@@ -83,7 +83,7 @@ public final class StdStats
 		}
 		return max;
 	}
-
+	
 	/**
 	 * Returns the maximum value in the subarray a[lo..hi], -infinity if no such value.
 	 */
@@ -107,7 +107,7 @@ public final class StdStats
 		}
 		return max;
 	}
-
+	
 	/**
 	 * Returns the maximum value in the array a[], Integer.MIN_VALUE if no such value.
 	 */
@@ -123,7 +123,7 @@ public final class StdStats
 		}
 		return max;
 	}
-
+	
 	/**
 	 * Returns the average value in the array a[], NaN if no such value.
 	 */
@@ -136,7 +136,7 @@ public final class StdStats
 		double sum = StdStats.sum(a);
 		return sum / a.length;
 	}
-
+	
 	/**
 	 * Returns the average value in the subarray a[lo..hi], NaN if no such value.
 	 */
@@ -154,7 +154,7 @@ public final class StdStats
 		double sum = StdStats.sum(a, lo, hi);
 		return sum / length;
 	}
-
+	
 	/**
 	 * Returns the average value in the array a[], NaN if no such value.
 	 */
@@ -171,7 +171,7 @@ public final class StdStats
 		}
 		return sum / a.length;
 	}
-
+	
 	/**
 	 * Returns the minimum value in the array a[], +infinity if no such value.
 	 */
@@ -191,7 +191,7 @@ public final class StdStats
 		}
 		return min;
 	}
-
+	
 	/**
 	 * Returns the minimum value in the subarray a[lo..hi], +infinity if no such value.
 	 */
@@ -215,7 +215,7 @@ public final class StdStats
 		}
 		return min;
 	}
-
+	
 	/**
 	 * Returns the minimum value in the array a[], Integer.MAX_VALUE if no such value.
 	 */
@@ -231,7 +231,7 @@ public final class StdStats
 		}
 		return min;
 	}
-
+	
 	/**
 	 * Plots bars from (0, a[i]) to (i, a[i]) to standard draw.
 	 */
@@ -244,7 +244,7 @@ public final class StdStats
 			StdDraw.filledRectangle(i, a[i] / 2, .25, a[i] / 2);
 		}
 	}
-
+	
 	/**
 	 * Plots line segments connecting points (i, a[i]) to standard draw.
 	 */
@@ -258,7 +258,7 @@ public final class StdStats
 			StdDraw.line(i - 1, a[i - 1], i, a[i]);
 		}
 	}
-
+	
 	/**
 	 * Plots the points (i, a[i]) to standard draw.
 	 */
@@ -272,7 +272,7 @@ public final class StdStats
 			StdDraw.point(i, a[i]);
 		}
 	}
-
+	
 	/**
 	 * Returns the sample standard deviation in the array a[], NaN if no such value.
 	 */
@@ -280,7 +280,7 @@ public final class StdStats
 	{
 		return Math.sqrt(StdStats.var(a));
 	}
-
+	
 	/**
 	 * Returns the sample standard deviation in the subarray a[lo..hi], NaN if no such value.
 	 */
@@ -288,7 +288,7 @@ public final class StdStats
 	{
 		return Math.sqrt(StdStats.var(a, lo, hi));
 	}
-
+	
 	/**
 	 * Returns the sample standard deviation in the array a[], NaN if no such value.
 	 */
@@ -296,7 +296,7 @@ public final class StdStats
 	{
 		return Math.sqrt(StdStats.var(a));
 	}
-
+	
 	/**
 	 * Returns the population standard deviation in the array a[], NaN if no such value.
 	 */
@@ -304,7 +304,7 @@ public final class StdStats
 	{
 		return Math.sqrt(StdStats.varp(a));
 	}
-
+	
 	/**
 	 * Returns the population standard deviation in the subarray a[lo..hi], NaN if no such value.
 	 */
@@ -312,7 +312,7 @@ public final class StdStats
 	{
 		return Math.sqrt(StdStats.varp(a, lo, hi));
 	}
-
+	
 	/**
 	 * Returns the sum of all values in the array a[].
 	 */
@@ -325,7 +325,7 @@ public final class StdStats
 		}
 		return sum;
 	}
-
+	
 	/**
 	 * Returns the sum of all values in the subarray a[lo..hi].
 	 */
@@ -342,7 +342,7 @@ public final class StdStats
 		}
 		return sum;
 	}
-
+	
 	/**
 	 * Returns the sum of all values in the array a[].
 	 */
@@ -355,7 +355,7 @@ public final class StdStats
 		}
 		return sum;
 	}
-
+	
 	/**
 	 * Returns the sample variance in the array a[], NaN if no such value.
 	 */
@@ -373,7 +373,7 @@ public final class StdStats
 		}
 		return sum / (a.length - 1);
 	}
-
+	
 	/**
 	 * Returns the sample variance in the subarray a[lo..hi], NaN if no such value.
 	 */
@@ -396,7 +396,7 @@ public final class StdStats
 		}
 		return sum / (length - 1);
 	}
-
+	
 	/**
 	 * Returns the sample variance in the array a[], NaN if no such value.
 	 */
@@ -414,7 +414,7 @@ public final class StdStats
 		}
 		return sum / (a.length - 1);
 	}
-
+	
 	/**
 	 * Returns the population variance in the array a[], NaN if no such value.
 	 */
@@ -432,7 +432,7 @@ public final class StdStats
 		}
 		return sum / a.length;
 	}
-
+	
 	/**
 	 * Returns the population variance in the subarray a[lo..hi], NaN if no such value.
 	 */
@@ -455,7 +455,7 @@ public final class StdStats
 		}
 		return sum / length;
 	}
-
+	
 	private StdStats()
 	{
 	}

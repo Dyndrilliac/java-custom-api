@@ -29,33 +29,33 @@ import java.util.Locale;
  */
 public class Out
 {
-
+	
 	// force Unicode UTF-8 encoding; otherwise it's system dependent
 	private static final String	CHARSET_NAME	= "UTF-8";
-
+	
 	// assume language = English, country = US for consistency with In
 	private static final Locale	LOCALE			= Locale.US;
-
+	
 	/**
 	 * A test client.
 	 */
 	public static void main(final String[] args)
 	{
 		Out out;
-
+		
 		// write to stdout
 		out = new Out();
 		out.println("Test 1");
 		out.close();
-
+		
 		// write to a file
 		out = new Out("test.txt");
 		out.println("Test 2");
 		out.close();
 	}
-
+	
 	private PrintWriter	out;
-
+	
 	/**
 	 * Create an Out object using standard output.
 	 */
@@ -63,7 +63,7 @@ public class Out
 	{
 		this(System.out);
 	}
-
+	
 	/**
 	 * Create an Out object using an OutputStream.
 	 */
@@ -79,7 +79,7 @@ public class Out
 			e.printStackTrace();
 		}
 	}
-
+	
 	/**
 	 * Create an Out object using a Socket.
 	 */
@@ -96,7 +96,7 @@ public class Out
 			e.printStackTrace();
 		}
 	}
-
+	
 	/**
 	 * Create an Out object using a file specified by the given name.
 	 */
@@ -113,7 +113,7 @@ public class Out
 			e.printStackTrace();
 		}
 	}
-
+	
 	/**
 	 * Close the output stream.
 	 */
@@ -121,7 +121,7 @@ public class Out
 	{
 		this.out.close();
 	}
-
+	
 	/**
 	 * Flush the output stream.
 	 */
@@ -129,7 +129,7 @@ public class Out
 	{
 		this.out.flush();
 	}
-
+	
 	/**
 	 * Print an boolean and then flush the output stream.
 	 */
@@ -138,7 +138,7 @@ public class Out
 		this.out.print(x);
 		this.out.flush();
 	}
-
+	
 	/**
 	 * Print a byte and then flush the output stream.
 	 */
@@ -147,7 +147,7 @@ public class Out
 		this.out.print(x);
 		this.out.flush();
 	}
-
+	
 	/**
 	 * Print an char and then flush the output stream.
 	 */
@@ -156,7 +156,7 @@ public class Out
 		this.out.print(x);
 		this.out.flush();
 	}
-
+	
 	/**
 	 * Print an double and then flush the output stream.
 	 */
@@ -165,7 +165,7 @@ public class Out
 		this.out.print(x);
 		this.out.flush();
 	}
-
+	
 	/**
 	 * Print a float and then flush the output stream.
 	 */
@@ -174,7 +174,7 @@ public class Out
 		this.out.print(x);
 		this.out.flush();
 	}
-
+	
 	/**
 	 * Print an int and then flush the output stream.
 	 */
@@ -183,7 +183,7 @@ public class Out
 		this.out.print(x);
 		this.out.flush();
 	}
-
+	
 	/**
 	 * Print a long and then flush the output stream.
 	 */
@@ -192,7 +192,7 @@ public class Out
 		this.out.print(x);
 		this.out.flush();
 	}
-
+	
 	/**
 	 * Print an object and then flush the output stream.
 	 */
@@ -201,7 +201,7 @@ public class Out
 		this.out.print(x);
 		this.out.flush();
 	}
-
+	
 	/**
 	 * Print a formatted string using the specified locale, format string and arguments,
 	 * and then flush the output stream.
@@ -211,7 +211,7 @@ public class Out
 		this.out.printf(locale, format, args);
 		this.out.flush();
 	}
-
+	
 	/**
 	 * Print a formatted string using the specified format string and arguments,
 	 * and then flush the output stream.
@@ -221,7 +221,7 @@ public class Out
 		this.out.printf(Out.LOCALE, format, args);
 		this.out.flush();
 	}
-
+	
 	/**
 	 * Terminate the line.
 	 */
@@ -229,7 +229,7 @@ public class Out
 	{
 		this.out.println();
 	}
-
+	
 	/**
 	 * Print a boolean and then terminate the line.
 	 */
@@ -237,7 +237,7 @@ public class Out
 	{
 		this.out.println(x);
 	}
-
+	
 	/**
 	 * Print a byte and then terminate the line.
 	 */
@@ -245,7 +245,7 @@ public class Out
 	{
 		this.out.println(x);
 	}
-
+	
 	/**
 	 * Print a char and then terminate the line.
 	 */
@@ -253,7 +253,7 @@ public class Out
 	{
 		this.out.println(x);
 	}
-
+	
 	/**
 	 * Print an double and then terminate the line.
 	 */
@@ -261,7 +261,7 @@ public class Out
 	{
 		this.out.println(x);
 	}
-
+	
 	/**
 	 * Print a float and then terminate the line.
 	 */
@@ -269,7 +269,7 @@ public class Out
 	{
 		this.out.println(x);
 	}
-
+	
 	/**
 	 * Print an int and then terminate the line.
 	 */
@@ -277,7 +277,7 @@ public class Out
 	{
 		this.out.println(x);
 	}
-
+	
 	/**
 	 * Print a long and then terminate the line.
 	 */
@@ -285,7 +285,7 @@ public class Out
 	{
 		this.out.println(x);
 	}
-
+	
 	/**
 	 * Print an object and then terminate the line.
 	 */
@@ -293,5 +293,5 @@ public class Out
 	{
 		this.out.println(x);
 	}
-
+	
 }

@@ -44,26 +44,26 @@ import java.util.regex.Pattern;
  */
 public final class In
 {
-
+	
 	/*** begin: section (1 of 2) of code duplicated from In to StdIn */
-
+	
 	// assume Unicode UTF-8 encoding
 	private static final String		CHARSET_NAME		= "UTF-8";
-
+	
 	// makes whitespace characters significant
 	private static final Pattern	EMPTY_PATTERN		= Pattern.compile("");
-
+	
 	// used to read the entire input. source:
 	// http://weblogs.java.net/blog/pat/archive/2004/10/stupid_scanner_1.html
 	private static final Pattern	EVERYTHING_PATTERN	= Pattern.compile("\\A");
-
+	
 	// assume language = English, country = US for consistency with System.out.
 	private static final Locale		LOCALE				= Locale.US;
-
+	
 	// the default token separator; we maintain the invariant that this value
 	// is held by the scanner's delimiter between calls
 	private static final Pattern	WHITESPACE_PATTERN	= Pattern.compile("\\p{javaWhitespace}+");
-
+	
 	/**
 	 * Test client.
 	 */
@@ -71,7 +71,7 @@ public final class In
 	{
 		In in;
 		String urlName = "http://introcs.cs.princeton.edu/stdlib/InTest.txt";
-
+		
 		// read from a URL
 		System.out.println("readAll() from URL " + urlName);
 		System.out.println("---------------------------------------------------------------------------");
@@ -85,7 +85,7 @@ public final class In
 			System.out.println(e);
 		}
 		System.out.println();
-
+		
 		// read one line at a time from URL
 		System.out.println("readLine() from URL " + urlName);
 		System.out.println("---------------------------------------------------------------------------");
@@ -103,7 +103,7 @@ public final class In
 			System.out.println(e);
 		}
 		System.out.println();
-
+		
 		// read one string at a time from URL
 		System.out.println("readString() from URL " + urlName);
 		System.out.println("---------------------------------------------------------------------------");
@@ -121,7 +121,7 @@ public final class In
 			System.out.println(e);
 		}
 		System.out.println();
-
+		
 		// read one line at a time from file in current directory
 		System.out.println("readLine() from current directory");
 		System.out.println("---------------------------------------------------------------------------");
@@ -139,7 +139,7 @@ public final class In
 			System.out.println(e);
 		}
 		System.out.println();
-
+		
 		// read one line at a time from file using relative path
 		System.out.println("readLine() from relative path");
 		System.out.println("---------------------------------------------------------------------------");
@@ -157,7 +157,7 @@ public final class In
 			System.out.println(e);
 		}
 		System.out.println();
-
+		
 		// read one char at a time
 		System.out.println("readChar() from file");
 		System.out.println("---------------------------------------------------------------------------");
@@ -176,7 +176,7 @@ public final class In
 		}
 		System.out.println();
 		System.out.println();
-
+		
 		// read one line at a time from absolute OS X / Linux path
 		System.out.println("readLine() from absolute OS X / Linux path");
 		System.out.println("---------------------------------------------------------------------------");
@@ -194,7 +194,7 @@ public final class In
 			System.out.println(e);
 		}
 		System.out.println();
-
+		
 		// read one line at a time from absolute Windows path
 		System.out.println("readLine() from absolute Windows path");
 		System.out.println("---------------------------------------------------------------------------");
@@ -213,11 +213,11 @@ public final class In
 			System.out.println(e);
 		}
 		System.out.println();
-
+		
 	}
-
+	
 	/*** end: section (1 of 2) of code duplicated from In to StdIn */
-
+	
 	/**
 	 * Reads all doubles from stdin
 	 *
@@ -228,7 +228,7 @@ public final class In
 	{
 		return new In().readAllDoubles();
 	}
-
+	
 	/**
 	 * Reads all doubles from a file
 	 *
@@ -239,7 +239,7 @@ public final class In
 	{
 		return new In(filename).readAllDoubles();
 	}
-
+	
 	/**
 	 * Reads all ints from stdin
 	 *
@@ -250,7 +250,7 @@ public final class In
 	{
 		return new In().readAllInts();
 	}
-
+	
 	/**
 	 * Reads all ints from a file
 	 *
@@ -261,7 +261,7 @@ public final class In
 	{
 		return new In(filename).readAllInts();
 	}
-
+	
 	/**
 	 * Reads all strings from stdin
 	 *
@@ -272,7 +272,7 @@ public final class In
 	{
 		return new In().readAllStrings();
 	}
-
+	
 	/**
 	 * Reads all strings from a file
 	 *
@@ -283,14 +283,14 @@ public final class In
 	{
 		return new In(filename).readAllStrings();
 	}
-
+	
 	private Scanner	scanner;
-
+	
 	/***
 	 * begin: section (2 of 2) of code duplicated from In to StdIn,
 	 * with all methods changed from "public" to "public static"
 	 ***/
-
+	
 	/**
 	 * Create an input stream from standard input.
 	 */
@@ -299,7 +299,7 @@ public final class In
 		this.scanner = new Scanner(new BufferedInputStream(System.in), In.CHARSET_NAME);
 		this.scanner.useLocale(In.LOCALE);
 	}
-
+	
 	/**
 	 * Create an input stream from a file.
 	 */
@@ -315,7 +315,7 @@ public final class In
 			System.err.println("Could not open " + file);
 		}
 	}
-
+	
 	/**
 	 * Create an input stream from a socket.
 	 */
@@ -332,7 +332,7 @@ public final class In
 			System.err.println("Could not open " + socket);
 		}
 	}
-
+	
 	/**
 	 * Create an input stream from a given Scanner source; use with <tt>new Scanner(String)</tt> to read from a string.
 	 * <p>
@@ -342,7 +342,7 @@ public final class In
 	{
 		this.scanner = scanner;
 	}
-
+	
 	/**
 	 * Create an input stream from a filename or web page name.
 	 */
@@ -358,22 +358,22 @@ public final class In
 				this.scanner.useLocale(In.LOCALE);
 				return;
 			}
-
+			
 			// next try for files included in jar
 			URL url = this.getClass().getResource(s);
-
+			
 			// or URL from web
 			if (url == null)
 			{
 				url = new URL(s);
 			}
-
+			
 			URLConnection site = url.openConnection();
-
+			
 			// in order to set User-Agent, replace above line with these two
 			// HttpURLConnection site = (HttpURLConnection) url.openConnection();
 			// site.addRequestProperty("User-Agent", "Mozilla/4.76");
-
+			
 			InputStream is = site.getInputStream();
 			this.scanner = new Scanner(new BufferedInputStream(is), In.CHARSET_NAME);
 			this.scanner.useLocale(In.LOCALE);
@@ -383,7 +383,7 @@ public final class In
 			System.err.println("Could not open " + s);
 		}
 	}
-
+	
 	/**
 	 * Create an input stream from a URL.
 	 */
@@ -401,7 +401,7 @@ public final class In
 			System.err.println("Could not open " + url);
 		}
 	}
-
+	
 	/**
 	 * Close the input stream.
 	 */
@@ -409,7 +409,7 @@ public final class In
 	{
 		this.scanner.close();
 	}
-
+	
 	/**
 	 * Does the input stream exist?
 	 */
@@ -417,7 +417,7 @@ public final class In
 	{
 		return this.scanner != null;
 	}
-
+	
 	/**
 	 * Is the input empty (including whitespace)? Use this to know
 	 * whether the next call to {@link #readChar()} will succeed.
@@ -431,7 +431,7 @@ public final class In
 		this.scanner.useDelimiter(In.WHITESPACE_PATTERN);
 		return result;
 	}
-
+	
 	/**
 	 * Does the input have a next line? Use this to know whether the
 	 * next call to {@link #readLine()} will succeed.
@@ -442,7 +442,7 @@ public final class In
 	{
 		return this.scanner.hasNextLine();
 	}
-
+	
 	/**
 	 * Is the input empty (except possibly for whitespace)? Use this
 	 * to know whether the next call to {@link #readString()}, {@link #readDouble()}, etc will succeed.
@@ -451,7 +451,7 @@ public final class In
 	{
 		return !this.scanner.hasNext();
 	}
-
+	
 	/**
 	 * Read and return the remainder of the input as a string.
 	 */
@@ -461,13 +461,13 @@ public final class In
 		{
 			return "";
 		}
-
+		
 		String result = this.scanner.useDelimiter(In.EVERYTHING_PATTERN).next();
 		// not that important to reset delimeter, since now scanner is empty
 		this.scanner.useDelimiter(In.WHITESPACE_PATTERN); // but let's do it anyway
 		return result;
 	}
-
+	
 	/**
 	 * Read all doubles until the end of input is reached, and return them.
 	 */
@@ -481,7 +481,7 @@ public final class In
 		}
 		return vals;
 	}
-
+	
 	/**
 	 * Read all ints until the end of input is reached, and return them.
 	 */
@@ -495,7 +495,7 @@ public final class In
 		}
 		return vals;
 	}
-
+	
 	/**
 	 * Reads all remaining lines from input stream and returns them as an array of strings.
 	 *
@@ -510,7 +510,7 @@ public final class In
 		}
 		return lines.toArray(new String[0]);
 	}
-
+	
 	/**
 	 * Read all strings until the end of input is reached, and return them.
 	 */
@@ -530,7 +530,7 @@ public final class In
 		}
 		return decapitokens;
 	}
-
+	
 	/**
 	 * Read and return the next boolean, allowing case-insensitive
 	 * "true" or "1" for true, and "false" or "0" for false.
@@ -556,7 +556,7 @@ public final class In
 		}
 		throw new InputMismatchException();
 	}
-
+	
 	/**
 	 * Read and return the next byte.
 	 */
@@ -564,9 +564,9 @@ public final class In
 	{
 		return this.scanner.nextByte();
 	}
-
+	
 	/*** end: section (2 of 2) of code duplicated from In to StdIn */
-
+	
 	/**
 	 * Read and return the next character.
 	 */
@@ -575,11 +575,11 @@ public final class In
 		this.scanner.useDelimiter(In.EMPTY_PATTERN);
 		String ch = this.scanner.next();
 		assert (ch.length() == 1) : "Internal (Std)In.readChar() error!"
-		+ " Please contact the authors.";
+			+ " Please contact the authors.";
 		this.scanner.useDelimiter(In.WHITESPACE_PATTERN);
 		return ch.charAt(0);
 	}
-
+	
 	/**
 	 * Read and return the next double.
 	 */
@@ -587,7 +587,7 @@ public final class In
 	{
 		return this.scanner.nextDouble();
 	}
-
+	
 	/**
 	 * Read and return the next float.
 	 */
@@ -595,7 +595,7 @@ public final class In
 	{
 		return this.scanner.nextFloat();
 	}
-
+	
 	/**
 	 * Read and return the next int.
 	 */
@@ -603,7 +603,7 @@ public final class In
 	{
 		return this.scanner.nextInt();
 	}
-
+	
 	/**
 	 * Read and return the next line.
 	 */
@@ -620,7 +620,7 @@ public final class In
 		}
 		return line;
 	}
-
+	
 	/**
 	 * Read and return the next long.
 	 */
@@ -628,7 +628,7 @@ public final class In
 	{
 		return this.scanner.nextLong();
 	}
-
+	
 	/**
 	 * Read and return the next short.
 	 */
@@ -636,7 +636,7 @@ public final class In
 	{
 		return this.scanner.nextShort();
 	}
-
+	
 	/**
 	 * Read and return the next string.
 	 */
@@ -644,5 +644,5 @@ public final class In
 	{
 		return this.scanner.next();
 	}
-
+	
 }

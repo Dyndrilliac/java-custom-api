@@ -69,14 +69,14 @@ public final class Picture implements ActionListener
 		System.out.printf("%d-by-%d\n", picture.width(), picture.height());
 		picture.show();
 	}
-
+	
 	private String			filename;					// name of file
 	private JFrame			frame;						// on-screen view
 	private BufferedImage	image;						// the rasterized image
 	private boolean			isOriginUpperLeft	= true;  // location of origin
-
+														
 	private final int		width, height;				// width and height
-
+		
 	/**
 	 * Initializes a picture by reading in a .png, .gif, or .jpg from a File.
 	 */
@@ -99,7 +99,7 @@ public final class Picture implements ActionListener
 		this.height = this.image.getHeight(null);
 		this.filename = file.getName();
 	}
-
+	
 	/**
 	 * Initializes a blank <tt>width</tt>-by-<tt>height</tt> picture, with <tt>width</tt> columns
 	 * and <tt>height</tt> rows, where each pixel is black.
@@ -120,7 +120,7 @@ public final class Picture implements ActionListener
 		// set to TYPE_INT_ARGB to support transparency
 		this.filename = width + "-by-" + height;
 	}
-
+	
 	/**
 	 * Initializes a new picture that is a deep copy of <tt>picture</tt>.
 	 */
@@ -138,7 +138,7 @@ public final class Picture implements ActionListener
 			}
 		}
 	}
-
+	
 	/**
 	 * Initializes a picture by reading in a .png, .gif, or .jpg from
 	 * the given filename or URL name.
@@ -154,7 +154,7 @@ public final class Picture implements ActionListener
 			{
 				this.image = ImageIO.read(file);
 			}
-
+			
 			// now try to read from file in same directory as this .class file
 			else
 			{
@@ -174,7 +174,7 @@ public final class Picture implements ActionListener
 			throw new RuntimeException("Could not open file: " + filename);
 		}
 	}
-
+	
 	/**
 	 * Opens a save dialog box when the user selects "Save As" from the menu.
 	 */
@@ -189,7 +189,7 @@ public final class Picture implements ActionListener
 			this.save(chooser.getDirectory() + File.separator + chooser.getFile());
 		}
 	}
-
+	
 	@Override
 	public boolean equals(final Object obj)
 	{
@@ -256,7 +256,7 @@ public final class Picture implements ActionListener
 		}
 		return true;
 	}
-
+	
 	/**
 	 * Returns the color of pixel (<tt>col</tt>, <tt>row</tt>).
 	 *
@@ -283,7 +283,7 @@ public final class Picture implements ActionListener
 			return new Color(this.image.getRGB(col, this.height - row - 1));
 		}
 	}
-
+	
 	/**
 	 * Returns a JLabel containing this picture, for embedding in a JPanel,
 	 * JFrame or other GUI widget.
@@ -299,7 +299,7 @@ public final class Picture implements ActionListener
 		ImageIcon icon = new ImageIcon(this.image);
 		return new JLabel(icon);
 	}
-
+	
 	@Override
 	public int hashCode()
 	{
@@ -313,7 +313,7 @@ public final class Picture implements ActionListener
 		result = (prime * result) + this.width;
 		return result;
 	}
-
+	
 	/**
 	 * Returns the height of the picture.
 	 *
@@ -323,7 +323,7 @@ public final class Picture implements ActionListener
 	{
 		return this.height;
 	}
-
+	
 	/**
 	 * Saves the picture to a file in a standard image format.
 	 */
@@ -352,7 +352,7 @@ public final class Picture implements ActionListener
 			System.out.println("Error: filename must end in .jpg or .png");
 		}
 	}
-
+	
 	/**
 	 * Saves the picture to a file in a standard image format.
 	 * The filetype must be .png or .jpg.
@@ -361,7 +361,7 @@ public final class Picture implements ActionListener
 	{
 		this.save(new File(name));
 	}
-
+	
 	/**
 	 * Sets the color of pixel (<tt>col</tt>, <tt>row</tt>) to given color.
 	 *
@@ -393,7 +393,7 @@ public final class Picture implements ActionListener
 			this.image.setRGB(col, this.height - row - 1, color.getRGB());
 		}
 	}
-
+	
 	/**
 	 * Sets the origin to be the lower left pixel.
 	 */
@@ -401,7 +401,7 @@ public final class Picture implements ActionListener
 	{
 		this.isOriginUpperLeft = false;
 	}
-
+	
 	/**
 	 * Sets the origin to be the upper left pixel. This is the default.
 	 */
@@ -409,18 +409,18 @@ public final class Picture implements ActionListener
 	{
 		this.isOriginUpperLeft = true;
 	}
-
+	
 	/**
 	 * Displays the picture in a window on the screen.
 	 */
 	public void show()
 	{
-
+		
 		// create the GUI for viewing the image if needed
 		if (this.frame == null)
 		{
 			this.frame = new JFrame();
-
+			
 			JMenuBar menuBar = new JMenuBar();
 			JMenu menu = new JMenu("File");
 			menuBar.add(menu);
@@ -430,7 +430,7 @@ public final class Picture implements ActionListener
 				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 			menu.add(menuItem1);
 			this.frame.setJMenuBar(menuBar);
-
+			
 			this.frame.setContentPane(this.getJLabel());
 			// f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			this.frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -439,11 +439,11 @@ public final class Picture implements ActionListener
 			this.frame.pack();
 			this.frame.setVisible(true);
 		}
-
+		
 		// draw
 		this.frame.repaint();
 	}
-
+	
 	/**
 	 * Returns the width of the picture.
 	 *
@@ -453,5 +453,5 @@ public final class Picture implements ActionListener
 	{
 		return this.width;
 	}
-
+	
 }

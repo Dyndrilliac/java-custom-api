@@ -58,29 +58,29 @@ package api.util.stdlib;
  */
 public class StdArrayIO
 {
-
+	
 	/**
 	 * Test client.
 	 */
 	public static void main(final String[] args)
 	{
-
+		
 		// read and print an array of doubles
 		double[] a = StdArrayIO.readDouble1D();
 		StdArrayIO.print(a);
 		StdOut.println();
-
+		
 		// read and print a matrix of doubles
 		double[][] b = StdArrayIO.readDouble2D();
 		StdArrayIO.print(b);
 		StdOut.println();
-
+		
 		// read and print a matrix of doubles
 		boolean[][] d = StdArrayIO.readBoolean2D();
 		StdArrayIO.print(d);
 		StdOut.println();
 	}
-
+	
 	/**
 	 * Print an array of booleans to standard output.
 	 */
@@ -101,7 +101,7 @@ public class StdArrayIO
 		}
 		StdOut.println();
 	}
-
+	
 	/**
 	 * Print the M-by-N array of booleans to standard output.
 	 */
@@ -126,7 +126,7 @@ public class StdArrayIO
 			StdOut.println();
 		}
 	}
-
+	
 	/**
 	 * Print an array of doubles to standard output.
 	 */
@@ -140,7 +140,7 @@ public class StdArrayIO
 		}
 		StdOut.println();
 	}
-
+	
 	/**
 	 * Print the M-by-N array of doubles to standard output.
 	 */
@@ -158,7 +158,7 @@ public class StdArrayIO
 			StdOut.println();
 		}
 	}
-
+	
 	/**
 	 * Print an array of ints to standard output.
 	 */
@@ -172,7 +172,7 @@ public class StdArrayIO
 		}
 		StdOut.println();
 	}
-
+	
 	/**
 	 * Print the M-by-N array of ints to standard output.
 	 */
@@ -190,7 +190,7 @@ public class StdArrayIO
 			StdOut.println();
 		}
 	}
-
+	
 	/**
 	 * Read in and return an array of booleans from standard input.
 	 */
@@ -204,7 +204,7 @@ public class StdArrayIO
 		}
 		return a;
 	}
-
+	
 	/**
 	 * Read in and return an M-by-N array of booleans from standard input.
 	 */
@@ -222,7 +222,7 @@ public class StdArrayIO
 		}
 		return a;
 	}
-
+	
 	/**
 	 * Read in and return an array of doubles from standard input.
 	 */
@@ -236,7 +236,7 @@ public class StdArrayIO
 		}
 		return a;
 	}
-
+	
 	/**
 	 * Read in and return an M-by-N array of doubles from standard input.
 	 */
@@ -254,7 +254,7 @@ public class StdArrayIO
 		}
 		return a;
 	}
-
+	
 	/**
 	 * Read in and return an array of ints from standard input.
 	 */
@@ -268,7 +268,7 @@ public class StdArrayIO
 		}
 		return a;
 	}
-
+	
 	/**
 	 * Read in and return an M-by-N array of ints from standard input.
 	 */
@@ -286,10 +286,10 @@ public class StdArrayIO
 		}
 		return a;
 	}
-
+	
 	// it doesn't make sense to instantiate this class
 	private StdArrayIO()
 	{
 	}
-
+	
 }

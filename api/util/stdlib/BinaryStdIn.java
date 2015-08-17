@@ -32,19 +32,19 @@ import java.io.IOException;
 public final class BinaryStdIn
 {
 	private static int					buffer;									// one character buffer
-
+																					
 	private static final int			EOF	= -1;									// end of file
-
+																					
 	private static BufferedInputStream	in	= new BufferedInputStream(System.in);
-
+	
 	private static int					N;											// number of bits left in buffer
-
+																					
 	// static initializer
 	static
 	{
 		BinaryStdIn.fillBuffer();
 	}
-
+	
 	/**
 	 * Close this input stream and release any associated system resources.
 	 */
@@ -60,7 +60,7 @@ public final class BinaryStdIn
 			throw new RuntimeException("Could not close BinaryStdIn");
 		}
 	}
-
+	
 	private static void fillBuffer()
 	{
 		try
@@ -75,7 +75,7 @@ public final class BinaryStdIn
 			BinaryStdIn.N = -1;
 		}
 	}
-
+	
 	/**
 	 * Returns true if standard input is empty.
 	 *
@@ -85,14 +85,14 @@ public final class BinaryStdIn
 	{
 		return BinaryStdIn.buffer == BinaryStdIn.EOF;
 	}
-
+	
 	/**
 	 * Test client. Reads in a binary input file from standard input and writes
 	 * it to standard output.
 	 */
 	public static void main(final String[] args)
 	{
-
+		
 		// read one 8-bit char at a time
 		while (!BinaryStdIn.isEmpty())
 		{
@@ -101,7 +101,7 @@ public final class BinaryStdIn
 		}
 		BinaryStdOut.flush();
 	}
-
+	
 	/**
 	 * Read the next bit of data from standard input and return as a boolean.
 	 *
@@ -123,7 +123,7 @@ public final class BinaryStdIn
 		}
 		return bit;
 	}
-
+	
 	/**
 	 * Read the next 8 bits from standard input and return as an 8-bit byte.
 	 *
@@ -137,7 +137,7 @@ public final class BinaryStdIn
 		byte x = (byte)(c & 0xff);
 		return x;
 	}
-
+	
 	/**
 	 * Read the next 8 bits from standard input and return as an 8-bit char.
 	 * Note that <tt>char</tt> is a 16-bit type;
@@ -153,7 +153,7 @@ public final class BinaryStdIn
 		{
 			throw new RuntimeException("Reading from empty input stream");
 		}
-
+		
 		// special case when aligned byte
 		if (BinaryStdIn.N == 8)
 		{
@@ -161,7 +161,7 @@ public final class BinaryStdIn
 			BinaryStdIn.fillBuffer();
 			return (char)(x & 0xff);
 		}
-
+		
 		// combine last N bits of current buffer with first 8-N bits of new buffer
 		int x = BinaryStdIn.buffer;
 		x <<= (8 - BinaryStdIn.N);
@@ -177,7 +177,7 @@ public final class BinaryStdIn
 		// the above code doesn't quite work for the last character if N = 8
 		// because buffer will be -1
 	}
-
+	
 	/**
 	 * Read the next r bits from standard input and return as an r-bit character.
 	 *
@@ -195,13 +195,13 @@ public final class BinaryStdIn
 		{
 			throw new IllegalArgumentException("Illegal value of r = " + r);
 		}
-
+		
 		// optimize r = 8 case
 		if (r == 8)
 		{
 			return BinaryStdIn.readChar();
 		}
-
+		
 		char x = 0;
 		for (int i = 0; i < r; i++)
 		{
@@ -214,7 +214,7 @@ public final class BinaryStdIn
 		}
 		return x;
 	}
-
+	
 	/**
 	 * Read the next 64 bits from standard input and return as a 64-bit double.
 	 *
@@ -226,7 +226,7 @@ public final class BinaryStdIn
 	{
 		return Double.longBitsToDouble(BinaryStdIn.readLong());
 	}
-
+	
 	/**
 	 * Read the next 32 bits from standard input and return as a 32-bit float.
 	 *
@@ -238,7 +238,7 @@ public final class BinaryStdIn
 	{
 		return Float.intBitsToFloat(BinaryStdIn.readInt());
 	}
-
+	
 	/**
 	 * Read the next 32 bits from standard input and return as a 32-bit int.
 	 *
@@ -257,7 +257,7 @@ public final class BinaryStdIn
 		}
 		return x;
 	}
-
+	
 	/**
 	 * Read the next r bits from standard input and return as an r-bit int.
 	 *
@@ -275,13 +275,13 @@ public final class BinaryStdIn
 		{
 			throw new IllegalArgumentException("Illegal value of r = " + r);
 		}
-
+		
 		// optimize r = 32 case
 		if (r == 32)
 		{
 			return BinaryStdIn.readInt();
 		}
-
+		
 		int x = 0;
 		for (int i = 0; i < r; i++)
 		{
@@ -294,7 +294,7 @@ public final class BinaryStdIn
 		}
 		return x;
 	}
-
+	
 	/**
 	 * Read the next 64 bits from standard input and return as a 64-bit long.
 	 *
@@ -313,7 +313,7 @@ public final class BinaryStdIn
 		}
 		return x;
 	}
-
+	
 	/**
 	 * Read the next 16 bits from standard input and return as a 16-bit short.
 	 *
@@ -332,7 +332,7 @@ public final class BinaryStdIn
 		}
 		return x;
 	}
-
+	
 	/**
 	 * Read the remaining bytes of data from standard input and return as a string.
 	 *
@@ -347,7 +347,7 @@ public final class BinaryStdIn
 		{
 			throw new RuntimeException("Reading from empty input stream");
 		}
-
+		
 		StringBuilder sb = new StringBuilder();
 		while (!BinaryStdIn.isEmpty())
 		{
@@ -356,7 +356,7 @@ public final class BinaryStdIn
 		}
 		return sb.toString();
 	}
-
+	
 	// don't instantiate
 	private BinaryStdIn()
 	{
