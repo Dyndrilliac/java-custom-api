@@ -2,7 +2,7 @@
  * Title: ApplicationWindow
  * Author: Matthew Boyette
  * Date: 1/21/2012
- *
+ * 
  * This class allows me to quickly and easily create custom application windows. Since virtually every window is almost identical
  * it makes little sense to write the same GUI code over and over again when only small changes are needed for each application.
  */
@@ -27,19 +27,19 @@ public class ApplicationWindow extends JFrame implements ActionListener
 	private EventHandler<?>		actionPerformed		= null;
 	private EventHandler<?>		drawGUI				= null;
 	private boolean				isDebugging			= false;
-
+	
 	public ApplicationWindow(final Component parent, final String applicationTitle, final Dimension size, final boolean isDebugging,
 		final boolean isResizable, final EventHandler<?> actionPerformed, final EventHandler<?> drawGUI)
 	{
 		super(applicationTitle);
-
+		
 		Support.normalizeUIX(this);
-
+		
 		this.setDebugging(isDebugging);
 		this.setSize(size);
 		this.setResizable(isResizable);
 		this.setFont(Support.DEFAULT_TEXT_FONT);
-
+		
 		if (parent == null)
 		{
 			this.setLocationByPlatform(true);
@@ -50,13 +50,13 @@ public class ApplicationWindow extends JFrame implements ActionListener
 			this.setLocationRelativeTo(parent);
 			this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		}
-
+		
 		this.setActionPerformed(actionPerformed);
 		this.setDrawGUI(drawGUI);
 		this.drawGUI();
 		this.setVisible(true);
 	}
-
+	
 	@Override
 	public final void actionPerformed(final ActionEvent event)
 	{
@@ -64,7 +64,7 @@ public class ApplicationWindow extends JFrame implements ActionListener
 		{
 			Support.displayDebugMessage(this, event);
 		}
-
+		
 		if (this.getActionPerformed() != null)
 		{
 			try
@@ -78,7 +78,7 @@ public class ApplicationWindow extends JFrame implements ActionListener
 			}
 		}
 	}
-
+	
 	public final void drawGUI()
 	{
 		if (this.getDrawGUI() != null)
@@ -94,44 +94,44 @@ public class ApplicationWindow extends JFrame implements ActionListener
 			}
 		}
 	}
-
+	
 	protected final EventHandler<?> getActionPerformed()
 	{
 		return this.actionPerformed;
 	}
-
+	
 	protected final EventHandler<?> getDrawGUI()
 	{
 		return this.drawGUI;
 	}
-
+	
 	public final boolean isDebugging()
 	{
 		return this.isDebugging;
 	}
-
+	
 	public void reDrawGUI()
 	{
 		this.getContentPane().removeAll();
 		this.drawGUI();
 		this.validate();
 	}
-
+	
 	protected final void setActionPerformed(final EventHandler<?> actionPerformed)
 	{
 		this.actionPerformed = actionPerformed;
 	}
-
+	
 	protected final void setDebugging(final boolean isDebugging)
 	{
 		this.isDebugging = isDebugging;
 	}
-
+	
 	protected final void setDrawGUI(final EventHandler<?> drawGUI)
 	{
 		this.drawGUI = drawGUI;
 	}
-
+	
 	public void setIconImageByResourceName(final String resourceName)
 	{
 		Image icon = Support.getImageByResourceName(this, resourceName);

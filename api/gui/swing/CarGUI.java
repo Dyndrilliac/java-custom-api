@@ -2,7 +2,7 @@
  * Title: CarGUI
  * Author: Matthew Boyette
  * Date: 4/13/2013
- *
+ * 
  * This class provides a control panel for a Car object.
  */
 
@@ -28,12 +28,12 @@ public class CarGUI extends JPanel implements ActionListener
 	protected static class GUIListener implements ActionListener
 	{
 		protected CarGUI	parent	= null;
-
+		
 		public GUIListener(final CarGUI gui)
 		{
 			this.parent = gui;
 		}
-
+		
 		@Override
 		public final void actionPerformed(final ActionEvent event)
 		{
@@ -43,7 +43,7 @@ public class CarGUI extends JPanel implements ActionListener
 			car.setVelocity(velocity.getValue());
 		}
 	}
-
+	
 	protected static final long	serialVersionUID	= 1L;
 	protected JButton			blueBodyButton		= null;
 	protected Car				car					= null;
@@ -58,31 +58,31 @@ public class CarGUI extends JPanel implements ActionListener
 	protected JButton			stopRadioButton		= null;
 	protected JSlider			velocitySlider		= null;
 	protected JButton			yellowBodyButton	= null;
-
+	
 	public CarGUI(final Car car)
 	{
 		this.setCar(car);
 		this.drawGUI();
 		this.guiTimer.start();
 	}
-
+	
 	@Override
 	public void actionPerformed(final ActionEvent event)
 	{
 		switch (event.getActionCommand())
 		{
 			case "Start Car":
-
+				
 				this.getCar().animationStart();
 				break;
-
+			
 			case "Stop Car":
-
+				
 				this.getCar().animationStop();
 				break;
-
+			
 			case "Change Direction":
-
+				
 				if (this.getCar().getDirection() == Car.DIRECTION_LEFT)
 				{
 					this.getCar().setDirection(Car.DIRECTION_RIGHT);
@@ -91,50 +91,50 @@ public class CarGUI extends JPanel implements ActionListener
 				{
 					this.getCar().setDirection(Car.DIRECTION_LEFT);
 				}
-
+				
 				break;
-
+			
 			case "Honk Horn":
-
+				
 				this.getCar().honkHorn();
 				break;
-
+			
 			case "Start Radio":
-
+				
 				this.getCar().startRadio();
 				break;
-
+			
 			case "Stop Radio":
-
+				
 				this.getCar().stopRadio();
 				break;
-
+			
 			case "Red":
-
+				
 				this.getCar().setBodyColor(Color.RED);
 				break;
-
+			
 			case "Blue":
-
+				
 				this.getCar().setBodyColor(Color.BLUE);
 				break;
-
+			
 			case "Green":
-
+				
 				this.getCar().setBodyColor(Color.GREEN);
 				break;
-
+			
 			case "Yellow":
-
+				
 				this.getCar().setBodyColor(Color.YELLOW);
 				break;
-
+			
 			default:
-
+				
 				break;
 		}
 	}
-
+	
 	public void drawGUI()
 	{
 		JPanel motionControls = new JPanel();
@@ -151,7 +151,7 @@ public class CarGUI extends JPanel implements ActionListener
 		this.blueBodyButton = new JButton("Blue");
 		this.greenBodyButton = new JButton("Green");
 		this.yellowBodyButton = new JButton("Yellow");
-
+		
 		this.startCarButton.setFont(Support.DEFAULT_TEXT_FONT);
 		this.stopCarButton.setFont(Support.DEFAULT_TEXT_FONT);
 		this.directionButton.setFont(Support.DEFAULT_TEXT_FONT);
@@ -163,7 +163,7 @@ public class CarGUI extends JPanel implements ActionListener
 		this.blueBodyButton.setFont(Support.DEFAULT_TEXT_FONT);
 		this.greenBodyButton.setFont(Support.DEFAULT_TEXT_FONT);
 		this.yellowBodyButton.setFont(Support.DEFAULT_TEXT_FONT);
-
+		
 		this.startCarButton.addActionListener(this);
 		this.stopCarButton.addActionListener(this);
 		this.directionButton.addActionListener(this);
@@ -174,7 +174,7 @@ public class CarGUI extends JPanel implements ActionListener
 		this.blueBodyButton.addActionListener(this);
 		this.greenBodyButton.addActionListener(this);
 		this.yellowBodyButton.addActionListener(this);
-
+		
 		this.setLayout(new BorderLayout());
 		motionControls.setLayout(new BorderLayout());
 		soundControls.setLayout(new FlowLayout());
@@ -194,17 +194,17 @@ public class CarGUI extends JPanel implements ActionListener
 		colorControls.add(this.greenBodyButton);
 		colorControls.add(this.yellowBodyButton);
 	}
-
+	
 	public final Car getCar()
 	{
 		return this.car;
 	}
-
+	
 	public final JSlider getVelocitySlider()
 	{
 		return this.velocitySlider;
 	}
-
+	
 	public final void setCar(final Car car)
 	{
 		this.car = car;
