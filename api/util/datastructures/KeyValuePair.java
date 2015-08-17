@@ -2,7 +2,7 @@
  * Title: KeyValuePair
  * Author: Matthew Boyette
  * Date: 2/11/2015
- *
+ * 
  * A minimalist generic data structure which stores key-value pairs.
  */
 
@@ -12,13 +12,13 @@ public class KeyValuePair<K,V>
 {
 	private K	key		= null;
 	private V	value	= null;
-
+	
 	public KeyValuePair(final K key, final V value)
 	{
 		this.setKey(key);
 		this.setValue(value);
 	}
-
+	
 	@Override
 	public boolean equals(final Object obj)
 	{
@@ -61,17 +61,17 @@ public class KeyValuePair<K,V>
 			}
 		return true;
 	}
-
+	
 	public final K getKey()
 	{
 		return this.key;
 	}
-
+	
 	public final V getValue()
 	{
 		return this.value;
 	}
-
+	
 	@Override
 	public int hashCode()
 	{
@@ -81,17 +81,17 @@ public class KeyValuePair<K,V>
 		result = (prime * result) + ((this.getValue() == null) ? 0 : this.getValue().hashCode());
 		return result;
 	}
-
+	
 	public final void setKey(final K key)
 	{
 		this.key = key;
 	}
-
+	
 	public final void setValue(final V value)
 	{
 		this.value = value;
 	}
-
+	
 	@Override
 	public String toString()
 	{

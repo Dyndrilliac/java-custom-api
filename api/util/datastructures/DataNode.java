@@ -2,7 +2,7 @@
  * Title: DataNode
  * Author: Matthew Boyette
  * Date: 5/24/2013
- *
+ * 
  * A minimalist generic node data structure which stores raw data.
  */
 
@@ -11,13 +11,13 @@ package api.util.datastructures;
 public class DataNode<T> extends Node
 {
 	private T	data	= null;
-
+	
 	public DataNode(final T data, final Node next, final Node previous)
 	{
 		super(next, previous);
 		this.setData(data);
 	}
-
+	
 	@Override
 	public boolean equals(final Object obj)
 	{
@@ -48,12 +48,12 @@ public class DataNode<T> extends Node
 			}
 		return true;
 	}
-
+	
 	public final T getData()
 	{
 		return this.data;
 	}
-
+	
 	@Override
 	public int hashCode()
 	{
@@ -62,12 +62,12 @@ public class DataNode<T> extends Node
 		result = (prime * result) + ((this.getData() == null) ? 0 : this.getData().hashCode());
 		return result;
 	}
-
+	
 	public final void setData(final T data)
 	{
 		this.data = data;
 	}
-
+	
 	@Override
 	public String toString()
 	{

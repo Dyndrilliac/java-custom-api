@@ -2,7 +2,7 @@
  * Title: DoubleLinkedList
  * Author: Matthew Boyette
  * Date: 5/24/2013
- *
+ * 
  * An iterator for a minimalist generic double linked-list data structure.
  */
 
@@ -14,27 +14,27 @@ public class DoubleLinkedListIterator<T>
 	private DoubleLinkedList<T>	list		= null;
 	private Node				next		= null;
 	private Node				previous	= null;
-
+	
 	public DoubleLinkedListIterator(final DoubleLinkedList<T> list)
 	{
 		this.setList(list);
 	}
-
+	
 	public boolean atHead()
 	{
 		return (this.getCurrent() == this.getList().getHead());
 	}
-
+	
 	public boolean atTail()
 	{
 		return (this.getCurrent() == this.getList().getTail());
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	public T deleteCurrent()
 	{
 		T retVal = ((DataNode<T>)this.getCurrent()).getData();
-
+		
 		if (this.atHead())
 		{
 			this.getList().setHead(this.getNext());
@@ -44,7 +44,7 @@ public class DoubleLinkedListIterator<T>
 		else
 			if (this.atTail())
 			{
-
+				
 				this.getList().setTail(this.getPrevious());
 				this.getList().getTail().setNext(null);
 				this.resetTail();
@@ -58,36 +58,36 @@ public class DoubleLinkedListIterator<T>
 				this.setNext(this.getCurrent().getNext());
 				this.setPrevious(this.getCurrent().getPrevious());
 			}
-
+		
 		int newSize = (this.getList().getSize() - 1);
 		this.getList().setSize(newSize);
 		return retVal;
 	}
-
+	
 	public Node getCurrent()
 	{
 		return this.current;
 	}
-
+	
 	public final DoubleLinkedList<T> getList()
 	{
 		return this.list;
 	}
-
+	
 	public final Node getNext()
 	{
 		return this.next;
 	}
-
+	
 	public final Node getPrevious()
 	{
 		return this.previous;
 	}
-
+	
 	public void insertAfter(final T data)
 	{
 		Node newNode = new DataNode<T>(data, null, null);
-
+		
 		if (this.getList().isEmpty())
 		{
 			this.getList().setHead(newNode);
@@ -102,15 +102,15 @@ public class DoubleLinkedListIterator<T>
 			this.getList().setTail(newNode);
 			this.nextNode();
 		}
-
+		
 		int newSize = (this.getList().getSize() + 1);
 		this.getList().setSize(newSize);
 	}
-
+	
 	public void insertBefore(final T data)
 	{
 		Node newNode = new DataNode<T>(data, null, null);
-
+		
 		if (this.getList().isEmpty())
 		{
 			this.getList().setHead(newNode);
@@ -125,7 +125,7 @@ public class DoubleLinkedListIterator<T>
 				{
 					this.getCurrent().setPrevious(newNode);
 				}
-
+				
 				newNode.setNext(this.getCurrent());
 				this.getList().setHead(newNode);
 				this.resetHead();
@@ -136,11 +136,11 @@ public class DoubleLinkedListIterator<T>
 				this.getCurrent().setPrevious(newNode);
 				this.setCurrent(newNode);
 			}
-
+		
 		int newSize = (this.getList().getSize() + 1);
 		this.getList().setSize(newSize);
 	}
-
+	
 	public void nextNode()
 	{
 		if (this.atTail())
@@ -151,7 +151,7 @@ public class DoubleLinkedListIterator<T>
 		{
 			this.setPrevious(this.getCurrent());
 			this.setCurrent(this.getNext());
-
+			
 			if (this.getCurrent() != null)
 			{
 				this.setNext(this.getCurrent().getNext());
@@ -162,7 +162,7 @@ public class DoubleLinkedListIterator<T>
 			}
 		}
 	}
-
+	
 	public void prevNode()
 	{
 		if (this.atHead())
@@ -173,7 +173,7 @@ public class DoubleLinkedListIterator<T>
 		{
 			this.setNext(this.getCurrent());
 			this.setCurrent(this.getPrevious());
-
+			
 			if (this.getCurrent() != null)
 			{
 				this.setPrevious(this.getCurrent().getPrevious());
@@ -184,7 +184,7 @@ public class DoubleLinkedListIterator<T>
 			}
 		}
 	}
-
+	
 	public void resetHead()
 	{
 		if (this.getList().getHead() != null)
@@ -200,7 +200,7 @@ public class DoubleLinkedListIterator<T>
 			this.setNext(null);
 		}
 	}
-
+	
 	public void resetTail()
 	{
 		if (this.getList().getTail() != null)
@@ -216,22 +216,22 @@ public class DoubleLinkedListIterator<T>
 			this.setNext(null);
 		}
 	}
-
+	
 	public final void setCurrent(final Node current)
 	{
 		this.current = current;
 	}
-
+	
 	public final void setList(final DoubleLinkedList<T> list)
 	{
 		this.list = list;
 	}
-
+	
 	public final void setNext(final Node next)
 	{
 		this.next = next;
 	}
-
+	
 	public final void setPrevious(final Node previous)
 	{
 		this.previous = previous;
