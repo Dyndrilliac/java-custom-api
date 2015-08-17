@@ -2,7 +2,7 @@
  * Title: Mathematics
  * Author: Matthew Boyette
  * Date: 11/05/2014
- *
+ * 
  * This class is merely a collection of useful static methods that support code recycling. Specifically, this
  * class offers methods and classes which provide a means to perform mathematic operations.
  */
@@ -20,28 +20,52 @@ public final class Mathematics
 	public final static int getRandomInteger(final int min, final int max, final boolean isMaxInclusive)
 	{
 		int fMin = min, fMax = max;
-
+		
 		if (isMaxInclusive)
 		{
 			fMax++;
 		}
-
+		
 		return StdRandom.uniform(fMin, fMax);
 	}
-
+	
 	// Pretty self-explanatory. Takes an array of integers, and returns the sum.
 	public final static int getSumFromIntegerArray(final int[] arrayOfIntegers)
 	{
 		int sum = 0;
-
+		
 		for (int arrayOfInteger: arrayOfIntegers)
 		{
 			sum += arrayOfInteger;
 		}
-
+		
 		return sum;
 	}
-
+	
+	public final static boolean isEven(final long n)
+	{
+		if ((n % 2) == 0)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	public final static boolean isOdd(final long n)
+	{
+		if ((n % 2) != 0)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
 	public final static boolean isPrime(final long n)
 	{
 		// Every prime number is an integer greater than one. If 'n' is less than or equal to one, mark it as composite (not prime).
@@ -49,7 +73,7 @@ public final class Mathematics
 		{	// Check to make sure 'n' is not two or three. If it is either, than we can go ahead and mark it as prime.
 			if ((n != 2) && (n != 3))
 			{	// Since two and three have been handled, we want to know if 'n' is evenly divisible by two or three and mark it as composite.
-				if (((n % 2) != 0) || ((n % 3) != 0))
+				if (Mathematics.isOdd(n) || ((n % 3) != 0))
 				{
 					// Every prime number can be represented by the form 6k+1 or 6k-1. If 'n' cannot be represented this way,
 					// then we mark it as composite.
@@ -69,7 +93,7 @@ public final class Mathematics
 								return false;
 							}
 						}
-
+						
 						return true;
 					}
 				}
@@ -79,24 +103,24 @@ public final class Mathematics
 				return true;
 			}
 		}
-
+		
 		return false;
 	}
-
+	
 	// Logarithm of arbitrary base.
 	public final static double logarithm(final double n, final double base)
 	{
 		return (Math.log(n) / Math.log(base));
 	}
-
+	
 	// This method returns the first prime number greater than a given integer.
 	public final static long makePrimeGreater(final long n)
 	{
 		long retVal = n;
-
+		
 		while (Mathematics.isPrime(retVal) == false)
 		{
-			if ((retVal % 2) == 0)
+			if (Mathematics.isEven(retVal))
 			{
 				retVal++;
 			}
@@ -105,18 +129,18 @@ public final class Mathematics
 				retVal += 2;
 			}
 		}
-
+		
 		return retVal;
 	}
-
+	
 	// This method returns the first prime number less than a given integer.
 	public final static long makePrimeLesser(final long n)
 	{
 		long retVal = n;
-
+		
 		while (Mathematics.isPrime(retVal) == false)
 		{
-			if ((retVal % 2) == 0)
+			if (Mathematics.isEven(retVal))
 			{
 				retVal--;
 			}
@@ -125,7 +149,7 @@ public final class Mathematics
 				retVal -= 2;
 			}
 		}
-
+		
 		return retVal;
 	}
 }

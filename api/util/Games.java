@@ -2,7 +2,7 @@
  * Title: Games
  * Author: Matthew Boyette
  * Date: 1/21/2012
- *
+ * 
  * This class is merely a collection of useful static methods that support code recycling. Specifically, this
  * class offers methods and classes which would be useful for games, animation, or utilities that are meant to
  * accompany games and animation.
@@ -20,14 +20,14 @@ public final class Games
 	public final static int[] throwDice(final int numberOfDice, final int numberOfSides)
 	{
 		int[] resultsArray = new int[numberOfDice + 1];
-
+		
 		for (int i = 0; i < numberOfDice; i++)
 		{
 			resultsArray[i] = Mathematics.getRandomInteger(1, numberOfSides, true);
 		}
-
+		
 		resultsArray[numberOfDice] = Mathematics.getSumFromIntegerArray(resultsArray);
-
+		
 		return resultsArray;
 	}
 }
