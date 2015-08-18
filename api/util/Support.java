@@ -462,6 +462,35 @@ public final class Support
 		}
 	}
 	
+	public final static String padHexValueEvenly(final String s, final char c)
+	{
+		String result = s;
+		
+		if ((result != null) && Mathematics.isOdd(result.length()))
+		{
+			StringBuilder sb = new StringBuilder();
+			
+			sb.append(c);
+			sb.append(result);
+			
+			result = sb.toString();
+		}
+		
+		return result;
+	}
+	
+	public final static String padHexValueEvenly(final String s, final char c, final long n)
+	{
+		String result = padHexValueEvenly(s, c);
+		
+		if ((result != null) && (result.length() < n))
+		{
+			// TODO: Pad hex value.
+		}
+		
+		return result;
+	}
+	
 	public final static void pauseConsole()
 	{
 		StdOut.println("Press the [Enter] key to continue...");

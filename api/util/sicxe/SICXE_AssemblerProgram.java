@@ -370,7 +370,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 				}
 			}
 		}
-		// TODO: Clean up this method, possible null pointer dereference of 'result'.
+		// TODO: Clean up this method. Possible null pointer dereference of 'result'.
 		return result;
 	}
 	

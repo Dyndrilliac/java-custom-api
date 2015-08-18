@@ -8,7 +8,6 @@
 
 package api.util.sicxe;
 
-import api.util.Mathematics;
 import api.util.Support;
 
 public class SICXE_Literal
@@ -82,6 +81,11 @@ public class SICXE_Literal
 		return this.address;
 	}
 	
+	public final String getExtraPaddedHexValue()
+	{
+		return Support.padHexValueEvenly(this.getPaddedHexValue(), '0', 6);
+	}
+	
 	public final String getHexValue()
 	{
 		String result = null;
@@ -118,35 +122,7 @@ public class SICXE_Literal
 	
 	public final String getPaddedHexValue()
 	{
-		String result = this.getHexValue();
-		
-		if ((result != null) && (result.length() < 6) && Mathematics.isOdd(result.length()))
-		{
-			StringBuilder sb = new StringBuilder();
-			
-			sb.append(0);
-			sb.append(result);
-			
-			result = sb.toString();
-		}
-		
-		return result;
-	}
-	
-	public final String getExtraPaddedHexValue()
-	{
-		String result = this.getPaddedHexValue();
-		
-		if ((result != null) && (result.length() < 6))
-		{
-			StringBuilder sb = new StringBuilder();
-			
-			// TODO: Zero pad hex value.
-			
-			result = sb.toString();
-		}
-		
-		return result;
+		return Support.padHexValueEvenly(this.getHexValue(), '0');
 	}
 	
 	public final LiteralType getType()
