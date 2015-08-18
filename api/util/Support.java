@@ -483,9 +483,17 @@ public final class Support
 	{
 		String result = padHexValueEvenly(s, c);
 		
-		if ((result != null) && (result.length() < n))
+		if ((result != null) && (result.length() <= n))
 		{
-			// TODO: Pad hex value.
+			StringBuilder sb = new StringBuilder();
+			
+			for (int i = 0; i < n; i++)
+			{
+				sb.append(c);
+			}
+			
+			String padding = sb.toString();
+			result = padding.substring(Math.min((int)n, result.length())) + result;
 		}
 		
 		return result;

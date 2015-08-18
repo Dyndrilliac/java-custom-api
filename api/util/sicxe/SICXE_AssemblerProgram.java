@@ -65,7 +65,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 			// Append a row for each literal.
 			sb.append(l.getInput() +
 				"\t" +
-				l.getExtraPaddedHexValue() +
+				l.getPaddedHexValue() +
 				"\t\t" +
 				l.getLength() +
 				"\t" +
