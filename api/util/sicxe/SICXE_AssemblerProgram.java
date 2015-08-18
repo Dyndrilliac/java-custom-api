@@ -3,7 +3,7 @@
  * Author: Matthew Boyette
  * Date: 3/27/2015
  * 
- * The purpose of this project is to implement a two-pass SIC/XE assembler.
+ * The purpose of this class is to provide a feature complete implementation for a two-pass SIC/XE assembler.
  */
 
 package api.util.sicxe;
@@ -23,9 +23,9 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 	/*
 	 * Construct the hard-coded static reference tables.
 	 * 
-	 * Directive table contains all assembler directives.
-	 * Instruction table contains all program instructions.
-	 * Register table contains all registers.
+	 * Directive table contains all possible assembler directives.
+	 * Instruction table contains all possible program instructions.
+	 * Register table contains all possible registers.
 	 */
 	public static final SeparateChainingSymbolTable<String,SICXE_OpCode>	DIRECTIVE_TABLE		= SICXE_AssemblerProgram.constructDirectiveTable
 																									(
@@ -306,6 +306,9 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 		return symTable;
 	}
 	
+	/*
+	 * TODO: Expressions: Relative vs Absolute
+	 */
 	protected static final int evaluateExpression(final String expression, final SICXE_AssemblerProgram asmProgram)
 	{
 		Integer left = null;
@@ -370,7 +373,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 				}
 			}
 		}
-		// TODO: Clean up this method. Possible null pointer dereference of 'result'.
+		
 		return result;
 	}
 	
@@ -588,6 +591,8 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 				 * The only assembler directives that increment locCtr are the storage directives.
 				 * 
 				 * BYTE, RESB, RESW, WORD
+				 * 
+				 * Some assembler storage directives interact with locCtr in other ways, such as LTORG and ORG.
 				 */
 				
 				switch (acl.getOpCode())
@@ -603,8 +608,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 						// Increment locCtr by [Operand] * 3
 						if (acl.getOperand() != null)
 						{
-							Integer numWords = SICXE_AssemblerProgram.resolveOperand(acl.getOperand(),
-								this);
+							Integer numWords = SICXE_AssemblerProgram.resolveOperand(acl.getOperand(), this);
 							
 							if (numWords != null)
 							{
@@ -619,10 +623,18 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 						// Increment locCtr by [Operand]
 						if (acl.getOperand() != null)
 						{
-							incAmount = SICXE_AssemblerProgram.resolveOperand(acl.getOperand(),
-								this);
+							incAmount = SICXE_AssemblerProgram.resolveOperand(acl.getOperand(), this);
 						}
 						
+						break;
+						
+					case "ORG":
+						
+						// Set locCtr to [Operand]
+						if (acl.getOperand() != null)
+						{
+							this.setLocCtr(SICXE_AssemblerProgram.resolveOperand(acl.getOperand(), this));
+						}
 						break;
 					
 					case "LTORG":
@@ -686,6 +698,9 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 		return this.isBaseFlagSet;
 	}
 	
+	/*
+	 * TODO: USE Directive and Program Blocks: Pass 1
+	 */
 	protected void pass1(final String fileName)
 	{
 		Out outputStream = new Out(fileName + ".pass1-results");
@@ -776,7 +791,12 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 	
 	protected void pass2(final String fileName)
 	{
-		// TODO: Implement pass 2 of the SIC/XE assembler.
+		/*
+		 * TODO: Basic Pass 2 Algorithm
+		 * TODO: Literals: Pass 2
+		 * TODO: USE Directive and Program Blocks: Pass 2
+		 * TODO: CSECT / EXTDEF / EXTREF
+		 */
 	}
 	
 	protected void processEndDirective(final SICXE_AssemblerCodeLine acl)
