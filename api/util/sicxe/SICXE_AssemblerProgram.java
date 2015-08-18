@@ -700,6 +700,8 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 	
 	/*
 	 * TODO: USE Directive and Program Blocks: Pass 1
+	 * TODO: CSECT / EXTDEF / EXTREF: Pass 1
+	 * TODO: Macro Processor: Pass 1
 	 */
 	protected void pass1(final String fileName)
 	{
@@ -795,7 +797,8 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 		 * TODO: Basic Pass 2 Algorithm
 		 * TODO: Literals: Pass 2
 		 * TODO: USE Directive and Program Blocks: Pass 2
-		 * TODO: CSECT / EXTDEF / EXTREF
+		 * TODO: CSECT / EXTDEF / EXTREF: Pass 2
+		 * TODO: Macro Processor: Pass 2
 		 */
 	}
 	
