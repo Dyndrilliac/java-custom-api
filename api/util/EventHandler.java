@@ -40,25 +40,11 @@ public class EventHandler<T> implements Runnable, Serializable
 	}
 	
 	@Override
-	public void run()
-	{
-	}
-	
-	public void run(final ApplicationWindow window)
-	{
-	}
-	
-	public void run(final AWTEvent event)
-	{
-	}
-	
-	public void run(final Object argument)
-	{
-	}
-	
-	public void run(final Object... arguments)
-	{
-	}
+	public void run()								{}
+	public void run(final ApplicationWindow window)	{}
+	public void run(final AWTEvent event)			{}
+	public void run(final Object argument)			{}
+	public void run(final Object... arguments)		{}
 	
 	protected final void setParent(final T parent)
 	{

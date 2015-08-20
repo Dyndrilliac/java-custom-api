@@ -34,7 +34,9 @@ public class KeyValuePair<K,V>
 		{
 			return false;
 		}
+		
 		KeyValuePair<?,?> other = (KeyValuePair<?,?>)obj;
+		
 		if (this.getKey() == null)
 		{
 			if (other.getKey() != null)
@@ -47,6 +49,7 @@ public class KeyValuePair<K,V>
 			{
 				return false;
 			}
+		
 		if (this.getValue() == null)
 		{
 			if (other.getValue() != null)
@@ -59,6 +62,7 @@ public class KeyValuePair<K,V>
 			{
 				return false;
 			}
+		
 		return true;
 	}
 	

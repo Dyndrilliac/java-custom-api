@@ -14,9 +14,7 @@ public class DoubleLinkedList<T>
 	private int		size	= 0;
 	private Node	tail	= null;
 	
-	public DoubleLinkedList()
-	{
-	}
+	public DoubleLinkedList() {}
 	
 	@SafeVarargs
 	public DoubleLinkedList(final T... args)

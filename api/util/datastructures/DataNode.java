@@ -33,7 +33,9 @@ public class DataNode<T> extends Node
 		{
 			return false;
 		}
+		
 		DataNode<?> other = (DataNode<?>)obj;
+		
 		if (this.getData() == null)
 		{
 			if (other.getData() != null)
@@ -46,6 +48,7 @@ public class DataNode<T> extends Node
 			{
 				return false;
 			}
+		
 		return true;
 	}
 	

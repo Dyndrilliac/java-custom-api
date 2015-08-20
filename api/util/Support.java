@@ -168,12 +168,12 @@ public final class Support
 		
 		JOptionPane.showMessageDialog(parent,
 			exception.toString() +
-				"\n\nSource file: " + exception.getStackTrace()[0].getFileName() +
-				"\nLine number: " + exception.getStackTrace()[0].getLineNumber() +
-				"\n\nCause file: " + exception.getStackTrace()[exception.getStackTrace().length - 1].getFileName() +
-				"\nLine number: " + exception.getStackTrace()[exception.getStackTrace().length - 1].getLineNumber() +
-				"\n\nWhen: " + Support.getDateTimeStamp() +
-				"\n\nRecovery: " + recoveryMessage,
+			"\n\nSource file: " + exception.getStackTrace()[0].getFileName() +
+			"\nLine number: " + exception.getStackTrace()[0].getLineNumber() +
+			"\n\nCause file: " + exception.getStackTrace()[exception.getStackTrace().length - 1].getFileName() +
+			"\nLine number: " + exception.getStackTrace()[exception.getStackTrace().length - 1].getLineNumber() +
+			"\n\nWhen: " + Support.getDateTimeStamp() +
+			"\n\nRecovery: " + recoveryMessage,
 			dialogTitle,
 			JOptionPane.ERROR_MESSAGE);
 		exception.printStackTrace();
@@ -462,7 +462,7 @@ public final class Support
 		}
 	}
 	
-	public final static String padHexValueEvenly(final String s, final char c)
+	public final static String padEvenly(final String s, final char c)
 	{
 		String result = s;
 		
@@ -479,9 +479,9 @@ public final class Support
 		return result;
 	}
 	
-	public final static String padHexValueEvenly(final String s, final char c, final long n)
+	public final static String padEvenly(final String s, final char c, final long n)
 	{
-		String result = padHexValueEvenly(s, c);
+		String result = Support.padEvenly(s, c);
 		
 		if ((result != null) && (result.length() <= n))
 		{
@@ -530,7 +530,7 @@ public final class Support
 		
 		return Support.getChoiceInput(parent,
 			"Do you wish to activate debugging mode?\n\n" +
-				"Turning on debugging mode will enable extra diagnostic features that are helpful when testing this application for errors.",
+			"Turning on debugging mode will enable extra diagnostic features that are helpful when testing this application for errors.",
 			"Debugging Mode");
 	}
 }

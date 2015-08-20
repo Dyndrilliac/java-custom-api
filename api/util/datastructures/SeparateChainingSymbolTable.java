@@ -13,34 +13,11 @@ import java.util.LinkedList;
 public class SeparateChainingSymbolTable<K,V>
 {
 	// Largest primes <= 2^i for i = 7 to 31.
-	private static final int[]					PRIMES		=
-															{
-															127,
-															251,
-															509,
-															1021,
-															2039,
-															4093,
-															8191,
-															16381,
-															32749,
-															65521,
-															131071,
-															262139,
-															524287,
-															1048573,
-															2097143,
-															4194301,
-															8388593,
-															16777213,
-															33554393,
-															67108859,
-															134217689,
-															268435399,
-															536870909,
-															1073741789,
-															2147483647
-															};
+	private static final int[]					PRIMES		= {127, 251, 509, 1021, 2039, 4093, 8191, 16381, 
+															   32749, 65521, 131071, 262139, 524287, 1048573, 
+															   2097143, 4194301, 8388593, 16777213, 33554393, 
+															   67108859, 134217689, 268435399, 536870909, 
+															   1073741789, 2147483647};
 	
 	private int									capacity	= 0;	// Current capacity factor.
 	private int									curSize		= 0;	// Current table size (number of key-value pairs).
@@ -77,10 +54,12 @@ public class SeparateChainingSymbolTable<K,V>
 	public final void delete(final K key)
 	{
 		int i = this.hash(key);
+		
 		if (this.getSymTables()[i].contains(key))
 		{
 			this.setCurSize(this.getCurSize() - 1);
 		}
+		
 		this.getSymTables()[i].delete(key);
 		
 		// Reduce table size if average length of list <= 2 and the table is larger than the initial capacity.
@@ -168,10 +147,12 @@ public class SeparateChainingSymbolTable<K,V>
 		}
 		
 		int i = this.hash(key);
+		
 		if (!this.getSymTables()[i].contains(key))
 		{
 			this.setCurSize(this.getCurSize() + 1);
 		}
+		
 		this.getSymTables()[i].put(key, value);
 	}
 	

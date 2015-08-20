@@ -15,9 +15,7 @@ public class Tree<T>
 	private TreeNode<T>	root	= null;
 	private int			size	= 0;
 	
-	public Tree()
-	{
-	}
+	public Tree() {}
 	
 	@SafeVarargs
 	public Tree(final T... args)

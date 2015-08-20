@@ -25,15 +25,19 @@ public class KeyValueNode<K,V> extends Node
 		{
 			return true;
 		}
+		
 		if (!super.equals(obj))
 		{
 			return false;
 		}
+		
 		if (!(obj instanceof KeyValueNode))
 		{
 			return false;
 		}
+		
 		KeyValueNode<?,?> other = (KeyValueNode<?,?>)obj;
+		
 		if (this.getKeyValuePair() == null)
 		{
 			if (other.getKeyValuePair() != null)
@@ -46,6 +50,7 @@ public class KeyValueNode<K,V> extends Node
 			{
 				return false;
 			}
+		
 		return true;
 	}
 	

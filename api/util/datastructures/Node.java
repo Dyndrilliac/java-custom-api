@@ -26,18 +26,22 @@ public abstract class Node
 		{
 			return true;
 		}
+		
 		if (obj == null)
 		{
 			return false;
 		}
+		
 		if (!(obj instanceof Node))
 		{
 			return false;
 		}
+		
 		if (this.hashCode() != obj.hashCode())
 		{
 			return false;
 		}
+		
 		return true;
 	}
 	

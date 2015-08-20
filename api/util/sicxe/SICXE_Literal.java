@@ -14,8 +14,8 @@ public class SICXE_Literal
 {
 	public static enum LiteralType
 	{
-		CHAR,		// =C'TEST STRING' | C'TEST STRING'
-		HEX,		// =X'1F3A' | X'1F3A'
+		CHAR,	// =C'TEST STRING' | C'TEST STRING'
+		HEX,	// =X'1F3A' | X'1F3A'
 		INVALID;
 	}
 	
@@ -83,7 +83,7 @@ public class SICXE_Literal
 	
 	public final String getExtraPaddedHexValue()
 	{
-		return Support.padHexValueEvenly(this.getPaddedHexValue(), '0', 6);
+		return Support.padEvenly(this.getPaddedHexValue(), '0', 6);
 	}
 	
 	public final String getHexValue()
@@ -122,7 +122,7 @@ public class SICXE_Literal
 	
 	public final String getPaddedHexValue()
 	{
-		return Support.padHexValueEvenly(this.getHexValue(), '0');
+		return Support.padEvenly(this.getHexValue(), '0');
 	}
 	
 	public final LiteralType getType()
