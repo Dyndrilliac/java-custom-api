@@ -464,19 +464,26 @@ public final class Support
 	
 	public final static String padLeftEvenly(final String s, final char c)
 	{
-		String result = s;
+		StringBuilder sb = new StringBuilder();
 		
-		if ((result != null) && Mathematics.isOdd(result.length()))
+		if (s != null)
 		{
-			StringBuilder sb = new StringBuilder();
-			
-			sb.append(c);
-			sb.append(result);
-			
-			result = sb.toString();
+			if (s.isEmpty())
+			{
+				sb.append(c);
+				sb.append(c);
+			}
+			else
+			{
+				if (Mathematics.isOdd(s.length()))
+				{
+					sb.append(c);
+					sb.append(s);
+				}
+			}
 		}
 		
-		return result;
+		return sb.toString();
 	}
 	
 	public final static String padLeftEvenly(final String s, final char c, final long n)
@@ -501,19 +508,26 @@ public final class Support
 	
 	public final static String padRightEvenly(final String s, final char c)
 	{
-		String result = s;
+		StringBuilder sb = new StringBuilder();
 		
-		if ((result != null) && Mathematics.isOdd(result.length()))
+		if (s != null)
 		{
-			StringBuilder sb = new StringBuilder();
-			
-			sb.append(result);
-			sb.append(c);
-			
-			result = sb.toString();
+			if (s.isEmpty())
+			{
+				sb.append(c);
+				sb.append(c);
+			}
+			else
+			{
+				if (Mathematics.isOdd(s.length()))
+				{
+					sb.append(s);
+					sb.append(c);
+				}
+			}
 		}
 		
-		return result;
+		return sb.toString();
 	}
 	
 	public final static String padRightEvenly(final String s, final char c, final long n)
