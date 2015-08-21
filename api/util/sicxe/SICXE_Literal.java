@@ -83,7 +83,7 @@ public class SICXE_Literal
 	
 	public final String getExtraPaddedHexValue()
 	{
-		return Support.padEvenly(this.getPaddedHexValue(), '0', 6);
+		return Support.padLeftEvenly(this.getPaddedHexValue(), '0', 6);
 	}
 	
 	public final String getHexValue()
@@ -122,7 +122,7 @@ public class SICXE_Literal
 	
 	public final String getPaddedHexValue()
 	{
-		return Support.padEvenly(this.getHexValue(), '0');
+		return Support.padLeftEvenly(this.getHexValue(), '0');
 	}
 	
 	public final LiteralType getType()

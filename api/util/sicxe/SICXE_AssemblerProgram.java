@@ -732,7 +732,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 				{
 					// Don't process full comments. Just pass them to the output.
 					SICXE_AssemblerProgram.outputLn(outputStream,
-						Support.padEvenly(Integer.toString(i + 1), '0', 3) + ":" + acl.getInput());
+						Support.padLeftEvenly(Integer.toString(i + 1), '0', 3) + ":" + acl.getInput());
 				}
 				else
 				{
@@ -750,8 +750,8 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 					
 					// Print output to the console and the intermediate file.
 					SICXE_AssemblerProgram.outputLn(outputStream,
-						Support.padEvenly(Integer.toString(i + 1), '0', 3) + ":" +
-						Support.padEvenly(Integer.toHexString(this.getLocCtr()).toUpperCase(), '0', 4) +
+						Support.padLeftEvenly(Integer.toString(i + 1), '0', 3) + ":" +
+						Support.padLeftEvenly(Integer.toHexString(this.getLocCtr()).toUpperCase(), '0', 4) +
 						"\t" + acl.getInput());
 					
 					// Handle label, if present.
@@ -798,6 +798,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 	}
 	
 	/*
+	 * TODO: Basic Pass 2 Algorithm
 	 * TODO: Literals - Pass 2
 	 * TODO: USE Directive and Program Blocks - Pass 2
 	 * TODO: CSECT / EXTDEF / EXTREF - Pass 2
@@ -822,7 +823,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 				{
 					// Don't process full comments. Just pass them to the output.
 					SICXE_AssemblerProgram.outputLn(outputListing,
-						Support.padEvenly(Integer.toString(i + 1), '0', 3) + "- " + acl.getInput());
+						Support.padLeftEvenly(Integer.toString(i + 1), '0', 3) + "- " + acl.getInput());
 				}
 				else
 				{
@@ -831,8 +832,8 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 						String objectCode = this.makeObjectCode(acl);
 						
 						SICXE_AssemblerProgram.outputLn(outputListing,
-							Support.padEvenly(Integer.toString(i + 1), '0', 3) + "- " +
-							Support.padEvenly(Integer.toHexString(acl.getAddress()).toUpperCase(), '0', 5) +
+							Support.padLeftEvenly(Integer.toString(i + 1), '0', 3) + "- " +
+							Support.padLeftEvenly(Integer.toHexString(acl.getAddress()).toUpperCase(), '0', 5) +
 							"\t" + objectCode + "\t" + acl.getInput());
 						
 						if (acl.getOpCode().equals("END"))

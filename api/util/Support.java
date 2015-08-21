@@ -462,7 +462,7 @@ public final class Support
 		}
 	}
 	
-	public final static String padEvenly(final String s, final char c)
+	public final static String padLeftEvenly(final String s, final char c)
 	{
 		String result = s;
 		
@@ -479,9 +479,9 @@ public final class Support
 		return result;
 	}
 	
-	public final static String padEvenly(final String s, final char c, final long n)
+	public final static String padLeftEvenly(final String s, final char c, final long n)
 	{
-		String result = Support.padEvenly(s, c);
+		String result = Support.padLeftEvenly(s, c);
 		
 		if ((result != null) && (result.length() <= n))
 		{
@@ -494,6 +494,43 @@ public final class Support
 			
 			String padding = sb.toString();
 			result = padding.substring(Math.min((int)n, result.length())) + result;
+		}
+		
+		return result;
+	}
+	
+	public final static String padRightEvenly(final String s, final char c)
+	{
+		String result = s;
+		
+		if ((result != null) && Mathematics.isOdd(result.length()))
+		{
+			StringBuilder sb = new StringBuilder();
+			
+			sb.append(result);
+			sb.append(c);
+			
+			result = sb.toString();
+		}
+		
+		return result;
+	}
+	
+	public final static String padRightEvenly(final String s, final char c, final long n)
+	{
+		String result = Support.padRightEvenly(s, c);
+		
+		if ((result != null) && (result.length() <= n))
+		{
+			StringBuilder sb = new StringBuilder();
+			
+			for (int i = 0; i < n; i++)
+			{
+				sb.append(c);
+			}
+			
+			String padding = sb.toString();
+			result = result + padding.substring(Math.min((int)n, result.length()));
 		}
 		
 		return result;
