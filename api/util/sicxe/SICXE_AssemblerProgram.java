@@ -630,6 +630,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 						{
 							Integer numWords = SICXE_AssemblerProgram.resolveOperand(acl.getOperand(), this);
 							Integer format = SICXE_AssemblerProgram.DIRECTIVE_TABLE.get(acl.getOpCode()).getFormat();
+							
 							if (numWords != null)
 							{
 								incAmount = format * numWords;
@@ -690,8 +691,8 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 		else
 		{
 			// If the opCode is neither a valid program instruction nor a valid assembler directive,
-			// then trigger an unsupported opcode error.
-			String errorString = "ERROR: Unsupported opcode found on line " + acl.getLineNum() + ".";
+			// then trigger an unsupported operation code error.
+			String errorString = "ERROR: Unsupported operation code found on line " + acl.getLineNum() + ".";
 			out.println(errorString);
 			this.setPass1Error(true);
 		}
@@ -773,8 +774,15 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 											
 											int bits = SICXE_AssemblerProgram.resolveOperand(operands[1], this);
 											
-											// TODO
-											
+											if ((bits >= 1) && (bits <= 16))
+											{
+												objectCode = String.format("%02X", opCodeInfo.getOpCode()) + reg1 +
+													String.format("%1X", (bits - 1));
+											}
+											else
+											{
+												shiftQuantityError = true;
+											}
 											break;
 											
 										default: // ADDR, COMPR, DIVR, MULR, RMO, SUBR
@@ -783,7 +791,8 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 											
 											if ((reg2 >= 0) && (reg2 <= 9))
 											{
-												objectCode = String.format("%02X", opCodeInfo.getOpCode()) + reg1 + reg2;
+												objectCode = String.format("%02X", opCodeInfo.getOpCode()) +
+													reg1 + reg2;
 											}
 											else
 											{
@@ -804,7 +813,17 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 						}
 						else // CLEAR, TIXR
 						{
-							// TODO
+							int reg1 = SICXE_AssemblerProgram.REGISTER_TABLE.get(acl.getOperand());
+							
+							if ((reg1 >= 0) && (reg1 <= 9))
+							{
+								objectCode = String.format("%02X", opCodeInfo.getOpCode()) +
+									reg1 + "0";
+							}
+							else
+							{
+								registerError = true;
+							}
 						}
 					}
 					else
@@ -822,15 +841,16 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 					
 					if (shiftQuantityError)
 					{
-						String errorString = "ERROR: Invalid register or no register found in operand on line " +
+						String errorString = "ERROR: Invalid shift quantity entered on line " +
 							acl.getLineNum() + ".";
 						out.println(errorString);
 						this.setPass2Error(true);
 					}
 					break;
 				
-				default: // Most oomplex case: formats 3 & 4, must figure out flags and displacement.
+				default: // Most complex case: formats 3 & 4, must figure out bit flags and displacement.
 					
+					// Bit Flags: nixbpe
 					boolean baseRelative = false; // (n=1, i=1, b=1, p=0)
 					boolean direct = false;       // (n=1, i=1, b=0, p=0)
 					boolean extended = false;     // (b=0, p=0, e=1)
@@ -881,7 +901,8 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 								break;
 						}
 						
-						if (simple) // Next easiest case: as case 1, but determine if indexing is in use and append the target address.
+						if (simple) // Next easiest case: as case 1, but determine if indexing is in use
+									// and append the target address.
 						{
 							String operand = acl.getOperand(), indexCode;
 							Integer targetAddress;
@@ -897,7 +918,8 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 							}
 							
 							targetAddress = SICXE_AssemblerProgram.resolveOperand(operand, this);
-							objectCode = String.format("%02X", opCodeInfo.getOpCode()) + indexCode + String.format("%03X", targetAddress);
+							objectCode = String.format("%02X", opCodeInfo.getOpCode()) + indexCode +
+								String.format("%03X", targetAddress);
 						}
 						else
 						{
@@ -914,12 +936,22 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 							}
 							else // RSUB, +RSUB
 							{
-								
+								if (extended) // +RSUB
+								{
+									objectCode = String.format("%02X", (opCodeInfo.getOpCode() + 3)) + "1000";
+								}
+								else // RSUB
+								{
+									objectCode = String.format("%02X", (opCodeInfo.getOpCode() + 3)) + "0000";
+								}
 							}
 						}
 						else
 						{
-							// Error - operand expected but none given.
+							String errorString = "ERROR: Missing operand or operand not found in symbol table on line " +
+								acl.getLineNum() + ".";
+							out.println(errorString);
+							this.setPass2Error(true);
 						}
 					}
 					break;
@@ -1145,7 +1177,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 				
 				if (this.getPass2Error())
 				{
-					StdOut.println("Errors (pass 2): partial object code generation, but no object file instantiation. " +
+					StdOut.println("Errors (Pass 2): partial object code generation, but no object file instantiation. " +
 						"Refer to " + fileName + SICXE_AssemblerProgram.fileExtLst + ".\n");
 				}
 				else
@@ -1157,7 +1189,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 			}
 			else
 			{
-				StdOut.println("Errors (pass 1): no object code generated. " +
+				StdOut.println("Errors (Pass 1): no object code generated. " +
 					"Refer to " + fileName + SICXE_AssemblerProgram.fileExtMid + ".\n");
 			}
 		}
