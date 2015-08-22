@@ -464,7 +464,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 		super(fileName);
 	}
 	
-	// TODO: Assign addresses to literals.
+	// TODO: Assign addresses to literals (create literal pools)
 	protected void addressLiterals()
 	{
 		LinkedList<String> literals = (LinkedList<String>)this.getLiteralTable().keys();
@@ -571,17 +571,25 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 		}
 	}
 	
-	// TODO: Literals - Pass 1
-	protected void handleLiteral(final SICXE_AssemblerCodeLine acl)
+	protected void handleLiteral(final SICXE_AssemblerCodeLine acl, final boolean pass1)
 	{
-		// Search for literals and add them to the literal table if they aren't already there.
-		if (acl.getOperand().matches(SICXE_Lexer.SICXE_LITERALS))
+		// TODO: Literals - Pass 1
+		if (pass1)
 		{
-			if (!this.getLiteralTable().contains(acl.getOperand()))
+			// Search for literals and add them to the literal table if they aren't already there.
+			if (acl.getOperand().matches(SICXE_Lexer.SICXE_LITERALS))
 			{
-				SICXE_Literal literal = new SICXE_Literal(acl.getOperand());
-				this.getLiteralTable().put(acl.getOperand(), literal);
+				if (!this.getLiteralTable().contains(acl.getOperand()))
+				{
+					SICXE_Literal literal = new SICXE_Literal(acl.getOperand());
+					this.getLiteralTable().put(acl.getOperand(), literal);
+				}
 			}
+		}
+		// TODO: Literals - Pass 2
+		else
+		{
+			
 		}
 	}
 	
@@ -738,7 +746,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 				case 1: // Easiest case: just set objectCode to the hex string of the operation code.
 					
 					// FIX, FLOAT, HIO, NORM, SIO, TIO
-					objectCode = Integer.toHexString(opCodeInfo.getOpCode());
+					objectCode = String.format("%02X", opCodeInfo.getOpCode());
 					break;
 				
 				case 2: // Next easiest case: as case 1, but also append the operands.
@@ -765,7 +773,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 											
 											int bits = SICXE_AssemblerProgram.resolveOperand(operands[1], this);
 											
-											//
+											// TODO
 											
 											break;
 											
@@ -775,7 +783,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 											
 											if ((reg2 >= 0) && (reg2 <= 9))
 											{
-												objectCode = Integer.toHexString(opCodeInfo.getOpCode()) + reg1 + reg2;
+												objectCode = String.format("%02X", opCodeInfo.getOpCode()) + reg1 + reg2;
 											}
 											else
 											{
@@ -796,7 +804,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 						}
 						else // CLEAR, TIXR
 						{
-							
+							// TODO
 						}
 					}
 					else
@@ -875,23 +883,43 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 						
 						if (simple) // Next easiest case: as case 1, but determine if indexing is in use and append the target address.
 						{
-							objectCode = Integer.toHexString(opCodeInfo.getOpCode());
+							String operand = acl.getOperand(), indexCode;
+							Integer targetAddress;
 							
 							if (indexed)
 							{
-								objectCode = objectCode + "8";
+								operand = operand.substring(0, operand.indexOf(","));
+								indexCode = "8";
 							}
 							else
 							{
-								objectCode = objectCode + "0";
+								indexCode = "0";
 							}
 							
-							Integer targetAddress = SICXE_AssemblerProgram.resolveOperand(acl.getOperand(), this);
-							
+							targetAddress = SICXE_AssemblerProgram.resolveOperand(operand, this);
+							objectCode = String.format("%02X", opCodeInfo.getOpCode()) + indexCode + String.format("%03X", targetAddress);
 						}
 						else
 						{
 							// TODO: Finish object code generation for the hardest cases: SIC/XE formats 3 & 4.
+						}
+					}
+					else // RSUB Variants
+					{
+						if (acl.getOpCode().contains("RSUB"))
+						{
+							if (simple) // *RSUB
+							{
+								objectCode = String.format("%02X", opCodeInfo.getOpCode()) + "0000";
+							}
+							else // RSUB, +RSUB
+							{
+								
+							}
+						}
+						else
+						{
+							// Error - operand expected but none given.
 						}
 					}
 					break;
@@ -962,7 +990,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 					// Handle literal, if present.
 					if (acl.getOperand() != null)
 					{
-						this.handleLiteral(acl);
+						this.handleLiteral(acl, true);
 					}
 					
 					if (acl.getOpCode() != null)
@@ -997,7 +1025,6 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 	}
 	
 	/*
-	 * TODO: Literals - Pass 2
 	 * TODO: USE Directive and Program Blocks - Pass 2
 	 * TODO: CSECT / EXTDEF / EXTREF - Pass 2
 	 * TODO: Macro Processor - Pass 2
