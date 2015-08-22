@@ -81,33 +81,24 @@ public class SICXE_Literal
 		return this.address;
 	}
 	
-	public final String getExtraPaddedHexValue()
-	{
-		return Support.padLeftEvenly(this.getPaddedHexValue(), '0', 6);
-	}
-	
 	public final String getHexValue()
 	{
-		String result = null;
+		StringBuilder sb = new StringBuilder();
 		
 		if (this.getType() == LiteralType.HEX)
 		{
-			result = this.getValue();
+			sb.append(String.format("%02X", Integer.parseInt(this.getValue(), 16)));
 		}
 		
 		if (this.getType() == LiteralType.CHAR)
 		{
-			StringBuilder sb = new StringBuilder();
-			
 			for (int i = 0; i < this.getLength(); i++)
 			{
 				sb.append(String.format("%02X", (int)this.getValue().charAt(i)));
 			}
-			
-			result = sb.toString();
 		}
 		
-		return result;
+		return sb.toString().toUpperCase();
 	}
 	
 	public final String getInput()
@@ -122,7 +113,7 @@ public class SICXE_Literal
 	
 	public final String getPaddedHexValue()
 	{
-		return Support.padLeftEvenly(this.getHexValue(), '0');
+		return Support.padLeftEvenly(this.getHexValue(), '0', 6);
 	}
 	
 	public final LiteralType getType()

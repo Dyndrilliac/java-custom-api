@@ -481,7 +481,16 @@ public final class Support
 	
 	public final static String padLeftEvenly(final String s, final char c, final long n)
 	{
-		String result = Support.padLeftEvenly(s, c);
+		String result = null;
+		
+		if (s.length() < n)
+		{
+			result = Support.padLeftEvenly(s, c);
+		}
+		else
+		{
+			result = s;
+		}
 		
 		if ((result != null) && (result.length() <= n))
 		{
@@ -518,7 +527,16 @@ public final class Support
 	
 	public final static String padRightEvenly(final String s, final char c, final long n)
 	{
-		String result = Support.padRightEvenly(s, c);
+		String result = null;
+		
+		if (s.length() < n)
+		{
+			result = Support.padRightEvenly(s, c);
+		}
+		else
+		{
+			result = s;
+		}
 		
 		if ((result != null) && (result.length() <= n))
 		{
