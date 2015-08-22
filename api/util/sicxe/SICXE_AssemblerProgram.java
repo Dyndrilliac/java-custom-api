@@ -1,7 +1,7 @@
 /*
  * Title: SICXE_AssemblerProgram
  * Author: Matthew Boyette
- * Date: 3/27/2015
+ * Date: 3/27/2015 - 4/23/2015
  * 
  * The purpose of this class is to provide a feature complete implementation for a two-pass SIC/XE assembler.
  */
@@ -20,23 +20,24 @@ import api.util.stdlib.StdOut;
 
 public class SICXE_AssemblerProgram extends SimpleSymbolTable
 {
-	/*
-	 * Construct the hard-coded static reference tables.
-	 * 
-	 * Directive table contains all possible assembler directives.
-	 * Instruction table contains all possible program instructions.
-	 * Register table contains all possible registers.
-	 */
+	// Directive table contains all possible assembler directives.
 	public static final SeparateChainingSymbolTable<String,SICXE_OpCode>	DIRECTIVE_TABLE		= SICXE_AssemblerProgram.constructDirectiveTable
 																									(
 																									new SeparateChainingSymbolTable<String,SICXE_OpCode>()
 																									);
 	
+	// Output file extensions.
+	public static final String												fileExtLst			= ".lst";
+	public static final String												fileExtMid			= ".mid";
+	public static final String												fileExtObj			= ".obj";
+	
+	// Instruction table contains all possible program instructions.
 	public static final SeparateChainingSymbolTable<String,SICXE_OpCode>	INSTRUCTION_TABLE	= SICXE_AssemblerProgram.constructInstructionTable
 																									(
 																									new SeparateChainingSymbolTable<String,SICXE_OpCode>()
 																									);
 	
+	// Register table contains all possible registers.
 	public static final SeparateChainingSymbolTable<String,Integer>			REGISTER_TABLE		= SICXE_AssemblerProgram.constructRegisterTable
 																									(
 																									new SeparateChainingSymbolTable<String,Integer>()
@@ -65,16 +66,16 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 			// Append a row for each literal.
 			sb.append(l.getInput() +
 				"\t" +
-				l.getPaddedHexValue().toUpperCase() +
-				"\t\t" +
-				l.getLength() +
+				Support.padRightEvenly(l.getHexValue(), ' ', 10) +
+				"\t" +
+				Support.padRightEvenly(Integer.toString(l.getLength()), ' ', 4) +
 				"\t" +
 				Integer.toHexString(l.getAddress()).toUpperCase() +
 				"\n");
 		}
 		
 		// Return the literal table string.
-		return (sb.toString() + "\n");
+		return sb.toString();
 	}
 	
 	protected static final String buildSymbolTableString(final SICXE_AssemblerProgram asmProgram)
@@ -91,27 +92,28 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 		
 		// Append the special values tracked by the pass1 algorithm.
 		sb.append("\nStart: " +
-			Integer.toHexString(asmProgram.getStartVal()).toUpperCase() +
-			"\t\t\tEnd: " +
+			Support.padRightEvenly(Integer.toHexString(asmProgram.getStartVal()).toUpperCase(), ' ', 15) +
+			"\tEnd: " +
 			Integer.toHexString(asmProgram.getEndVal()).toUpperCase() +
 			"\nLocation Counter: " +
 			Integer.toHexString(asmProgram.getLocCtr()).toUpperCase() +
-			"\t\tProgram Length: " +
+			"\tProgram Length: " +
 			Integer.toHexString(asmProgram.getPgmLen()).toUpperCase() +
 			"\n");
 		
 		// Append the table header.
-		sb.append("\nTable Location\tLabel\tAddress\tUse\tCsect\n");
+		sb.append("\nTable Location\tLabel\tAddress\tUse\t\tCSect\n");
 		
 		// Loop through the list of keys.
 		for (String s: symbols)
 		{
+			String address = Integer.toHexString(asmProgram.getSymbolTable().get(s)).toUpperCase();
 			// Append a row for each symbol.
-			sb.append(asmProgram.getSymbolTable().hash(s) +
+			sb.append(Support.padRightEvenly(Integer.toString(asmProgram.getSymbolTable().hash(s)), ' ', 10) +
 				"\t\t" +
-				s +
+				Support.padRightEvenly(s, ' ', 6) +
 				"\t" +
-				Integer.toHexString(asmProgram.getSymbolTable().get(s)).toUpperCase() +
+				Support.padRightEvenly(address, ' ', 4) +
 				"\t" +
 				"main" +
 				"\t" +
@@ -120,7 +122,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 		}
 		
 		// Return the symbol table string.
-		return (sb.toString() + "\n");
+		return sb.toString();
 	}
 	
 	private static final SeparateChainingSymbolTable<String,SICXE_OpCode> constructDirectiveTable
@@ -388,31 +390,6 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 		return SICXE_AssemblerProgram.INSTRUCTION_TABLE.contains(s);
 	}
 	
-	protected static final void output(final Out out, final String s)
-	{
-		StdOut.print(s);
-		out.print(s);
-	}
-	
-	protected static final void outputLn(final Out out, final String s)
-	{
-		StdOut.println(s);
-		out.println(s);
-	}
-	
-	protected static final void printListingPreamble(final Out out)
-	{
-		SICXE_AssemblerProgram.outputLn(out, "*********************************************");
-		SICXE_AssemblerProgram.outputLn(out, "University of North Florida: SIC/XE Assembler");
-		SICXE_AssemblerProgram.outputLn(out, "Version Date 3/27/2015");
-		SICXE_AssemblerProgram.outputLn(out, Support.getDateTimeStamp());
-		SICXE_AssemblerProgram.outputLn(out, "*********************************************");
-		SICXE_AssemblerProgram.outputLn(out, "ASSEMBLER REPORT");
-		SICXE_AssemblerProgram.outputLn(out, "----------------");
-		SICXE_AssemblerProgram.outputLn(out, "     Loc\tObject Code\tSource Code");
-		SICXE_AssemblerProgram.outputLn(out, "     ---\t-----------\t-----------");
-	}
-	
 	protected static final SICXE_Literal resolveLiteral(final String literal, final SICXE_AssemblerProgram asmProgram)
 	{
 		if ((literal != null) && (asmProgram.getLiteralTable().contains(literal)))
@@ -477,6 +454,8 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 	private SICXE_AssemblerCodeLine[]							lines			= null;
 	private SeparateChainingSymbolTable<String,SICXE_Literal>	literalTable	= null;
 	private int													locCtr			= 0;
+	private boolean												pass1Error		= false;
+	private boolean												pass2Error		= false;
 	private int													pgmLen			= 0;
 	private int													startVal		= 0;
 	
@@ -485,6 +464,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 		super(fileName);
 	}
 	
+	// TODO: Assign addresses to literals.
 	protected void addressLiterals()
 	{
 		LinkedList<String> literals = (LinkedList<String>)this.getLiteralTable().keys();
@@ -533,6 +513,16 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 		return this.locCtr;
 	}
 	
+	public final boolean getPass1Error()
+	{
+		return this.pass1Error;
+	}
+	
+	public final boolean getPass2Error()
+	{
+		return this.pass2Error;
+	}
+	
 	public final int getPgmLen()
 	{
 		return this.pgmLen;
@@ -543,44 +533,59 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 		return this.startVal;
 	}
 	
-	protected void handleLabel(final SICXE_AssemblerCodeLine acl, final int lineNum, final Out out)
+	protected void handleLabel(final SICXE_AssemblerCodeLine acl, final Out out)
 	{
-		// EQU labels.
-		// [Label] EQU [Value]
-		// Associate the label with the value on the same line. Store them in the symbol table.
-		if (acl.getOpCode().equals("EQU"))
+		if (this.getSymbolTable().contains(acl.getLabel()))
 		{
-			if (acl.getOperand() != null)
-			{
-				Integer value = SICXE_AssemblerProgram.resolveOperand(acl.getOperand(), this);
-				
-				if (value != null)
-				{
-					this.getSymbolTable().put(acl.getLabel(), value);
-				}
-			}
+			// If the label is already in the symbol table, then trigger a duplicate label error.
+			String errorString = "ERROR: Duplicate label found on line " + acl.getLineNum() + ".";
+			out.println(errorString);
+			this.setPass1Error(true);
 		}
-		// Regular labels.
-		// Associate the label with the address of the program instruction on the same line.
-		// This is implemented by storing the label in the symbol table with the current value of locCtr.
 		else
 		{
-			if (this.getSymbolTable().contains(acl.getLabel()))
+			// EQU labels.
+			// [Label] = [Operand]
+			// Associate the label with the value on the same line.
+			// Store them in the symbol table.
+			if (acl.getOpCode().equals("EQU"))
 			{
-				// If the label is already in the symbol table, trigger a duplicate symbol error.
-				String errorString = "PASS 1 ERROR: syntax error line " + lineNum + "; " +
-					"duplicate symbol.";
-				SICXE_AssemblerProgram.outputLn(out, errorString);
+				if (acl.getOperand() != null)
+				{
+					Integer value = SICXE_AssemblerProgram.resolveOperand(acl.getOperand(), this);
+					
+					if (value != null)
+					{
+						this.getSymbolTable().put(acl.getLabel(), value);
+					}
+				}
 			}
+			// Regular labels.
+			// [Label] = [locCtr]
+			// Associate the label with the address of the program instruction on the same line.
+			// Store them in the symbol table.
 			else
 			{
-				// If the label isn't a key in the symbol table, add it with the current value of locCtr.
 				this.getSymbolTable().put(acl.getLabel(), this.getLocCtr());
 			}
 		}
 	}
 	
-	protected void incrementLocCtr(final SICXE_AssemblerCodeLine acl, final int lineNum, final Out out)
+	// TODO: Literals - Pass 1
+	protected void handleLiteral(final SICXE_AssemblerCodeLine acl)
+	{
+		// Search for literals and add them to the literal table if they aren't already there.
+		if (acl.getOperand().matches(SICXE_Lexer.SICXE_LITERALS))
+		{
+			if (!this.getLiteralTable().contains(acl.getOperand()))
+			{
+				SICXE_Literal literal = new SICXE_Literal(acl.getOperand());
+				this.getLiteralTable().put(acl.getOperand(), literal);
+			}
+		}
+	}
+	
+	protected void incrementLocCtr(final SICXE_AssemblerCodeLine acl, final Out out)
 	{
 		if (SICXE_AssemblerProgram.isOpCode(acl.getOpCode()))
 		{
@@ -616,10 +621,10 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 						if (acl.getOperand() != null)
 						{
 							Integer numWords = SICXE_AssemblerProgram.resolveOperand(acl.getOperand(), this);
-							
+							Integer format = SICXE_AssemblerProgram.DIRECTIVE_TABLE.get(acl.getOpCode()).getFormat();
 							if (numWords != null)
 							{
-								incAmount = SICXE_AssemblerProgram.DIRECTIVE_TABLE.get(acl.getOpCode()).getFormat() * numWords;
+								incAmount = format * numWords;
 							}
 						}
 						break;
@@ -676,11 +681,11 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 		}
 		else
 		{
-			// If the opCode is neither a program instruction nor an assembler directive,
-			// then trigger the invalid operation code error.
-			String errorString = "PASS 1 ERROR: syntax error line " + lineNum + "; " +
-				"invalid operation code.";
-			SICXE_AssemblerProgram.outputLn(out, errorString);
+			// If the opCode is neither a valid program instruction nor a valid assembler directive,
+			// then trigger an unsupported opcode error.
+			String errorString = "ERROR: Unsupported opcode found on line " + acl.getLineNum() + ".";
+			out.println(errorString);
+			this.setPass1Error(true);
 		}
 	}
 	
@@ -702,13 +707,207 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 		return this.isBaseFlagSet;
 	}
 	
-	protected String makeObjectCode(SICXE_AssemblerCodeLine acl)
+	protected void makeObjectCode(final SICXE_AssemblerCodeLine acl, final Out out)
 	{
-		String retVal = "        ";
+		String objectCode = "";
 		
-		// TODO: Object Code Generation.
+		if (SICXE_AssemblerProgram.isAssemblerDirective(acl.getOpCode()))
+		{
+			switch (acl.getOpCode())
+			{
+				case "BYTE":
+					
+					break;
+				
+				case "WORD":
+					
+					break;
+				
+				default:
+					
+					break;
+			}
+		}
 		
-		return retVal.toUpperCase();
+		if (SICXE_AssemblerProgram.isProgramInstruction(acl.getOpCode()))
+		{
+			SICXE_OpCode opCodeInfo = SICXE_AssemblerProgram.INSTRUCTION_TABLE.get(acl.getOpCode());
+			
+			switch (opCodeInfo.getFormat())
+			{
+				case 1: // Easiest case: just set objectCode to the hex string of the operation code.
+					
+					// FIX, FLOAT, HIO, NORM, SIO, TIO
+					objectCode = Integer.toHexString(opCodeInfo.getOpCode());
+					break;
+				
+				case 2: // Next easiest case: as case 1, but also append the operands.
+					
+					boolean registerError = false;
+					boolean shiftQuantityError = false;
+					
+					if (acl.getOperand() != null)
+					{
+						if (opCodeInfo.getNumOperands() == 2)
+						{
+							String[] operands = acl.getOperand().split(",", 2);
+							
+							if (operands.length > 1)
+							{
+								int reg1 = SICXE_AssemblerProgram.REGISTER_TABLE.get(operands[0]);
+								
+								if ((reg1 >= 0) && (reg1 <= 9))
+								{
+									switch (acl.getOpCode())
+									{
+										case "SHIFTL":
+										case "SHIFTR":
+											
+											int bits = SICXE_AssemblerProgram.resolveOperand(operands[1], this);
+											
+											//
+											
+											break;
+											
+										default: // ADDR, COMPR, DIVR, MULR, RMO, SUBR
+											
+											int reg2 = SICXE_AssemblerProgram.REGISTER_TABLE.get(operands[1]);
+											
+											if ((reg2 >= 0) && (reg2 <= 9))
+											{
+												objectCode = Integer.toHexString(opCodeInfo.getOpCode()) + reg1 + reg2;
+											}
+											else
+											{
+												registerError = true;
+											}
+											break;
+									}
+								}
+								else
+								{
+									registerError = true;
+								}
+							}
+							else
+							{
+								registerError = true;
+							}
+						}
+						else // CLEAR, TIXR
+						{
+							
+						}
+					}
+					else
+					{
+						registerError = true;
+					}
+					
+					if (registerError)
+					{
+						String errorString = "ERROR: Invalid register or no register found in operand on line " +
+							acl.getLineNum() + ".";
+						out.println(errorString);
+						this.setPass2Error(true);
+					}
+					
+					if (shiftQuantityError)
+					{
+						String errorString = "ERROR: Invalid register or no register found in operand on line " +
+							acl.getLineNum() + ".";
+						out.println(errorString);
+						this.setPass2Error(true);
+					}
+					break;
+				
+				default: // Most oomplex case: formats 3 & 4, must figure out flags and displacement.
+					
+					boolean baseRelative = false; // (n=1, i=1, b=1, p=0)
+					boolean direct = false;       // (n=1, i=1, b=0, p=0)
+					boolean extended = false;     // (b=0, p=0, e=1)
+					boolean immediate = false;    // (n=0, i=1, x=0)
+					boolean indexed = false;      // (both n & i = 0 or 1, x=1)
+					boolean indirect = false;     // (n=1, i=0, x=0)
+					boolean pcRelative = false;   // (n=1, i=1, b=0, p=1)
+					boolean simple = false;       // (n=0, i=0, b=0, p=0, e=0)
+					
+					switch (acl.getOpCode().charAt(0))
+					{
+						case '+': // SIC/XE Extended Direct (Format 4)
+							
+							extended = true;
+							break;
+						
+						case '*': // SIC Simple Direct (Format 3), all flags = 0 except possibly x (indexed).
+							
+							simple = true;
+							break;
+						
+						default: // SIC/XE Normal (Format 3)
+							
+							break;
+					}
+					
+					if (acl.getOperand() != null)
+					{
+						switch (acl.getOperand().charAt(0))
+						{
+							case '@':
+								
+								indirect = true;
+								break;
+							
+							case '#':
+								
+								immediate = true;
+								break;
+							
+							default:
+								
+								// Note: Indexed addressing cannot be used with immediate or indirect addressing.
+								if (acl.getOperand().contains(","))
+								{
+									indexed = true;
+								}
+								break;
+						}
+						
+						if (simple) // Next easiest case: as case 1, but determine if indexing is in use and append the target address.
+						{
+							objectCode = Integer.toHexString(opCodeInfo.getOpCode());
+							
+							if (indexed)
+							{
+								objectCode = objectCode + "8";
+							}
+							else
+							{
+								objectCode = objectCode + "0";
+							}
+							
+							Integer targetAddress = SICXE_AssemblerProgram.resolveOperand(acl.getOperand(), this);
+							
+						}
+						else
+						{
+							// TODO: Finish object code generation for the hardest cases: SIC/XE formats 3 & 4.
+						}
+					}
+					break;
+			}
+		}
+		
+		acl.setObjectCode(objectCode.toUpperCase());
+	}
+	
+	protected void outputObjectFile(final String fileName)
+	{
+		Out out = new Out(fileName + SICXE_AssemblerProgram.fileExtObj);
+		SICXE_AssemblerCodeLine acl = null;
+		
+		// TODO: Output generated object code to object file.
+		out.print("");
 	}
 	
 	/*
@@ -718,7 +917,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 	 */
 	protected void pass1(final String fileName)
 	{
-		Out outputStream = new Out(fileName + ".pass1-results");
+		Out out = new Out(fileName + SICXE_AssemblerProgram.fileExtMid);
 		SICXE_AssemblerCodeLine acl = null;
 		
 		// Loop through the file line-by-line from the beginning.
@@ -728,11 +927,12 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 			
 			if (acl != null)
 			{
+				String lineNumString = Support.padLeftEvenly(Integer.toString(acl.getLineNum()), '0', 3);
+				
 				if (acl.isFullComment())
 				{
-					// Don't process full comments. Just pass them to the output.
-					SICXE_AssemblerProgram.outputLn(outputStream,
-						Support.padLeftEvenly(Integer.toString(i + 1), '0', 3) + ":" + acl.getInput());
+					// Don't process full comments. Just print them to the intermediate file.
+					out.println(lineNumString + ":" + acl.getInput());
 				}
 				else
 				{
@@ -748,32 +948,27 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 					// Update the address for this line of code by copying locCtr.
 					acl.setAddress(this.getLocCtr());
 					
-					// Print output to the console and the intermediate file.
-					SICXE_AssemblerProgram.outputLn(outputStream,
-						Support.padLeftEvenly(Integer.toString(i + 1), '0', 3) + ":" +
+					// Print to the intermediate file.
+					out.println(lineNumString + ":" +
 						Support.padLeftEvenly(Integer.toHexString(this.getLocCtr()).toUpperCase(), '0', 4) +
 						"\t" + acl.getInput());
 					
 					// Handle label, if present.
 					if (acl.getLabel() != null)
 					{
-						this.handleLabel(acl, (i + 1), outputStream);
+						this.handleLabel(acl, out);
 					}
 					
-					// Search for literals and add them to the literal table if they aren't already added.
-					if ((acl.getOperand() != null) && (acl.getOperand().matches(SICXE_Lexer.SICXE_LITERALS)))
+					// Handle literal, if present.
+					if (acl.getOperand() != null)
 					{
-						if (!this.getLiteralTable().contains(acl.getOperand()))
-						{
-							SICXE_Literal literal = new SICXE_Literal(acl.getOperand());
-							this.getLiteralTable().put(acl.getOperand(), literal);
-						}
+						this.handleLiteral(acl);
 					}
 					
 					if (acl.getOpCode() != null)
 					{
 						// Increment locCtr, depending on the given opCode.
-						this.incrementLocCtr(acl, (i + 1), outputStream);
+						this.incrementLocCtr(acl, out);
 						
 						// Process END directive, if present.
 						if (acl.getOpCode().equals("END"))
@@ -788,17 +983,20 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 		
 		// Calculate program length.
 		this.setPgmLen(this.getLocCtr() - this.getStartVal());
-		// Output symbol table.
-		SICXE_AssemblerProgram.output(outputStream, SICXE_AssemblerProgram.buildSymbolTableString(this));
-		// Output literal table.
+		
+		// Output the symbol and literal tables.
 		if (!this.getLiteralTable().isEmpty())
 		{
-			SICXE_AssemblerProgram.output(outputStream, SICXE_AssemblerProgram.buildLiteralTableString(this));
+			out.println(SICXE_AssemblerProgram.buildSymbolTableString(this));
+			out.print(SICXE_AssemblerProgram.buildLiteralTableString(this));
+		}
+		else
+		{
+			out.print(SICXE_AssemblerProgram.buildSymbolTableString(this));
 		}
 	}
 	
 	/*
-	 * TODO: Basic Pass 2 Algorithm
 	 * TODO: Literals - Pass 2
 	 * TODO: USE Directive and Program Blocks - Pass 2
 	 * TODO: CSECT / EXTDEF / EXTREF - Pass 2
@@ -806,11 +1004,18 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 	 */
 	protected void pass2(final String fileName)
 	{
-		Out outputListing = new Out(fileName + ".lst");
-		Out outputObject = new Out(fileName + ".obj");
+		Out out = new Out(fileName + SICXE_AssemblerProgram.fileExtLst);
 		SICXE_AssemblerCodeLine acl = null;
 		
-		SICXE_AssemblerProgram.printListingPreamble(outputListing);
+		out.println("*********************************************");
+		out.println("University of North Florida: SIC/XE Assembler");
+		out.println("Version Date 4/23/2015");
+		out.println(Support.getDateTimeStamp());
+		out.println("*********************************************");
+		out.println("ASSEMBLER REPORT");
+		out.println("----------------");
+		out.println("\t Loc\tObject Code\tSource Code");
+		out.println("\t ---\t-----------\t-----------");
 		
 		// Loop through the file line-by-line from the beginning.
 		for (int i = 0; i < this.getLineCtr(); i++)
@@ -819,51 +1024,35 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 			
 			if (acl != null)
 			{
+				String lineNumString = Support.padLeftEvenly(Integer.toString(acl.getLineNum()), '0', 3);
+				
 				if (acl.isFullComment())
 				{
 					// Don't process full comments. Just pass them to the output.
-					SICXE_AssemblerProgram.outputLn(outputListing,
-						Support.padLeftEvenly(Integer.toString(i + 1), '0', 3) + "- " + acl.getInput());
+					out.println(lineNumString + "- " + acl.getInput());
 				}
 				else
 				{
 					if (acl.getOpCode() != null)
 					{
-						String objectCode = this.makeObjectCode(acl);
+						this.makeObjectCode(acl, out);
 						
-						SICXE_AssemblerProgram.outputLn(outputListing,
-							Support.padLeftEvenly(Integer.toString(i + 1), '0', 3) + "- " +
+						out.println(lineNumString + "- " +
 							Support.padLeftEvenly(Integer.toHexString(acl.getAddress()).toUpperCase(), '0', 5) +
-							"\t" + objectCode + "\t" + acl.getInput());
-						
-						if (acl.getOpCode().equals("END"))
-						{
-							// TODO: Output to object file.
-							outputObject.print("");
-							continue;
-						}
-						
-						if (acl.getOpCode().equals("END"))
-						{
-							// TODO: Output to object file.
-							outputObject.print("");
-							break;
-						}
-						
-						// TODO: Output to object file.
-						outputObject.print("");
+							"\t" + Support.padRightEvenly(acl.getObjectCode(), ' ', 8) + "\t" + acl.getInput());
 					}
 				}
 			}
 		}
 		
-		SICXE_AssemblerProgram.output(outputListing, "\n");
+		if (!this.getPass2Error())
+		{
+			this.outputObjectFile(fileName);
+		}
 	}
 	
 	protected void processEndDirective(final SICXE_AssemblerCodeLine acl)
 	{
-		this.addressLiterals();
-		
 		if (acl.getOperand() != null)
 		{
 			Integer address = SICXE_AssemblerProgram.resolveOperand(acl.getOperand(), this, 16);
@@ -873,6 +1062,8 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 				this.setEndVal(address);
 			}
 		}
+		
+		this.addressLiterals();
 	}
 	
 	protected void processStartDirective(final SICXE_AssemblerCodeLine acl)
@@ -910,24 +1101,43 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 				
 				if (line != null)
 				{
-					this.getLines()[i] = new SICXE_AssemblerCodeLine(line.toUpperCase(), i, 0);
+					this.getLines()[i] = new SICXE_AssemblerCodeLine(line.toUpperCase(), i + 1, 0);
 				}
 			}
 			
-			StdOut.println("Program: " + fileName + "\n");
-			StdOut.println("- Pass 1 -\n");
+			StdOut.println("University of North Florida: SIC/XE Assembler");
+			StdOut.println("Version Date 4/23/2015");
 			
 			// Execute the first pass of the SIC/XE assembler.
 			this.pass1(fileName);
 			
-			StdOut.println("- Pass 2 -\n");
-			
-			// Execute the second pass of the SIC/XE assembler.
-			this.pass2(fileName);
+			if (!this.getPass1Error())
+			{
+				// Execute the second pass of the SIC/XE assembler.
+				this.pass2(fileName);
+				
+				if (this.getPass2Error())
+				{
+					StdOut.println("Errors (pass 2): partial object code generation, but no object file instantiation. " +
+						"Refer to " + fileName + SICXE_AssemblerProgram.fileExtLst + ".\n");
+				}
+				else
+				{
+					StdOut.println("Assembler report file: " + fileName + SICXE_AssemblerProgram.fileExtLst);
+					StdOut.println("\t  object file: " + fileName + SICXE_AssemblerProgram.fileExtObj);
+					StdOut.println("\t  middle file: " + fileName + SICXE_AssemblerProgram.fileExtMid);
+				}
+			}
+			else
+			{
+				StdOut.println("Errors (pass 1): no object code generated. " +
+					"Refer to " + fileName + SICXE_AssemblerProgram.fileExtMid + ".\n");
+			}
 		}
 		catch (final Exception exception)
 		{
-			exception.printStackTrace();
+			StdOut.println("Error opening source file.");
+			StdOut.println("Unable to read source code from file " + fileName + " - program aborts.");
 		}
 	}
 	
@@ -964,6 +1174,16 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 	protected final void setLocCtr(final int locCtr)
 	{
 		this.locCtr = locCtr;
+	}
+	
+	protected final void setPass1Error(final boolean pass1Error)
+	{
+		this.pass1Error = pass1Error;
+	}
+	
+	protected final void setPass2Error(final boolean pass2Error)
+	{
+		this.pass2Error = pass2Error;
 	}
 	
 	protected final void setPgmLen(final int pgmLen)
