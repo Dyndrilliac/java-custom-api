@@ -121,6 +121,7 @@ public class SICXE_AssemblerCodeLine
 	private boolean	isFullComment	= false;
 	private String	label			= null;
 	private int		lineNum			= -1;
+	private String	objectCode		= null;
 	private String	opCode			= null;
 	private String	operand			= null;
 	
@@ -139,6 +140,7 @@ public class SICXE_AssemblerCodeLine
 				this.setFullComment(false);
 				this.setAddress(locCtr);
 				this.setLabel(parts[0]);
+				this.setObjectCode("");
 				this.setOpCode(parts[1]);
 				this.setOperand(parts[2]);
 				this.setComment(parts[3]);
@@ -150,6 +152,7 @@ public class SICXE_AssemblerCodeLine
 			this.setComment(this.getInput());
 			this.setAddress(-1);
 			this.setLabel(null);
+			this.setObjectCode(null);
 			this.setOpCode(null);
 			this.setOperand(null);
 		}
@@ -178,6 +181,11 @@ public class SICXE_AssemblerCodeLine
 	public final int getLineNum()
 	{
 		return this.lineNum;
+	}
+	
+	public final String getObjectCode()
+	{
+		return this.objectCode;
 	}
 	
 	public final String getOpCode()
@@ -223,6 +231,11 @@ public class SICXE_AssemblerCodeLine
 	protected final void setLineNum(final int lineNum)
 	{
 		this.lineNum = lineNum;
+	}
+	
+	public final void setObjectCode(final String objectCode)
+	{
+		this.objectCode = objectCode;
 	}
 	
 	protected final void setOpCode(final String opCode)
