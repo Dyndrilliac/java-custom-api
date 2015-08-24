@@ -56,7 +56,8 @@ public class SICXE_AssemblerCodeLine
 			if (remainingTokens > 0)
 			{
 				boolean doesOpCodeTakeOperands = false;
-				int numOperands = 0, operandToken = (opCodeToken + 1);
+				byte numOperands = 0;
+				int operandToken = (opCodeToken + 1);
 				
 				if (SICXE_AssemblerProgram.isAssemblerDirective(opCode))
 				{
@@ -79,7 +80,7 @@ public class SICXE_AssemblerCodeLine
 					
 					if (remainingTokens > 1)
 					{
-						int punctToken = operandToken + 1;
+						int punctToken = (operandToken + 1);
 						Token<TokenType> punct = tokens.get(punctToken);
 						
 						switch (punct.getData())
@@ -92,7 +93,7 @@ public class SICXE_AssemblerCodeLine
 								
 								if (remainingTokens > 2)
 								{
-									int argToken = punctToken + 1;
+									int argToken = (punctToken + 1);
 									Token<TokenType> arg = tokens.get(argToken);
 									
 									operand = operand + punct.getData() + arg.getData();

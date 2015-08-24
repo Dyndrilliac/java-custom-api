@@ -10,43 +10,43 @@ package api.util.sicxe;
 
 public class SICXE_OpCode
 {
-	private Integer	format		= null;
-	private Integer	numOperands	= null;
-	private Integer	opCode		= null;
+	private byte	format		= 0;
+	private byte	numOperands	= 0;
+	private byte	opCode		= 0;
 	
-	public SICXE_OpCode(final Integer opCode, final Integer format, final Integer numOperands)
+	public SICXE_OpCode(final byte opCode, final byte format, final byte numOperands)
 	{
 		this.setOpCode(opCode);
 		this.setFormat(format);
 		this.setNumOperands(numOperands);
 	}
 	
-	public final Integer getFormat()
+	public final byte getFormat()
 	{
 		return this.format;
 	}
 	
-	public final Integer getNumOperands()
+	public final byte getNumOperands()
 	{
 		return this.numOperands;
 	}
 	
-	public final Integer getOpCode()
+	public final byte getOpCode()
 	{
 		return this.opCode;
 	}
 	
-	public final void setFormat(final Integer format)
+	public final void setFormat(final byte format)
 	{
 		this.format = format;
 	}
 	
-	public final void setNumOperands(final Integer numOperands)
+	public final void setNumOperands(final byte numOperands)
 	{
 		this.numOperands = numOperands;
 	}
 	
-	public final void setOpCode(final Integer opCode)
+	public final void setOpCode(final byte opCode)
 	{
 		this.opCode = opCode;
 	}

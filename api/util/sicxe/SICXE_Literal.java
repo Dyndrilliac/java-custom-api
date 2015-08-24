@@ -22,7 +22,7 @@ public class SICXE_Literal
 	private int			address			= -1;
 	private String		input			= null;
 	private boolean		isTrueLiteral	= false;
-	private int			length			= -1;
+	private short		length			= -1;
 	private LiteralType	type			= null;
 	private String		value			= null;
 	
@@ -51,7 +51,7 @@ public class SICXE_Literal
 			{
 				case 'C':
 					
-					this.setLength(this.getValue().length());
+					this.setLength((short)this.getValue().length());
 					this.setType(LiteralType.CHAR);
 					break;
 				
@@ -62,14 +62,14 @@ public class SICXE_Literal
 						this.setValue(Integer.toHexString(Integer.parseInt(this.getValue())));
 					}
 					
-					this.setLength((int)Math.ceil(this.getValue().length() / 2.0));
+					this.setLength((short)Math.ceil(this.getValue().length() / 2.0));
 					this.setType(LiteralType.HEX);
 					break;
 				
 				default:
 					
 					this.setValue(null);
-					this.setLength(-1);
+					this.setLength((short)-1);
 					this.setType(LiteralType.INVALID);
 					break;
 			}
@@ -106,14 +106,14 @@ public class SICXE_Literal
 		return this.input;
 	}
 	
-	public final int getLength()
+	public final short getLength()
 	{
 		return this.length;
 	}
 	
 	public final String getPaddedHexValue()
 	{
-		return Support.padLeftEvenly(this.getHexValue(), '0', 6);
+		return String.format("%06X", Integer.parseInt(this.getHexValue(), 16));
 	}
 	
 	public final LiteralType getType()
@@ -141,7 +141,7 @@ public class SICXE_Literal
 		this.input = input;
 	}
 	
-	protected final void setLength(final int length)
+	protected final void setLength(final short length)
 	{
 		this.length = length;
 	}
