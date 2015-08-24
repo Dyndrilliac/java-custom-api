@@ -378,6 +378,25 @@ public final class Support
 		return true;
 	}
 	
+	// This method takes a string and determines if it can be safely parsed as a boolean.
+	// Return value of true indicates that the string is safe to parse, and false means that the string is not safe to parse.
+	public final static boolean isStringParsedAsByte(final String s)
+	{
+		try
+		{
+			// parseBoolean throws an exception if the string can't be parsed.
+			Byte.parseByte(s);
+		}
+		catch (final Exception exception)
+		{
+			// If we catch an exception, then we return false.
+			return false;
+		}
+		
+		// Base case; return true if the string was parsed without an exception being thrown.
+		return true;
+	}
+	
 	// This method takes a string and determines if it can be safely parsed as a double.
 	// Return value of true indicates that the string is safe to parse, and false means that the string is not safe to parse.
 	public final static boolean isStringParsedAsDouble(final String s)
@@ -424,6 +443,25 @@ public final class Support
 		{
 			// parseInt throws an exception if the string can't be parsed.
 			Integer.parseInt(s);
+		}
+		catch (final Exception exception)
+		{
+			// If we catch an exception, then we return false.
+			return false;
+		}
+		
+		// Base case; return true if the string was parsed without an exception being thrown.
+		return true;
+	}
+	
+	// This method takes a string and determines if it can be safely parsed as an integer.
+	// Return value of true indicates that the string is safe to parse, and false means that the string is not safe to parse.
+	public final static boolean isStringParsedAsShort(final String s)
+	{
+		try
+		{
+			// parseInt throws an exception if the string can't be parsed.
+			Short.parseShort(s);
 		}
 		catch (final Exception exception)
 		{
