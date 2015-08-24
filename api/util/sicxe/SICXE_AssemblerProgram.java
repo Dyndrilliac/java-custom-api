@@ -38,9 +38,9 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 																									);
 	
 	// Register table contains all possible registers.
-	public static final SeparateChainingSymbolTable<String,Integer>			REGISTER_TABLE		= SICXE_AssemblerProgram.constructRegisterTable
+	public static final SeparateChainingSymbolTable<String,Byte>			REGISTER_TABLE		= SICXE_AssemblerProgram.constructRegisterTable
 																									(
-																									new SeparateChainingSymbolTable<String,Integer>()
+																									new SeparateChainingSymbolTable<String,Byte>()
 																									);
 	
 	protected static final String buildLiteralTableString(final SICXE_AssemblerProgram asmProgram)
@@ -131,21 +131,21 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 	{
 		// This table contains all of the possible assembler directives.
 		// Pre-sorted in ascending alphabeticl order.
-		symTable.put("BASE", new SICXE_OpCode(0, 0, 1));
-		symTable.put("BYTE", new SICXE_OpCode(0, 1, 1));
-		symTable.put("CSECT", new SICXE_OpCode(0, 0, 1));
-		symTable.put("END", new SICXE_OpCode(0, 0, 1));
-		symTable.put("EQU", new SICXE_OpCode(0, 0, 1));
-		symTable.put("EXTDEF", new SICXE_OpCode(0, 0, 1));
-		symTable.put("EXTREF", new SICXE_OpCode(0, 0, 1));
-		symTable.put("LTORG", new SICXE_OpCode(0, 0, 0));
-		symTable.put("NOBASE", new SICXE_OpCode(0, 0, 0));
-		symTable.put("ORG", new SICXE_OpCode(0, 0, 1));
-		symTable.put("RESB", new SICXE_OpCode(0xFF, 1, 1));
-		symTable.put("RESW", new SICXE_OpCode(0xFFFFFF, 3, 1));
-		symTable.put("START", new SICXE_OpCode(0, 0, 1));
-		symTable.put("USE", new SICXE_OpCode(0, 0, 1));
-		symTable.put("WORD", new SICXE_OpCode(0, 3, 1));
+		symTable.put("BASE", new SICXE_OpCode((byte)0, (byte)0, (byte)1));
+		symTable.put("BYTE", new SICXE_OpCode((byte)0, (byte)1, (byte)1));
+		symTable.put("CSECT", new SICXE_OpCode((byte)0, (byte)0, (byte)1));
+		symTable.put("END", new SICXE_OpCode((byte)0, (byte)0, (byte)1));
+		symTable.put("EQU", new SICXE_OpCode((byte)0, (byte)0, (byte)1));
+		symTable.put("EXTDEF", new SICXE_OpCode((byte)0, (byte)0, (byte)1));
+		symTable.put("EXTREF", new SICXE_OpCode((byte)0, (byte)0, (byte)1));
+		symTable.put("LTORG", new SICXE_OpCode((byte)0, (byte)0, (byte)0));
+		symTable.put("NOBASE", new SICXE_OpCode((byte)0, (byte)0, (byte)0));
+		symTable.put("ORG", new SICXE_OpCode((byte)0, (byte)0, (byte)1));
+		symTable.put("RESB", new SICXE_OpCode((byte)0xFF, (byte)1, (byte)1));
+		symTable.put("RESW", new SICXE_OpCode((byte)0xFF, (byte)3, (byte)1));
+		symTable.put("START", new SICXE_OpCode((byte)0, (byte)0, (byte)1));
+		symTable.put("USE", new SICXE_OpCode((byte)0, (byte)0, (byte)1));
+		symTable.put("WORD", new SICXE_OpCode((byte)0, (byte)3, (byte)1));
 		
 		return symTable;
 	}
@@ -157,152 +157,152 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 	{
 		// This table contains all of the possible program instructions.
 		// Pre-sorted in ascending alphabeticl order.
-		symTable.put("*ADD", new SICXE_OpCode(0x18, 3, 1));
-		symTable.put("*AND", new SICXE_OpCode(0x40, 3, 1));
-		symTable.put("*COMP", new SICXE_OpCode(0x28, 3, 1));
-		symTable.put("*DIV", new SICXE_OpCode(0x24, 3, 1));
-		symTable.put("*J", new SICXE_OpCode(0x3C, 3, 1));
-		symTable.put("*JEQ", new SICXE_OpCode(0x30, 3, 1));
-		symTable.put("*JGT", new SICXE_OpCode(0x34, 3, 1));
-		symTable.put("*JLT", new SICXE_OpCode(0x38, 3, 1));
-		symTable.put("*JSUB", new SICXE_OpCode(0x48, 3, 1));
-		symTable.put("*LDA", new SICXE_OpCode(0x00, 3, 1));
-		symTable.put("*LDCH", new SICXE_OpCode(0x50, 3, 1));
-		symTable.put("*LDL", new SICXE_OpCode(0x08, 3, 1));
-		symTable.put("*LDX", new SICXE_OpCode(0x04, 3, 1));
-		symTable.put("*MUL", new SICXE_OpCode(0x20, 3, 1));
-		symTable.put("*OR", new SICXE_OpCode(0x44, 3, 1));
-		symTable.put("*RD", new SICXE_OpCode(0xD8, 3, 1));
-		symTable.put("*RSUB", new SICXE_OpCode(0x4C, 3, 0));
-		symTable.put("*STA", new SICXE_OpCode(0x0C, 3, 1));
-		symTable.put("*STCH", new SICXE_OpCode(0x54, 3, 1));
-		symTable.put("*STL", new SICXE_OpCode(0x14, 3, 1));
-		symTable.put("*STSW", new SICXE_OpCode(0xE8, 3, 1));
-		symTable.put("*STX", new SICXE_OpCode(0x10, 3, 1));
-		symTable.put("*SUB", new SICXE_OpCode(0x1C, 3, 1));
-		symTable.put("*TD", new SICXE_OpCode(0xE0, 3, 1));
-		symTable.put("*TIX", new SICXE_OpCode(0x2C, 3, 1));
-		symTable.put("*WD", new SICXE_OpCode(0xDC, 3, 1));
-		symTable.put("+ADD", new SICXE_OpCode(0x18, 4, 1));
-		symTable.put("+ADDF", new SICXE_OpCode(0x58, 4, 1));
-		symTable.put("+AND", new SICXE_OpCode(0x40, 4, 1));
-		symTable.put("+COMP", new SICXE_OpCode(0x28, 4, 1));
-		symTable.put("+COMPF", new SICXE_OpCode(0x88, 4, 1));
-		symTable.put("+DIV", new SICXE_OpCode(0x24, 4, 1));
-		symTable.put("+DIVF", new SICXE_OpCode(0x64, 4, 1));
-		symTable.put("+J", new SICXE_OpCode(0x3C, 4, 1));
-		symTable.put("+JEQ", new SICXE_OpCode(0x30, 4, 1));
-		symTable.put("+JGT", new SICXE_OpCode(0x34, 4, 1));
-		symTable.put("+JLT", new SICXE_OpCode(0x38, 4, 1));
-		symTable.put("+JSUB", new SICXE_OpCode(0x48, 4, 1));
-		symTable.put("+LDA", new SICXE_OpCode(0x00, 4, 1));
-		symTable.put("+LDB", new SICXE_OpCode(0x68, 4, 1));
-		symTable.put("+LDCH", new SICXE_OpCode(0x50, 4, 1));
-		symTable.put("+LDF", new SICXE_OpCode(0x70, 4, 1));
-		symTable.put("+LDL", new SICXE_OpCode(0x08, 4, 1));
-		symTable.put("+LDS", new SICXE_OpCode(0x6C, 4, 1));
-		symTable.put("+LDT", new SICXE_OpCode(0x74, 4, 1));
-		symTable.put("+LDX", new SICXE_OpCode(0x04, 4, 1));
-		symTable.put("+LPS", new SICXE_OpCode(0xD0, 4, 1));
-		symTable.put("+MUL", new SICXE_OpCode(0x20, 4, 1));
-		symTable.put("+MULF", new SICXE_OpCode(0x60, 4, 1));
-		symTable.put("+OR", new SICXE_OpCode(0x44, 4, 1));
-		symTable.put("+RD", new SICXE_OpCode(0xD8, 4, 1));
-		symTable.put("+RSUB", new SICXE_OpCode(0x4C, 4, 0));
-		symTable.put("+SSK", new SICXE_OpCode(0xEC, 4, 1));
-		symTable.put("+STA", new SICXE_OpCode(0x0C, 4, 1));
-		symTable.put("+STB", new SICXE_OpCode(0x78, 4, 1));
-		symTable.put("+STCH", new SICXE_OpCode(0x54, 4, 1));
-		symTable.put("+STF", new SICXE_OpCode(0x80, 4, 1));
-		symTable.put("+STI", new SICXE_OpCode(0xD4, 4, 1));
-		symTable.put("+STL", new SICXE_OpCode(0x14, 4, 1));
-		symTable.put("+STS", new SICXE_OpCode(0x7C, 4, 1));
-		symTable.put("+STSW", new SICXE_OpCode(0xE8, 4, 1));
-		symTable.put("+STT", new SICXE_OpCode(0x84, 4, 1));
-		symTable.put("+STX", new SICXE_OpCode(0x10, 4, 1));
-		symTable.put("+SUB", new SICXE_OpCode(0x1C, 4, 1));
-		symTable.put("+SUBF", new SICXE_OpCode(0x5C, 4, 1));
-		symTable.put("+TD", new SICXE_OpCode(0xE0, 4, 1));
-		symTable.put("+TIX", new SICXE_OpCode(0x2C, 4, 1));
-		symTable.put("+WD", new SICXE_OpCode(0xDC, 4, 1));
-		symTable.put("ADD", new SICXE_OpCode(0x18, 3, 1));
-		symTable.put("ADDF", new SICXE_OpCode(0x58, 3, 1));
-		symTable.put("ADDR", new SICXE_OpCode(0x90, 2, 2));
-		symTable.put("AND", new SICXE_OpCode(0x40, 3, 1));
-		symTable.put("CLEAR", new SICXE_OpCode(0xB4, 2, 1));
-		symTable.put("COMP", new SICXE_OpCode(0x28, 3, 1));
-		symTable.put("COMPF", new SICXE_OpCode(0x88, 3, 1));
-		symTable.put("COMPR", new SICXE_OpCode(0xA0, 2, 2));
-		symTable.put("DIV", new SICXE_OpCode(0x24, 3, 1));
-		symTable.put("DIVF", new SICXE_OpCode(0x64, 3, 1));
-		symTable.put("DIVR", new SICXE_OpCode(0x9C, 2, 2));
-		symTable.put("FIX", new SICXE_OpCode(0xC4, 1, 0));
-		symTable.put("FLOAT", new SICXE_OpCode(0xC0, 1, 0));
-		symTable.put("HIO", new SICXE_OpCode(0xF4, 1, 0));
-		symTable.put("J", new SICXE_OpCode(0x3C, 3, 1));
-		symTable.put("JEQ", new SICXE_OpCode(0x30, 3, 1));
-		symTable.put("JGT", new SICXE_OpCode(0x34, 3, 1));
-		symTable.put("JLT", new SICXE_OpCode(0x38, 3, 1));
-		symTable.put("JSUB", new SICXE_OpCode(0x48, 3, 1));
-		symTable.put("LDA", new SICXE_OpCode(0x00, 3, 1));
-		symTable.put("LDB", new SICXE_OpCode(0x68, 3, 1));
-		symTable.put("LDCH", new SICXE_OpCode(0x50, 3, 1));
-		symTable.put("LDF", new SICXE_OpCode(0x70, 3, 1));
-		symTable.put("LDL", new SICXE_OpCode(0x08, 3, 1));
-		symTable.put("LDS", new SICXE_OpCode(0x6C, 3, 1));
-		symTable.put("LDT", new SICXE_OpCode(0x74, 3, 1));
-		symTable.put("LDX", new SICXE_OpCode(0x04, 3, 1));
-		symTable.put("LPS", new SICXE_OpCode(0xD0, 3, 1));
-		symTable.put("MUL", new SICXE_OpCode(0x20, 3, 1));
-		symTable.put("MULF", new SICXE_OpCode(0x60, 3, 1));
-		symTable.put("MULR", new SICXE_OpCode(0x98, 2, 2));
-		symTable.put("NORM", new SICXE_OpCode(0xC8, 1, 0));
-		symTable.put("OR", new SICXE_OpCode(0x44, 3, 1));
-		symTable.put("RD", new SICXE_OpCode(0xD8, 3, 1));
-		symTable.put("RMO", new SICXE_OpCode(0xAC, 2, 2));
-		symTable.put("RSUB", new SICXE_OpCode(0x4C, 3, 0));
-		symTable.put("SHIFTL", new SICXE_OpCode(0xA4, 2, 2));
-		symTable.put("SHIFTR", new SICXE_OpCode(0xA8, 2, 2));
-		symTable.put("SIO", new SICXE_OpCode(0xF0, 1, 0));
-		symTable.put("SSK", new SICXE_OpCode(0xEC, 3, 1));
-		symTable.put("STA", new SICXE_OpCode(0x0C, 3, 1));
-		symTable.put("STB", new SICXE_OpCode(0x78, 3, 1));
-		symTable.put("STCH", new SICXE_OpCode(0x54, 3, 1));
-		symTable.put("STF", new SICXE_OpCode(0x80, 3, 1));
-		symTable.put("STI", new SICXE_OpCode(0xD4, 3, 1));
-		symTable.put("STL", new SICXE_OpCode(0x14, 3, 1));
-		symTable.put("STS", new SICXE_OpCode(0x7C, 3, 1));
-		symTable.put("STSW", new SICXE_OpCode(0xE8, 3, 1));
-		symTable.put("STT", new SICXE_OpCode(0x84, 3, 1));
-		symTable.put("STX", new SICXE_OpCode(0x10, 3, 1));
-		symTable.put("SUB", new SICXE_OpCode(0x1C, 3, 1));
-		symTable.put("SUBF", new SICXE_OpCode(0x5C, 3, 1));
-		symTable.put("SUBR", new SICXE_OpCode(0x94, 2, 2));
-		symTable.put("SVC", new SICXE_OpCode(0xB0, 2, 1));
-		symTable.put("TD", new SICXE_OpCode(0xE0, 3, 1));
-		symTable.put("TIO", new SICXE_OpCode(0xF8, 1, 0));
-		symTable.put("TIX", new SICXE_OpCode(0x2C, 3, 1));
-		symTable.put("TIXR", new SICXE_OpCode(0xB8, 2, 1));
-		symTable.put("WD", new SICXE_OpCode(0xDC, 3, 1));
+		symTable.put("*ADD", new SICXE_OpCode((byte)0x18, (byte)3, (byte)1));
+		symTable.put("*AND", new SICXE_OpCode((byte)0x40, (byte)3, (byte)1));
+		symTable.put("*COMP", new SICXE_OpCode((byte)0x28, (byte)3, (byte)1));
+		symTable.put("*DIV", new SICXE_OpCode((byte)0x24, (byte)3, (byte)1));
+		symTable.put("*J", new SICXE_OpCode((byte)0x3C, (byte)3, (byte)1));
+		symTable.put("*JEQ", new SICXE_OpCode((byte)0x30, (byte)3, (byte)1));
+		symTable.put("*JGT", new SICXE_OpCode((byte)0x34, (byte)3, (byte)1));
+		symTable.put("*JLT", new SICXE_OpCode((byte)0x38, (byte)3, (byte)1));
+		symTable.put("*JSUB", new SICXE_OpCode((byte)0x48, (byte)3, (byte)1));
+		symTable.put("*LDA", new SICXE_OpCode((byte)0x00, (byte)3, (byte)1));
+		symTable.put("*LDCH", new SICXE_OpCode((byte)0x50, (byte)3, (byte)1));
+		symTable.put("*LDL", new SICXE_OpCode((byte)0x08, (byte)3, (byte)1));
+		symTable.put("*LDX", new SICXE_OpCode((byte)0x04, (byte)3, (byte)1));
+		symTable.put("*MUL", new SICXE_OpCode((byte)0x20, (byte)3, (byte)1));
+		symTable.put("*OR", new SICXE_OpCode((byte)0x44, (byte)3, (byte)1));
+		symTable.put("*RD", new SICXE_OpCode((byte)0xD8, (byte)3, (byte)1));
+		symTable.put("*RSUB", new SICXE_OpCode((byte)0x4C, (byte)3, (byte)0));
+		symTable.put("*STA", new SICXE_OpCode((byte)0x0C, (byte)3, (byte)1));
+		symTable.put("*STCH", new SICXE_OpCode((byte)0x54, (byte)3, (byte)1));
+		symTable.put("*STL", new SICXE_OpCode((byte)0x14, (byte)3, (byte)1));
+		symTable.put("*STSW", new SICXE_OpCode((byte)0xE8, (byte)3, (byte)1));
+		symTable.put("*STX", new SICXE_OpCode((byte)0x10, (byte)3, (byte)1));
+		symTable.put("*SUB", new SICXE_OpCode((byte)0x1C, (byte)3, (byte)1));
+		symTable.put("*TD", new SICXE_OpCode((byte)0xE0, (byte)3, (byte)1));
+		symTable.put("*TIX", new SICXE_OpCode((byte)0x2C, (byte)3, (byte)1));
+		symTable.put("*WD", new SICXE_OpCode((byte)0xDC, (byte)3, (byte)1));
+		symTable.put("+ADD", new SICXE_OpCode((byte)0x18, (byte)4, (byte)1));
+		symTable.put("+ADDF", new SICXE_OpCode((byte)0x58, (byte)4, (byte)1));
+		symTable.put("+AND", new SICXE_OpCode((byte)0x40, (byte)4, (byte)1));
+		symTable.put("+COMP", new SICXE_OpCode((byte)0x28, (byte)4, (byte)1));
+		symTable.put("+COMPF", new SICXE_OpCode((byte)0x88, (byte)4, (byte)1));
+		symTable.put("+DIV", new SICXE_OpCode((byte)0x24, (byte)4, (byte)1));
+		symTable.put("+DIVF", new SICXE_OpCode((byte)0x64, (byte)4, (byte)1));
+		symTable.put("+J", new SICXE_OpCode((byte)0x3C, (byte)4, (byte)1));
+		symTable.put("+JEQ", new SICXE_OpCode((byte)0x30, (byte)4, (byte)1));
+		symTable.put("+JGT", new SICXE_OpCode((byte)0x34, (byte)4, (byte)1));
+		symTable.put("+JLT", new SICXE_OpCode((byte)0x38, (byte)4, (byte)1));
+		symTable.put("+JSUB", new SICXE_OpCode((byte)0x48, (byte)4, (byte)1));
+		symTable.put("+LDA", new SICXE_OpCode((byte)0x00, (byte)4, (byte)1));
+		symTable.put("+LDB", new SICXE_OpCode((byte)0x68, (byte)4, (byte)1));
+		symTable.put("+LDCH", new SICXE_OpCode((byte)0x50, (byte)4, (byte)1));
+		symTable.put("+LDF", new SICXE_OpCode((byte)0x70, (byte)4, (byte)1));
+		symTable.put("+LDL", new SICXE_OpCode((byte)0x08, (byte)4, (byte)1));
+		symTable.put("+LDS", new SICXE_OpCode((byte)0x6C, (byte)4, (byte)1));
+		symTable.put("+LDT", new SICXE_OpCode((byte)0x74, (byte)4, (byte)1));
+		symTable.put("+LDX", new SICXE_OpCode((byte)0x04, (byte)4, (byte)1));
+		symTable.put("+LPS", new SICXE_OpCode((byte)0xD0, (byte)4, (byte)1));
+		symTable.put("+MUL", new SICXE_OpCode((byte)0x20, (byte)4, (byte)1));
+		symTable.put("+MULF", new SICXE_OpCode((byte)0x60, (byte)4, (byte)1));
+		symTable.put("+OR", new SICXE_OpCode((byte)0x44, (byte)4, (byte)1));
+		symTable.put("+RD", new SICXE_OpCode((byte)0xD8, (byte)4, (byte)1));
+		symTable.put("+RSUB", new SICXE_OpCode((byte)0x4C, (byte)4, (byte)0));
+		symTable.put("+SSK", new SICXE_OpCode((byte)0xEC, (byte)4, (byte)1));
+		symTable.put("+STA", new SICXE_OpCode((byte)0x0C, (byte)4, (byte)1));
+		symTable.put("+STB", new SICXE_OpCode((byte)0x78, (byte)4, (byte)1));
+		symTable.put("+STCH", new SICXE_OpCode((byte)0x54, (byte)4, (byte)1));
+		symTable.put("+STF", new SICXE_OpCode((byte)0x80, (byte)4, (byte)1));
+		symTable.put("+STI", new SICXE_OpCode((byte)0xD4, (byte)4, (byte)1));
+		symTable.put("+STL", new SICXE_OpCode((byte)0x14, (byte)4, (byte)1));
+		symTable.put("+STS", new SICXE_OpCode((byte)0x7C, (byte)4, (byte)1));
+		symTable.put("+STSW", new SICXE_OpCode((byte)0xE8, (byte)4, (byte)1));
+		symTable.put("+STT", new SICXE_OpCode((byte)0x84, (byte)4, (byte)1));
+		symTable.put("+STX", new SICXE_OpCode((byte)0x10, (byte)4, (byte)1));
+		symTable.put("+SUB", new SICXE_OpCode((byte)0x1C, (byte)4, (byte)1));
+		symTable.put("+SUBF", new SICXE_OpCode((byte)0x5C, (byte)4, (byte)1));
+		symTable.put("+TD", new SICXE_OpCode((byte)0xE0, (byte)4, (byte)1));
+		symTable.put("+TIX", new SICXE_OpCode((byte)0x2C, (byte)4, (byte)1));
+		symTable.put("+WD", new SICXE_OpCode((byte)0xDC, (byte)4, (byte)1));
+		symTable.put("ADD", new SICXE_OpCode((byte)0x18, (byte)3, (byte)1));
+		symTable.put("ADDF", new SICXE_OpCode((byte)0x58, (byte)3, (byte)1));
+		symTable.put("ADDR", new SICXE_OpCode((byte)0x90, (byte)2, (byte)2));
+		symTable.put("AND", new SICXE_OpCode((byte)0x40, (byte)3, (byte)1));
+		symTable.put("CLEAR", new SICXE_OpCode((byte)0xB4, (byte)2, (byte)1));
+		symTable.put("COMP", new SICXE_OpCode((byte)0x28, (byte)3, (byte)1));
+		symTable.put("COMPF", new SICXE_OpCode((byte)0x88, (byte)3, (byte)1));
+		symTable.put("COMPR", new SICXE_OpCode((byte)0xA0, (byte)2, (byte)2));
+		symTable.put("DIV", new SICXE_OpCode((byte)0x24, (byte)3, (byte)1));
+		symTable.put("DIVF", new SICXE_OpCode((byte)0x64, (byte)3, (byte)1));
+		symTable.put("DIVR", new SICXE_OpCode((byte)0x9C, (byte)2, (byte)2));
+		symTable.put("FIX", new SICXE_OpCode((byte)0xC4, (byte)1, (byte)0));
+		symTable.put("FLOAT", new SICXE_OpCode((byte)0xC0, (byte)1, (byte)0));
+		symTable.put("HIO", new SICXE_OpCode((byte)0xF4, (byte)1, (byte)0));
+		symTable.put("J", new SICXE_OpCode((byte)0x3C, (byte)3, (byte)1));
+		symTable.put("JEQ", new SICXE_OpCode((byte)0x30, (byte)3, (byte)1));
+		symTable.put("JGT", new SICXE_OpCode((byte)0x34, (byte)3, (byte)1));
+		symTable.put("JLT", new SICXE_OpCode((byte)0x38, (byte)3, (byte)1));
+		symTable.put("JSUB", new SICXE_OpCode((byte)0x48, (byte)3, (byte)1));
+		symTable.put("LDA", new SICXE_OpCode((byte)0x00, (byte)3, (byte)1));
+		symTable.put("LDB", new SICXE_OpCode((byte)0x68, (byte)3, (byte)1));
+		symTable.put("LDCH", new SICXE_OpCode((byte)0x50, (byte)3, (byte)1));
+		symTable.put("LDF", new SICXE_OpCode((byte)0x70, (byte)3, (byte)1));
+		symTable.put("LDL", new SICXE_OpCode((byte)0x08, (byte)3, (byte)1));
+		symTable.put("LDS", new SICXE_OpCode((byte)0x6C, (byte)3, (byte)1));
+		symTable.put("LDT", new SICXE_OpCode((byte)0x74, (byte)3, (byte)1));
+		symTable.put("LDX", new SICXE_OpCode((byte)0x04, (byte)3, (byte)1));
+		symTable.put("LPS", new SICXE_OpCode((byte)0xD0, (byte)3, (byte)1));
+		symTable.put("MUL", new SICXE_OpCode((byte)0x20, (byte)3, (byte)1));
+		symTable.put("MULF", new SICXE_OpCode((byte)0x60, (byte)3, (byte)1));
+		symTable.put("MULR", new SICXE_OpCode((byte)0x98, (byte)2, (byte)2));
+		symTable.put("NORM", new SICXE_OpCode((byte)0xC8, (byte)1, (byte)0));
+		symTable.put("OR", new SICXE_OpCode((byte)0x44, (byte)3, (byte)1));
+		symTable.put("RD", new SICXE_OpCode((byte)0xD8, (byte)3, (byte)1));
+		symTable.put("RMO", new SICXE_OpCode((byte)0xAC, (byte)2, (byte)2));
+		symTable.put("RSUB", new SICXE_OpCode((byte)0x4C, (byte)3, (byte)0));
+		symTable.put("SHIFTL", new SICXE_OpCode((byte)0xA4, (byte)2, (byte)2));
+		symTable.put("SHIFTR", new SICXE_OpCode((byte)0xA8, (byte)2, (byte)2));
+		symTable.put("SIO", new SICXE_OpCode((byte)0xF0, (byte)1, (byte)0));
+		symTable.put("SSK", new SICXE_OpCode((byte)0xEC, (byte)3, (byte)1));
+		symTable.put("STA", new SICXE_OpCode((byte)0x0C, (byte)3, (byte)1));
+		symTable.put("STB", new SICXE_OpCode((byte)0x78, (byte)3, (byte)1));
+		symTable.put("STCH", new SICXE_OpCode((byte)0x54, (byte)3, (byte)1));
+		symTable.put("STF", new SICXE_OpCode((byte)0x80, (byte)3, (byte)1));
+		symTable.put("STI", new SICXE_OpCode((byte)0xD4, (byte)3, (byte)1));
+		symTable.put("STL", new SICXE_OpCode((byte)0x14, (byte)3, (byte)1));
+		symTable.put("STS", new SICXE_OpCode((byte)0x7C, (byte)3, (byte)1));
+		symTable.put("STSW", new SICXE_OpCode((byte)0xE8, (byte)3, (byte)1));
+		symTable.put("STT", new SICXE_OpCode((byte)0x84, (byte)3, (byte)1));
+		symTable.put("STX", new SICXE_OpCode((byte)0x10, (byte)3, (byte)1));
+		symTable.put("SUB", new SICXE_OpCode((byte)0x1C, (byte)3, (byte)1));
+		symTable.put("SUBF", new SICXE_OpCode((byte)0x5C, (byte)3, (byte)1));
+		symTable.put("SUBR", new SICXE_OpCode((byte)0x94, (byte)2, (byte)2));
+		symTable.put("SVC", new SICXE_OpCode((byte)0xB0, (byte)2, (byte)1));
+		symTable.put("TD", new SICXE_OpCode((byte)0xE0, (byte)3, (byte)1));
+		symTable.put("TIO", new SICXE_OpCode((byte)0xF8, (byte)1, (byte)0));
+		symTable.put("TIX", new SICXE_OpCode((byte)0x2C, (byte)3, (byte)1));
+		symTable.put("TIXR", new SICXE_OpCode((byte)0xB8, (byte)2, (byte)1));
+		symTable.put("WD", new SICXE_OpCode((byte)0xDC, (byte)3, (byte)1));
 		
 		return symTable;
 	}
 	
-	private static final SeparateChainingSymbolTable<String,Integer> constructRegisterTable
+	private static final SeparateChainingSymbolTable<String,Byte> constructRegisterTable
 		(
-			final SeparateChainingSymbolTable<String,Integer> symTable
+			final SeparateChainingSymbolTable<String,Byte> symTable
 		)
 	{
 		// This table contains all of the possible registers.
-		symTable.put("A", 0);
-		symTable.put("X", 1);
-		symTable.put("L", 2);
-		symTable.put("B", 3);
-		symTable.put("S", 4);
-		symTable.put("T", 5);
-		symTable.put("F", 6);
-		symTable.put("PC", 8);
-		symTable.put("SW", 9);
+		symTable.put("A", (byte)0);
+		symTable.put("X", (byte)1);
+		symTable.put("L", (byte)2);
+		symTable.put("B", (byte)3);
+		symTable.put("S", (byte)4);
+		symTable.put("T", (byte)5);
+		symTable.put("F", (byte)6);
+		symTable.put("PC", (byte)8);
+		symTable.put("SW", (byte)9);
 		
 		return symTable;
 	}
@@ -456,14 +456,14 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 	
 	private int													baseAddress		= 0;
 	private int													endVal			= 0;
-	private String												fileName		= null;
-	private boolean												isBaseFlag		= false;
+	private String													fileName		= null;
+	private boolean													isBaseFlag		= false;
 	private int													lineCtr			= 0;
-	private SICXE_AssemblerCodeLine[]							lines			= null;
-	private SeparateChainingSymbolTable<String,SICXE_Literal>	literalTable	= null;
+	private SICXE_AssemblerCodeLine[]								lines			= null;
+	private SeparateChainingSymbolTable<String,SICXE_Literal>		literalTable	= null;
 	private int													locCtr			= 0;
-	private boolean												pass1Error		= false;
-	private boolean												pass2Error		= false;
+	private boolean													pass1Error		= false;
+	private boolean													pass2Error		= false;
 	private int													pgmLen			= 0;
 	private int													startVal		= 0;
 	
@@ -600,7 +600,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 				case "NOBASE":
 					
 					this.setBaseAddress(0);
-					this.setBaseFlag(true);
+					this.setBaseFlag(false);
 					break;
 					
 				default:
@@ -667,7 +667,11 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 					if (!this.getLiteralTable().contains(acl.getOperand()))
 					{
 						SICXE_Literal literal = new SICXE_Literal(acl.getOperand());
-						this.getLiteralTable().put(acl.getOperand(), literal);
+						
+						if (literal.isTrueLiteral())
+						{
+							this.getLiteralTable().put(acl.getOperand(), literal);
+						}
 					}
 				}
 			}
@@ -722,7 +726,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 								
 								if (numWords != null)
 								{
-									incAmount = format * numWords;
+									incAmount = (numWords * format);
 								}
 							}
 							break;
@@ -761,7 +765,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 								}
 								else
 								{
-									if (Support.isStringParsedAsInteger(acl.getOperand()))
+									if (Support.isStringParsedAsByte(acl.getOperand()))
 									{
 										incAmount = format;
 									}
@@ -1106,7 +1110,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 								}
 								else
 								{
-									objectCode = this.makeObjectCode_Hard(opCode, origin, targetAddress, indexed);
+									objectCode = this.makeObjectCode_Hard(opCode, (short)origin, (short)targetAddress, indexed);
 								}
 							}
 						}
@@ -1154,11 +1158,11 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 	}
 	
 	// TODO: Finish object code generation for the hardest cases: SIC/XE format 3.
-	protected String makeObjectCode_Hard(final String opCode, final int origin, final int targetAddress,
+	protected String makeObjectCode_Hard(final String opCode, final short origin, final short targetAddress,
 		final boolean indexed)
 	{
-		int baseDisp = (targetAddress - this.getBaseAddress());
-		int pcDisp = (targetAddress - origin);
+		short baseDisp = (short)(targetAddress - this.getBaseAddress());
+		short pcDisp = (short)(targetAddress - origin);
 		
 		/*
 		 * Determine the addressing mode based on the displacement.
