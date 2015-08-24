@@ -98,7 +98,7 @@ public class SICXE_Literal
 			}
 		}
 		
-		return sb.toString().toUpperCase();
+		return sb.toString();
 	}
 	
 	public final String getInput()
