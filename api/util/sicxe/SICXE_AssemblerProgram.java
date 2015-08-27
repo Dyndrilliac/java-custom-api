@@ -4,6 +4,16 @@
  * Date: 3/27/2015 - 4/23/2015
  * 
  * The purpose of this class is to provide a feature complete implementation for a two-pass SIC/XE assembler.
+ * 
+ * TODO: Pass 1 - Relative Symbols vs Absolute Symbols
+ * TODO: Pass 1 - USE Directive and Program Blocks 
+ * TODO: Pass 1 - CSECT / EXTDEF / EXTREF
+ * TODO: Pass 1 - Macro Processor
+ * TODO: Pass 2 - Output Generated Object Code to Object File
+ * TODO: Pass 2 - Literals
+ * TODO: Pass 2 - USE Directive and Program Blocks 
+ * TODO: Pass 2 - CSECT / EXTDEF / EXTREF
+ * TODO: Pass 2 - Macro Processor
  */
 
 package api.util.sicxe;
@@ -56,7 +66,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 		StringBuilder sb = new StringBuilder();
 		
 		// Append the table header.
-		sb.append("Literal\t\tHex Value\tLength\tAddress\n");
+		sb.append("Literal Input\t\tHex Value\t\tLength\tAddress\n");
 		
 		// Loop through the list of keys.
 		for (String s: literals)
@@ -64,13 +74,13 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 			SICXE_Literal l = SICXE_AssemblerProgram.resolveLiteral(s, asmProgram);
 			
 			// Append a row for each literal.
-			sb.append(String.format("%-10S", l.getInput()) +
+			sb.append(String.format("%-17S", l.getInput()) +
 				"\t" +
-				String.format("%-10S", l.getHexValue()) +
+				String.format("%-15S", l.getHexValue()) +
 				"\t" +
 				String.format("%-4d", l.getLength()) +
 				"\t" +
-				String.format("%-3X", l.getAddress()) +
+				String.format("%04X", l.getAddress()) +
 				"\n");
 		}
 		
@@ -91,14 +101,14 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 		StringBuilder sb = new StringBuilder();
 		
 		// Append the special values tracked by the pass1 algorithm.
-		sb.append("\nStart: " +
-			String.format("%-15X", asmProgram.getStartVal()) +
-			"\tEnd: " +
-			String.format("%-3X", asmProgram.getEndVal()) +
-			"\nLocation Counter: " +
-			String.format("%-3X", asmProgram.getLocCtr()) +
-			"\tProgram Length: " +
-			String.format("%-3X", asmProgram.getPgmLen()) +
+		sb.append("\nStart:\t\t\t\t" +
+			String.format("%04X", asmProgram.getStartVal()) +
+			"\nEnd:\t\t\t\t" +
+			String.format("%04X", asmProgram.getEndVal()) +
+			"\nLocation Counter:\t" +
+			String.format("%04X", asmProgram.getLocCtr()) +
+			"\nProgram Length:\t\t" +
+			String.format("%04X", asmProgram.getPgmLen()) +
 			"\n");
 		
 		// Append the table header.
@@ -108,11 +118,11 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 		for (String s: symbols)
 		{
 			// Append a row for each symbol.
-			sb.append(String.format("%-10d", asmProgram.getSymbolTable().hash(s)) +
+			sb.append(String.format("%03d %-7d", asmProgram.getSymbolTable().hash(s), 0) +
 				"\t\t" +
 				String.format("%-6S", s) +
 				"\t" +
-				String.format("%-4X", asmProgram.getSymbolTable().get(s)) +
+				String.format("%04X", asmProgram.getSymbolTable().get(s)) +
 				"\t" +
 				"main" +
 				"\t" +
@@ -124,7 +134,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 		return sb.toString();
 	}
 	
-	private static final SeparateChainingSymbolTable<String,SICXE_OpCode> constructDirectiveTable
+	protected static final SeparateChainingSymbolTable<String,SICXE_OpCode> constructDirectiveTable
 		(
 			final SeparateChainingSymbolTable<String,SICXE_OpCode> symTable
 		)
@@ -150,7 +160,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 		return symTable;
 	}
 	
-	private static final SeparateChainingSymbolTable<String,SICXE_OpCode> constructInstructionTable
+	protected static final SeparateChainingSymbolTable<String,SICXE_OpCode> constructInstructionTable
 		(
 			final SeparateChainingSymbolTable<String,SICXE_OpCode> symTable
 		)
@@ -288,7 +298,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 		return symTable;
 	}
 	
-	private static final SeparateChainingSymbolTable<String,Byte> constructRegisterTable
+	protected static final SeparateChainingSymbolTable<String,Byte> constructRegisterTable
 		(
 			final SeparateChainingSymbolTable<String,Byte> symTable
 		)
@@ -307,7 +317,6 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 		return symTable;
 	}
 	
-	// TODO: Expressions - Relative vs Absolute Symbols
 	protected static final int evaluateExpression(final String expression, final SICXE_AssemblerProgram asmProgram)
 	{
 		Integer left = null, right = null, result = 0;
@@ -441,6 +450,12 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 			result = SICXE_AssemblerProgram.resolveSymbol(operand, asmProgram);
 		}
 		
+		// Handle literal references.
+		if (asmProgram.getLiteralTable().contains(operand))
+		{
+			result = SICXE_AssemblerProgram.resolveLiteral(operand, asmProgram).getAddress();
+		}
+		
 		return result;
 	}
 	
@@ -456,14 +471,14 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 	
 	private int													baseAddress		= 0;
 	private int													endVal			= 0;
-	private String													fileName		= null;
-	private boolean													isBaseFlag		= false;
+	private String												fileName		= null;
+	private boolean												isBaseFlag		= false;
 	private int													lineCtr			= 0;
-	private SICXE_AssemblerCodeLine[]								lines			= null;
-	private SeparateChainingSymbolTable<String,SICXE_Literal>		literalTable	= null;
+	private SICXE_AssemblerCodeLine[]							lines			= null;
+	private SeparateChainingSymbolTable<String,SICXE_Literal>	literalTable	= null;
 	private int													locCtr			= 0;
-	private boolean													pass1Error		= false;
-	private boolean													pass2Error		= false;
+	private boolean												pass1Error		= false;
+	private boolean												pass2Error		= false;
 	private int													pgmLen			= 0;
 	private int													startVal		= 0;
 	
@@ -472,7 +487,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 		super(fileName);
 	}
 	
-	// TODO: Assign addresses to literals (create literal pools)
+	// Assign addresses to literals (create literal pools)
 	protected void addressLiterals()
 	{
 		LinkedList<String> literals = (LinkedList<String>)this.getLiteralTable().keys();
@@ -491,7 +506,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 		}
 	}
 	
-	public void assembleProgram()
+	protected void assembleProgram()
 	{
 		// Try to assemble the program.
 		try
@@ -658,7 +673,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 	{
 		if (acl.getOperand() != null)
 		{
-			// TODO: Literals - Pass 1
+			// Literals - Pass 1
 			if (pass1)
 			{
 				// Search for literals and add them to the literal table if they aren't already there.
@@ -668,6 +683,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 					{
 						SICXE_Literal literal = new SICXE_Literal(acl.getOperand());
 						
+						// Differentiate between true literals and literal byte constants with the '=' prefix.
 						if (literal.isTrueLiteral())
 						{
 							this.getLiteralTable().put(acl.getOperand(), literal);
@@ -675,7 +691,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 					}
 				}
 			}
-			// TODO: Literals - Pass 2
+			// Literals - Pass 2
 			else
 			{
 				//
@@ -831,24 +847,45 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 		
 		if (acl.getOpCode() != null)
 		{
-			// TODO: Handle memory-oriented assembler directives.
-			if (SICXE_AssemblerProgram.isAssemblerDirective(acl.getOpCode()))
+			if (acl.getOperand() != null)
 			{
-				switch (acl.getOpCode())
+				// Handle memory-oriented assembler directives.
+				if (SICXE_AssemblerProgram.isAssemblerDirective(acl.getOpCode()))
 				{
-					case "BYTE":
+					switch (acl.getOpCode())
+					{
+						case "BYTE":
+							
+							if (acl.getOperand().matches(SICXE_Lexer.SICXE_LITERALS))
+							{
+								objectCode = (new SICXE_Literal(acl.getOperand())).getHexValue();
+							}
+							else
+							{
+								if (Support.isStringParsedAsByte(acl.getOperand()))
+								{
+									objectCode = String.format("%02X", Byte.parseByte(acl.getOperand()));
+								}
+							}
+							break;
 						
-						//
-						break;
-					
-					case "WORD":
+						case "WORD":
+							
+							if (Support.isStringParsedAsInteger(acl.getOperand()))
+							{
+								objectCode = String.format("%06X", Integer.parseInt(acl.getOperand()));
+							}
+							
+							if (objectCode.length() > 6)
+							{
+								objectCode = objectCode.substring(2);
+							}
+							break;
 						
-						//
-						break;
-					
-					default:
-						
-						break;
+						default:
+							
+							break;
+					}
 				}
 			}
 			
@@ -858,6 +895,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 				SICXE_OpCode opCodeInfo = SICXE_AssemblerProgram.INSTRUCTION_TABLE.get(acl.getOpCode());
 				String opCode = String.format("%02X", opCodeInfo.getOpCode());
 				
+				// Divide up the instruction handling code based on the format of the instruction.
 				switch (opCodeInfo.getFormat())
 				{
 					case 1: // Simplest case: just set objectCode to the hex string of the operation code.
@@ -998,7 +1036,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 						}
 						break;
 					
-					default: // Most complex case: formats 3 & 4. Must figure out bit flags and displacement.
+					default: // Most complex cases: formats 3 & 4. Must figure out bit flags and displacement.
 							 // We will do SIC simple and SIC/XE extended first bescause they are the simplest.
 						
 						/*
@@ -1039,7 +1077,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 						if (acl.getOperand() != null)
 						{
 							String bitFlags = "", operand = acl.getOperand();
-							int targetAddress = 0, origin = opCodeInfo.getFormat() + acl.getAddress();
+							short origin = (short)(acl.getAddress() + opCodeInfo.getFormat());
 							
 							switch (acl.getOperand().charAt(0))
 							{
@@ -1076,8 +1114,6 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 								operand = operand.substring(1, operand.length());
 							}
 							
-							targetAddress = SICXE_AssemblerProgram.resolveOperand(operand, this);
-							
 							if (simple)	// Next simplest case: as case 1, but determine if indexing is in use
 										// and then append the target address.
 							{
@@ -1090,7 +1126,8 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 									bitFlags = "0";
 								}
 								
-								objectCode = opCode + bitFlags + String.format("%03X", targetAddress);
+								objectCode = opCode + bitFlags + String.format("%03X",
+												SICXE_AssemblerProgram.resolveOperand(operand, this));
 							}
 							else
 							{
@@ -1106,11 +1143,14 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 										bitFlags = "1";
 									}
 									
-									objectCode = opCode + bitFlags + String.format("%05X", targetAddress);
+									objectCode = opCode + bitFlags + String.format("%05X",
+													SICXE_AssemblerProgram.resolveOperand(operand, this));
 								}
 								else
 								{
-									objectCode = this.makeObjectCode_Hard(opCode, (short)origin, (short)targetAddress, indexed);
+									// Handle the toughest cases in a separate method for maintainability
+									// since this method is already pretty massive.
+									objectCode = this.makeObjectCode_Hard(opCode, operand, origin, indexed);
 								}
 							}
 						}
@@ -1157,65 +1197,122 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 		acl.setObjectCode(objectCode);
 	}
 	
-	// TODO: Finish object code generation for the hardest cases: SIC/XE format 3.
-	protected String makeObjectCode_Hard(final String opCode, final short origin, final short targetAddress,
+	// Finish object code generation for the hardest cases: SIC/XE format 3.
+	protected String makeObjectCode_Hard(final String opCode, final String operand, final short origin,
 		final boolean indexed)
 	{
+		short targetAddress = (SICXE_AssemblerProgram.resolveOperand(operand, this)).shortValue();
 		short baseDisp = (short)(targetAddress - this.getBaseAddress());
 		short pcDisp = (short)(targetAddress - origin);
+		String bitFlags = "", displacement = "";
 		
+		// Operand is a numerical constant, so use Direct addressing mode.
+		if (Support.isStringParsedAsInteger(operand))
+		{
+			// Bit Flags = 8.
+			if (indexed)
+			{
+				bitFlags = "8";
+				displacement = String.format("%03X", targetAddress);
+				
+				if ((targetAddress < 0) || (targetAddress > 4095))
+				{
+					if (targetAddress > 4095)
+					{
+						displacement = String.format("%03X", 4095);
+					}
+					
+					if (targetAddress < 0)
+					{
+						displacement = String.format("%03X", 0);
+					}
+				}
+			}
+			// Bit Flags = 0.
+			else
+			{
+				bitFlags = "0";
+				displacement = String.format("%03X", targetAddress);
+				
+				if ((targetAddress < 0) || (targetAddress > 4095))
+				{
+					if (targetAddress > 4095)
+					{
+						displacement = String.format("%03X", 4095);
+					}
+					
+					if (targetAddress < 0)
+					{
+						displacement = String.format("%03X", 0);
+					}
+				}
+			}
+		}
 		/*
-		 * Determine the addressing mode based on the displacement.
-		 * Order of preference: PCRelative -> BaseRelative -> Direct
+		 * Operand is a memory location, so use PCRelative or BaseRelative addressing mode.
+		 * Try PCRelative mode first. Only try to use BaseRelative mode if PCRelative mode won't work.
 		 * 
-		 * Direct:			TA = displacement			(0 <= displacement <= 4095)
 		 * PCRelative:		TA = (PC) + displacement	(-2048 <= displacement <= 2047)
 		 * BaseRelative:	TA = (B) + displacement		(0 <= displacement <= 4095)
 		 */
-		
-		// Bit Flags = 8 (Direct), A (PCRelative), or C (BaseRelative)
-		if (indexed)
-		{
-			if ((pcDisp >= -2048) && (pcDisp <= 2047))
-			{
-				return (opCode + "A" + String.format("%03X", pcDisp));
-			}
-			else
-			{
-				if (this.isBaseFlag())
-				{
-					if ((baseDisp >= 0) && (baseDisp <= 4095))
-					{
-						return (opCode + "C" + String.format("%03X", baseDisp));
-					}
-				}
-			}
-			
-			return (opCode + "8" + String.format("%03X", targetAddress));
-		}
-		// Bit Flags = 0 (Direct), 2 (PCRelative), or 4 (BaseRelative)
 		else
 		{
-			if ((pcDisp >= -2048) && (pcDisp <= 2047))
+			// Bit Flags = A (PCRelative) or C (BaseRelative).
+			if (indexed)
 			{
-				return (opCode + "2" + String.format("%03X", pcDisp));
-			}
-			else
-			{
-				if (this.isBaseFlag())
+				if ((pcDisp >= -2048) && (pcDisp <= 2047))
 				{
-					if ((baseDisp >= 0) && (baseDisp <= 4095))
+					bitFlags = "A";
+					displacement = String.format("%03X", pcDisp);
+					
+					if (displacement.length() > 3)
 					{
-						return (opCode + "4" + String.format("%03X", baseDisp));
+						displacement = displacement.substring(1);
+					}
+				}
+				else
+				{
+					if (this.isBaseFlag())
+					{
+						if ((baseDisp >= 0) && (baseDisp <= 4095))
+						{
+							bitFlags = "C";
+							displacement = String.format("%03X", baseDisp);
+						}
 					}
 				}
 			}
-			
-			return (opCode + "0" + String.format("%03X", targetAddress));
+			// Bit Flags = 2 (PCRelative) or 4 (BaseRelative).
+			else
+			{
+				if ((pcDisp >= -2048) && (pcDisp <= 2047))
+				{
+					bitFlags = "2";
+					displacement = String.format("%03X", pcDisp);
+					
+					if (displacement.length() > 3)
+					{
+						displacement = displacement.substring(1);
+					}
+				}
+				else
+				{
+					if (this.isBaseFlag())
+					{
+						if ((baseDisp >= 0) && (baseDisp <= 4095))
+						{
+							bitFlags = "4";
+							displacement = String.format("%03X", baseDisp);
+						}
+					}
+				}
+			}
 		}
+		
+		return (opCode + bitFlags + displacement);
 	}
 	
-	// TODO: Output generated object code to object file.
+	// Output generated object code to object file.
 	protected void outputObjectFile()
 	{
 		Out out = new Out(this.getFileName() + SICXE_AssemblerProgram.fileExtObj);
@@ -1230,29 +1327,27 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 			{
 				if (acl.getOpCode() != null)
 				{
+					// START directive special case.
 					if (acl.getOpCode().equals("START"))
 					{
 						out.print("");
 						continue;
 					}
 					
+					// END directive special case.
 					if (acl.getOpCode().equals("END"))
 					{
 						out.print("");
 						break;
 					}
 					
+					// General case.
 					out.print("");
 				}
 			}
 		}
 	}
 	
-	/*
-	 * TODO: USE Directive and Program Blocks - Pass 1
-	 * TODO: CSECT / EXTDEF / EXTREF - Pass 1
-	 * TODO: Macro Processor - Pass 1
-	 */
 	protected void pass1()
 	{
 		Out out = new Out(this.getFileName() + SICXE_AssemblerProgram.fileExtMid);
@@ -1291,9 +1386,6 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 					// Handle literal, if present.
 					this.handleLiteral(acl, true);
 					
-					// Handle BASE assembler directive, if present.
-					this.handleBase(acl);
-					
 					// Increment locCtr depending on the given opCode.
 					this.incrementLocCtr(acl, out);
 					
@@ -1322,11 +1414,6 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 		}
 	}
 	
-	/*
-	 * TODO: USE Directive and Program Blocks - Pass 2
-	 * TODO: CSECT / EXTDEF / EXTREF - Pass 2
-	 * TODO: Macro Processor - Pass 2
-	 */
 	protected void pass2()
 	{
 		Out out = new Out(this.getFileName() + SICXE_AssemblerProgram.fileExtLst);
@@ -1359,10 +1446,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 				}
 				else
 				{
-					// Handle literal, if present.
-					this.handleLiteral(acl, false);
-					
-					// Handle BASE assembler directive, if present.
+					// Handle BASE/NOBASE assembler directives, if present.
 					this.handleBase(acl);
 					
 					// Generate the object byte code for this line of assembly source code.
