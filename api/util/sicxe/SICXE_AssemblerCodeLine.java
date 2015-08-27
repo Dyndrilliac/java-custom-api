@@ -83,27 +83,34 @@ public class SICXE_AssemblerCodeLine
 						int punctToken = (operandToken + 1);
 						Token<TokenType> punct = tokens.get(punctToken);
 						
-						switch (punct.getData())
+						if (tokens.get(operandToken).getType() == TokenType.OPERATOR)
 						{
-							case ",":
-							case "-":
-							case "+":
-							case "/":
-							case "*":
-								
-								if (remainingTokens > 2)
-								{
-									int argToken = (punctToken + 1);
-									Token<TokenType> arg = tokens.get(argToken);
+							operand = (operand + punct.getData()).trim();
+						}
+						else
+						{
+							switch (punct.getData())
+							{
+								case ",":
+								case "-":
+								case "+":
+								case "/":
+								case "*":
 									
-									operand = operand + punct.getData() + arg.getData();
-								}
+									if (remainingTokens > 2)
+									{
+										int argToken = (punctToken + 1);
+										Token<TokenType> arg = tokens.get(argToken);
+										
+										operand = operand + punct.getData() + arg.getData();
+									}
+									
+									break;
 								
-								break;
-							
-							default:
-								
-								break;
+								default:
+									
+									break;
+							}
 						}
 					}
 				}
