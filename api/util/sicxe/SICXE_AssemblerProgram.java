@@ -488,21 +488,30 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 	}
 	
 	// Assign addresses to literals (create literal pools)
-	protected void addressLiterals()
+	protected void addressLiterals(final SICXE_AssemblerCodeLine acl, final boolean pass1)
 	{
-		LinkedList<String> literals = (LinkedList<String>)this.getLiteralTable().keys();
-		
-		for (String literal: literals)
+		// Create literal pools as appropriate following the LTORG and END directives.
+		if (pass1)
 		{
-			SICXE_Literal l = SICXE_AssemblerProgram.resolveLiteral(literal, this);
+			LinkedList<String> literals = (LinkedList<String>)this.getLiteralTable().keys();
 			
-			if (l.getAddress() < 0)
+			for (String literal: literals)
 			{
-				l.setAddress(this.getLocCtr());
-				this.setLocCtr(this.getLocCtr() + l.getLength());
+				SICXE_Literal l = SICXE_AssemblerProgram.resolveLiteral(literal, this);
+				
+				if (l.getAddress() < 0)
+				{
+					l.setAddress(this.getLocCtr());
+					this.setLocCtr(this.getLocCtr() + l.getLength());
+				}
+				
+				this.getLiteralTable().put(literal, l);
 			}
-			
-			this.getLiteralTable().put(literal, l);
+		}
+		// Print literal pools to report/listing file as appropriate following the LTORG and END directives.
+		else
+		{
+			//
 		}
 	}
 	
@@ -761,13 +770,13 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 							// Set locCtr to [Operand]
 							if (acl.getOperand() != null)
 							{
-								this.setLocCtr(SICXE_AssemblerProgram.resolveOperand(acl.getOperand(), this));
+								this.setLocCtr(SICXE_AssemblerProgram.resolveOperand(acl.getOperand(), this, 16));
 							}
 							break;
 						
 						case "LTORG":
 							
-							this.addressLiterals();
+							this.addressLiterals(acl, true);
 							break;
 						
 						case "BYTE":
@@ -1449,6 +1458,9 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 					// Handle BASE/NOBASE assembler directives, if present.
 					this.handleBase(acl);
 					
+					// Handle literal, if present.
+					this.handleLiteral(acl, false);
+					
 					// Generate the object byte code for this line of assembly source code.
 					this.makeObjectCode(acl, out);
 					
@@ -1457,6 +1469,9 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 						String.format("%05X", acl.getAddress()) +
 						"\t" + String.format("%-8S", acl.getObjectCode()) +
 						"\t" + acl.getInput());
+					
+					// Print literal pools as appropriate.
+					this.addressLiterals(acl, false);
 				}
 			}
 		}
@@ -1484,7 +1499,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
 					}
 				}
 				
-				this.addressLiterals();
+				this.addressLiterals(acl, true);
 				return true;
 			}
 		}

@@ -8,8 +8,6 @@
 
 package api.util.sicxe;
 
-import api.util.Support;
-
 public class SICXE_Literal
 {
 	public static enum LiteralType
@@ -57,11 +55,6 @@ public class SICXE_Literal
 				
 				case 'X':
 					
-					if (Support.isStringParsedAsInteger(this.getValue()))
-					{
-						this.setValue(Integer.toHexString(Integer.parseInt(this.getValue())));
-					}
-					
 					this.setLength((short)Math.ceil(this.getValue().length() / 2.0));
 					this.setType(LiteralType.HEX);
 					break;
@@ -83,22 +76,19 @@ public class SICXE_Literal
 	
 	public final String getHexValue()
 	{
-		StringBuilder sb = new StringBuilder();
-		
-		if (this.getType() == LiteralType.HEX)
-		{
-			sb.append(String.format("%02X", Integer.parseInt(this.getValue(), 16)));
-		}
-		
 		if (this.getType() == LiteralType.CHAR)
 		{
+			StringBuilder sb = new StringBuilder();
+			
 			for (int i = 0; i < this.getLength(); i++)
 			{
 				sb.append(String.format("%02X", (int)this.getValue().charAt(i)));
 			}
+			
+			return sb.toString();
 		}
 		
-		return sb.toString();
+		return this.getValue();
 	}
 	
 	public final String getInput()
@@ -109,11 +99,6 @@ public class SICXE_Literal
 	public final short getLength()
 	{
 		return this.length;
-	}
-	
-	public final String getPaddedHexValue()
-	{
-		return String.format("%06X", Integer.parseInt(this.getHexValue(), 16));
 	}
 	
 	public final LiteralType getType()
