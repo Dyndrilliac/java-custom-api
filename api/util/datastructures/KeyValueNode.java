@@ -99,10 +99,19 @@ public class KeyValueNode<K,V> extends Node
 		StringBuilder builder = new StringBuilder();
 		builder.append("KeyValueNode [kvp=");
 		builder.append(this.getKeyValuePair());
-		builder.append(", next=");
-		builder.append(this.getNext());
-		builder.append(", previous=");
-		builder.append(this.getPrevious());
+		
+		if (this.getNext() != null)
+		{
+			builder.append(", next=");
+			builder.append(this.getNext().hashCode());
+		}
+		
+		if (this.getPrevious() != null)
+		{
+			builder.append(", previous=");
+			builder.append(this.getPrevious().hashCode());
+		}
+		
 		builder.append("]");
 		return builder.toString();
 	}

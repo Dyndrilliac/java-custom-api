@@ -77,10 +77,19 @@ public class DataNode<T> extends Node
 		StringBuilder builder = new StringBuilder();
 		builder.append("DataNode [data=");
 		builder.append(this.getData());
-		builder.append(", next=");
-		builder.append(this.getNext());
-		builder.append(", previous=");
-		builder.append(this.getPrevious());
+		
+		if (this.getNext() != null)
+		{
+			builder.append(", next=");
+			builder.append(this.getNext().hashCode());
+		}
+		
+		if (this.getPrevious() != null)
+		{
+			builder.append(", previous=");
+			builder.append(this.getPrevious().hashCode());
+		}
+		
 		builder.append("]");
 		return builder.toString();
 	}
