@@ -102,7 +102,7 @@ public class SICXE_AssemblerCodeLine
 										int argToken = (punctToken + 1);
 										Token<TokenType> arg = tokens.get(argToken);
 										
-										operand = operand + punct.getData() + arg.getData();
+										operand = (operand + punct.getData() + arg.getData()).trim();
 									}
 									
 									break;
