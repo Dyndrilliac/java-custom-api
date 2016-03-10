@@ -3,82 +3,98 @@
  * Author: Matthew Boyette
  * Date: 5/27/2013
  * 
- * This object solves 0-1 Knapsack variant of the Subset-Sum problem.
+ * This object finds all of the solutions for the 0-1 Knapsack variant of the Subset-Sum problem recursively.
+ * 
+ * TODO: Needs revision.
+ * 
+ * Using the input: 32 17 15 12 10 5 3 2
+ * 
+ * Algorithm finds these solutions:
+ * 
+ * 12 10 5 3 2 = 32 {Optimal Solution}
+ * 17 12 3     = 32
+ * 17 10 5     = 32
+ * 17 15       = 32
+ * 15 12 5     = 32
+ * 
+ * But misses these solutions:
+ * 
+ * 17 10 3 2   = 32
+ * 15 12 3 2   = 32
+ * 15 10 5 2   = 32
  */
 
 package api.util.mathematics;
 
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import api.util.Support;
-
 public class KnapsackSolver
 {
-	/*
-	 * This method takes a list of items and a knapsack capacity.
-	 * It attempts to fill the knapsack exactly with the given items.
-	 * It only considers items in the list that are in slots start, start+1, start+2, and so on.
-	 * When the method is initially called it should be called with start equal to 0.
-	 * In addition the method also takes as input the size of the current partial solution.
-	 * This is initially 0.
-	 */
-	protected static LinkedList<KnapsackItem> knapsack(final LinkedList<KnapsackItem> items, final int capacity,
-		final int start)
+	protected static List<KnapsackItem> knapsack(final List<KnapsackItem> items, final int capacity, final int start)
 	{
 		if (capacity > 0)
 		{
-			// For each i, try placing the ith item in the knapsack.
 			for (int i = start; i < items.size(); i++)
 			{
-				// Fit the smaller knapsack with items chosen from i+1, i+2, i+3...
-				LinkedList<KnapsackItem> answer = KnapsackSolver.knapsack(items, capacity - items.get(i).getWeight(), i + 1);
+				List<KnapsackItem> answer = KnapsackSolver.knapsack(items, capacity - items.get(i).getWeight(), i + 1);
 				
 				if (answer != null)
 				{
 					answer.add(items.get(i));
-					Collections.sort(items, new KnapsackItem.KnapsackItemDescending());
 					return answer;
 				}
 			}
 			
 			return null;
 		}
-		// We have found a solution. Create an array of the correct size and send it back for filling.
 		else
+		{
 			if (capacity == 0)
 			{
-				LinkedList<KnapsackItem> temp = new LinkedList<KnapsackItem>();
+				List<KnapsackItem> temp = new LinkedList<KnapsackItem>();
 				return temp;
 			}
 			else
 			{
-				// Capacity is negative, so no solution is possible.
 				return null;
 			}
+		}
 	}
 	
-	private int										capacity		= 0;
-	private LinkedList<KnapsackItem>				items			= null;
-	private LinkedList<LinkedList<KnapsackItem>>	solutionSets	= null;
+	private int							capacity		= 0;
+	private List<KnapsackItem>			items			= null;
+	private List<List<KnapsackItem>>	solutionSets	= null;
 	
-	public KnapsackSolver(final int capacity, final int[] itemWeights)
+	public KnapsackSolver(final int capacity, final int itemWeights[])
 	{
-		LinkedList<KnapsackItem> items = new LinkedList<KnapsackItem>();
-		KnapsackItem item = null;
+		List<KnapsackItem> items = new LinkedList<KnapsackItem>();
 		
 		for (int itemWeight: itemWeights)
 		{
-			item = new KnapsackItem(1, itemWeight);
-			items.add(item);
+			items.add(new KnapsackItem(itemWeight));
 		}
 		
 		this.reset(capacity, items);
 	}
 	
-	public KnapsackSolver(final int capacity, final LinkedList<KnapsackItem> items)
+	public KnapsackSolver(final int capacity, final int itemWeights[], final int itemValues[])
+	{
+		assert (itemWeights.length == itemValues.length);
+		List<KnapsackItem> items = new LinkedList<KnapsackItem>();
+		
+		for (int i = 0; i < itemWeights.length; i++)
+		{
+			items.add(new KnapsackItem(itemValues[i], itemWeights[i]));
+		}
+		
+		this.reset(capacity, items);
+	}
+	
+	public KnapsackSolver(final int capacity, final List<KnapsackItem> items)
 	{
 		this.reset(capacity, items);
 	}
@@ -115,79 +131,49 @@ public class KnapsackSolver
 		return this.capacity;
 	}
 	
-	public final LinkedList<KnapsackItem> getItems()
+	public final List<KnapsackItem> getItems()
 	{
 		return this.items;
 	}
 	
-	public final LinkedList<LinkedList<KnapsackItem>> getSolutionSets()
+	public final List<List<KnapsackItem>> getSolutionSets()
 	{
 		return this.solutionSets;
 	}
 	
 	protected void populateSolutionSets()
 	{
-		final LinkedList<KnapsackItem> reverseItems = new LinkedList<KnapsackItem>();
-		LinkedList<KnapsackItem> result;
-		int counter = 0;
-		reverseItems.addAll(this.getItems());
-		Collections.sort(reverseItems, new KnapsackItem.KnapsackItemAscending());
-		Support.displayDebugMessage(null, "Items: " + this.getItems() + "\nReversed: " + reverseItems.toString() + "\n");
-		
-		/*
-		 * TODO: Needs revision. Does not successfully find all solutions.
-		 * Given the input 32 17 15 12 10 5 3 2
-		 * Capacity = 32
-		 * Weights = {17 15 12 10 5 3 2}
-		 * 
-		 * Finds these solutions:
-		 * 
-		 * 17 15 = 32
-		 * 17 12 3 = 32
-		 * 17 10 5 = 32
-		 * 15 12 5 = 32
-		 * 12 10 5 3 2 = 32 (optimal solution)
-		 * 
-		 * Misses these solutions:
-		 * 
-		 * 17 10 3 2 = 32
-		 * 15 12 3 2 = 32
-		 * 15 10 5 2 = 32
-		 */
+		List<KnapsackItem> solution = null;
+		List<KnapsackItem> tempItems = new LinkedList<KnapsackItem>(this.getItems());
 		
 		do
 		{
-			result = KnapsackSolver.knapsack(this.getItems(), this.getCapacity(), counter);
-			
-			if (result != null)
+			for (int i = 0; i < this.getItems().size(); i++)
 			{
-				if (this.getSolutionSets().contains(result) == false)
+				solution = KnapsackSolver.knapsack(tempItems, this.getCapacity(), i);
+				
+				if (solution != null)
 				{
-					this.getSolutionSets().add(result);
+					Collections.sort(solution, new KnapsackItem.KnapsackItemAscending());
+					
+					if (this.getSolutionSets().contains(solution) == false)
+					{
+						this.getSolutionSets().add(solution);
+					}
 				}
 			}
 			
-			result = KnapsackSolver.knapsack(reverseItems, this.getCapacity(), counter);
-			
-			if (result != null)
-			{
-				if (this.getSolutionSets().contains(result) == false)
-				{
-					this.getSolutionSets().add(result);
-				}
-			}
-			
-			counter++;
+			tempItems = tempItems.subList(0, tempItems.size()-1);
 		}
-		while (result != null);
+		while (tempItems.size() >= 1);
 	}
 	
-	public void reset(final int capacity, final LinkedList<KnapsackItem> items)
+	public void reset(final int capacity, final List<KnapsackItem> items)
 	{
 		Collections.sort(items, new KnapsackItem.KnapsackItemDescending());
 		this.setCapacity(capacity);
 		this.setItems(items);
-		this.setSolutionSets(new LinkedList<LinkedList<KnapsackItem>>());
+		this.setSolutionSets(new LinkedList<List<KnapsackItem>>());
 		this.populateSolutionSets();
 	}
 	
@@ -196,12 +182,12 @@ public class KnapsackSolver
 		this.capacity = capacity;
 	}
 	
-	protected final void setItems(final LinkedList<KnapsackItem> items)
+	protected final void setItems(final List<KnapsackItem> items)
 	{
 		this.items = items;
 	}
 	
-	protected final void setSolutionSets(final LinkedList<LinkedList<KnapsackItem>> solutionSets)
+	protected final void setSolutionSets(final List<List<KnapsackItem>> solutionSets)
 	{
 		this.solutionSets = solutionSets;
 	}

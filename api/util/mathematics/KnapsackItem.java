@@ -53,6 +53,12 @@ public class KnapsackItem
 		this.setWeight(weight);
 	}
 	
+	public KnapsackItem(final int weight)
+	{
+		this.setValue(1);
+		this.setWeight(weight);
+	}
+	
 	@Override
 	public boolean equals(final Object obj)
 	{
@@ -60,23 +66,29 @@ public class KnapsackItem
 		{
 			return true;
 		}
+		
 		if (obj == null)
 		{
 			return false;
 		}
+		
 		if (!(obj instanceof KnapsackItem))
 		{
 			return false;
 		}
+		
 		KnapsackItem other = (KnapsackItem)obj;
+		
 		if (this.getValue() != other.getValue())
 		{
 			return false;
 		}
+		
 		if (this.getWeight() != other.getWeight())
 		{
 			return false;
 		}
+		
 		return true;
 	}
 	
@@ -114,17 +126,17 @@ public class KnapsackItem
 	public String toString()
 	{
 		StringBuilder builder = new StringBuilder();
+		builder.append("KnapsackItem [");
 		
 		if (this.getValue() != 1)
 		{
-			builder.append("KnapsackItem [weight=");
+			builder.append("weight=");
 			builder.append(this.getWeight());
 			builder.append(", value=");
 			builder.append(this.getValue());
 		}
 		else
 		{
-			builder.append("{KnapsackItem [");
 			builder.append(this.getWeight());
 		}
 		
