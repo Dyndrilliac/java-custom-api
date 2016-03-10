@@ -11,7 +11,7 @@ package api.util.datastructures;
 
 public class TreeNode<T> extends DataNode<T>
 {
-	private Node	parent	= null;
+	private Node parent	= null;
 	
 	public TreeNode(final T data, final Node parent, final Node right, final Node left)
 	{

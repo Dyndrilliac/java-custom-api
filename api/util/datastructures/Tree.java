@@ -12,8 +12,8 @@ import api.util.stdlib.StdOut;
 
 public class Tree<T>
 {
-	private TreeNode<T>	root	= null;
-	private int			size	= 0;
+	private TreeNode<T>	root = null;
+	private int			size = 0;
 	
 	public Tree() {}
 	
