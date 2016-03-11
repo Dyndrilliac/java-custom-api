@@ -16,29 +16,29 @@ import javax.swing.JPanel;
 
 public class Fans extends JPanel
 {
-	private static final long	serialVersionUID	= 1L;
-	
-	public Fans()
-	{
-		this.setLayout(new GridLayout(2, 2));
-		this.add(new Fan());
-		this.add(new Fan());
-		this.add(new Fan());
-		this.add(new Fan());
-	}
-	
-	public Fans(final Color foregroundColor)
-	{
-		this.setLayout(new GridLayout(2, 2));
-		this.add(new Fan(foregroundColor));
-		this.add(new Fan(foregroundColor));
-		this.add(new Fan(foregroundColor));
-		this.add(new Fan(foregroundColor));
-	}
-	
-	@Override
-	public Dimension getPreferredSize()
-	{
-		return (new Dimension(250, 250));
-	}
+    private static final long serialVersionUID = 1L;
+    
+    public Fans()
+    {
+        this.setLayout(new GridLayout(2, 2));
+        this.add(new Fan());
+        this.add(new Fan());
+        this.add(new Fan());
+        this.add(new Fan());
+    }
+    
+    public Fans(final Color foregroundColor)
+    {
+        this.setLayout(new GridLayout(2, 2));
+        this.add(new Fan(foregroundColor));
+        this.add(new Fan(foregroundColor));
+        this.add(new Fan(foregroundColor));
+        this.add(new Fan(foregroundColor));
+    }
+    
+    @Override
+    public Dimension getPreferredSize()
+    {
+        return (new Dimension(250, 250));
+    }
 }
