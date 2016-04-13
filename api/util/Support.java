@@ -10,6 +10,7 @@
 package api.util;
 
 import java.awt.AWTEvent;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Font;
@@ -22,6 +23,8 @@ import java.io.LineNumberReader;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
@@ -34,7 +37,25 @@ import api.util.stdlib.StdOut;
 
 public final class Support
 {
-    public final static Font DEFAULT_TEXT_FONT = new Font("Lucida Console", Font.PLAIN, 14);
+    private final static Map<Color,String> colorMap          = new HashMap<Color,String>();
+    public final static Font               DEFAULT_TEXT_FONT = new Font("Lucida Console", Font.PLAIN, 14);
+    
+    static
+    {
+        Support.colorMap.put(Color.BLACK, "Black");
+        Support.colorMap.put(Color.BLUE, "Blue");
+        Support.colorMap.put(Color.CYAN, "Cyan");
+        Support.colorMap.put(Color.DARK_GRAY, "Dark Gray");
+        Support.colorMap.put(Color.GRAY, "Gray");
+        Support.colorMap.put(Color.GREEN, "Green");
+        Support.colorMap.put(Color.LIGHT_GRAY, "Light Gray");
+        Support.colorMap.put(Color.MAGENTA, "Magenta");
+        Support.colorMap.put(Color.ORANGE, "Orange");
+        Support.colorMap.put(Color.PINK, "Pink");
+        Support.colorMap.put(Color.RED, "Red");
+        Support.colorMap.put(Color.WHITE, "White");
+        Support.colorMap.put(Color.YELLOW, "Yellow");
+    }
     
     public final static void clearConsole(final Component parent)
     {
@@ -202,6 +223,11 @@ public final class Support
         return ((JOptionPane.showConfirmDialog(parent, message, title, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION));
     }
     
+    public final static String getColorString(final Color color)
+    {
+        return Support.colorMap.getOrDefault(color, color.toString());
+    }
+    
     // Get Date/Time stamp in the default format.
     public final static String getDateTimeStamp()
     {
@@ -218,11 +244,6 @@ public final class Support
     
     public final static double getDoubleInputString(final Component parent, final String message, final String title)
     {
-        if (parent == null)
-        {
-            Support.normalizeUIX(parent);
-        }
-        
         String s = null;
         
         do
@@ -299,11 +320,6 @@ public final class Support
     
     public final static Image getImageByResourceName(final Component parent, final String resourceName)
     {
-        if (parent == null)
-        {
-            Support.normalizeUIX(parent);
-        }
-        
         InputStream input = Support.getResourceByName(resourceName);
         Image image = null;
         
@@ -340,11 +356,6 @@ public final class Support
     
     public final static int getIntegerInputString(final Component parent, final String message, final String title)
     {
-        if (parent == null)
-        {
-            Support.normalizeUIX(parent);
-        }
-        
         String s = null;
         
         do
@@ -356,10 +367,43 @@ public final class Support
         return Integer.parseInt(s);
     }
     
+    public final static int getIntegerSelectionString(final Component parent, final String message, final String title, final Integer[] values)
+    {
+        String s = null;
+        
+        do
+        {
+            s = Support.getSelectionString(parent, message, title, values);
+        }
+        while (Support.isStringParsedAsInteger(s) != true);
+        
+        return Integer.parseInt(s);
+    }
+    
     public final static InputStream getResourceByName(final String resourceName)
     {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         return classLoader.getResourceAsStream(resourceName);
+    }
+    
+    public final static String getSelectionString(final Component parent, final String message, final String title, final Object[] values)
+    {
+        if (parent == null)
+        {
+            Support.normalizeUIX(parent);
+        }
+        
+        String s = null;
+        
+        do
+        {
+            Object o;
+            o = JOptionPane.showInputDialog(parent, message, title, JOptionPane.QUESTION_MESSAGE, null, values, values[0]);
+            s = o.toString();
+        }
+        while ((s == null) || s.isEmpty());
+        
+        return s;
     }
     
     // This method takes a string and determines if it can be safely parsed as a boolean.
@@ -546,13 +590,12 @@ public final class Support
      */
     public final static boolean promptDebugMode(final Component parent)
     {
-        if (parent == null)
-        {
-            Support.normalizeUIX(parent);
-        }
-        
         return Support.getChoiceInput(parent,
             "Do you wish to activate debugging mode?\n\n" + "Turning on debugging mode will enable extra diagnostic features that are helpful when testing this application for errors.",
             "Debugging Mode");
+    }
+    
+    private Support()
+    {
     }
 }
