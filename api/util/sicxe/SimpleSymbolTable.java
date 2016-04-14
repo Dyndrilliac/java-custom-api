@@ -10,8 +10,8 @@
 package api.util.sicxe;
 
 import api.util.datastructures.SeparateChainingSymbolTable;
-import api.util.stdlib.In;
-import api.util.stdlib.StdOut;
+import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.StdOut;
 
 public class SimpleSymbolTable
 {

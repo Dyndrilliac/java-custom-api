@@ -9,7 +9,7 @@
 
 package api.util;
 
-import api.util.stdlib.StdRandom;
+import edu.princeton.cs.algs4.StdRandom;
 
 public final class Mathematics
 {

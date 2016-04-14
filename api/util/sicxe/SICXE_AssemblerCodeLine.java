@@ -18,9 +18,9 @@ public class SICXE_AssemblerCodeLine
     public static final String[] parseLine(final String s)
     {
         /*///@formatter:off
-         * Line format (space delimited): Label OpCode Operand(s) Comment 
-         * Label & Comment are optional fields. Operand(s) are comma delimited. 
-         * OpCode must either be an assembler directive or a program instruction. 
+         * Line format (space delimited): Label OpCode Operand(s) Comment
+         * Label & Comment are optional fields. Operand(s) are comma delimited.
+         * OpCode must either be an assembler directive or a program instruction.
          * Some OpCodes don't take any Operands (like RSUB).
          *///@formatter:on
         

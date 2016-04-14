@@ -28,9 +28,9 @@ import java.util.LinkedList;
 import api.util.Lexer;
 import api.util.Support;
 import api.util.datastructures.SeparateChainingSymbolTable;
-import api.util.stdlib.In;
-import api.util.stdlib.Out;
-import api.util.stdlib.StdOut;
+import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.Out;
+import edu.princeton.cs.algs4.StdOut;
 
 public class SICXE_AssemblerProgram extends SimpleSymbolTable
 {

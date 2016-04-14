@@ -31,9 +31,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
-import api.util.stdlib.StdAudio;
-import api.util.stdlib.StdIn;
-import api.util.stdlib.StdOut;
+import edu.princeton.cs.algs4.StdAudio;
+import edu.princeton.cs.algs4.StdIn;
+import edu.princeton.cs.algs4.StdOut;
 
 public final class Support
 {

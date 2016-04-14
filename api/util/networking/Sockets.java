@@ -36,7 +36,7 @@ public final class Sockets
         private int               remotePort = 0;
         private Socket            socket     = null;
         private ApplicationWindow window     = null;
-
+        
         public SimpleAbstractClientThread(final ApplicationWindow window, final String remoteHost, final int remotePort)
         {
             super();
@@ -44,7 +44,7 @@ public final class Sockets
             this.setRemotePort(remotePort);
             this.setWindow(window);
         }
-
+        
         public void close()
         {
             try
@@ -53,12 +53,12 @@ public final class Sockets
                 {
                     this.getOutput().close();
                 }
-
+                
                 if (this.getInput() != null)
                 {
                     this.getInput().close();
                 }
-
+                
                 if (this.getSocket() != null)
                 {
                     this.getSocket().close();
@@ -75,68 +75,68 @@ public final class Sockets
                 this.setSocket(null);
             }
         }
-
+        
         public final BufferedReader getInput()
         {
             return this.input;
         }
-
+        
         public final BufferedWriter getOutput()
         {
             return this.output;
         }
-
+        
         public final String getRemoteHost()
         {
             return this.remoteHost;
         }
-
+        
         public final int getRemotePort()
         {
             return this.remotePort;
         }
-
+        
         public final Socket getSocket()
         {
             return this.socket;
         }
-
+        
         public final ApplicationWindow getWindow()
         {
             return this.window;
         }
-
+        
         protected final void setInput(final BufferedReader input)
         {
             this.input = input;
         }
-
+        
         protected final void setOutput(final BufferedWriter output)
         {
             this.output = output;
         }
-
+        
         protected final void setRemoteHost(final String remoteHost)
         {
             this.remoteHost = remoteHost;
         }
-
+        
         protected final void setRemotePort(final int remotePort)
         {
             this.remotePort = remotePort;
         }
-
+        
         protected final void setSocket(final Socket socket)
         {
             this.socket = socket;
         }
-
+        
         protected final void setWindow(final ApplicationWindow window)
         {
             this.window = window;
         }
     }
-
+    
     /*
      * This object encapsulates part of the necessary networking functionality for a simple socket-based TCP/IP server application. Specifically, this
      * class represents the portion of the server which listens for new connection attempts. Every time a SimpleAbstractServer object accepts a new
@@ -149,33 +149,35 @@ public final class Sockets
         private ServerSocket                     listeningSocket = null;
         private Thread                           thread          = null;
         private ApplicationWindow                window          = null;
-
+        
         public SimpleAbstractServer(final int listeningPort)
         {
             this.setClients(new LinkedList<SimpleAbstractServerThread>());
             this.setListeningPort(listeningPort);
             this.print(Color.MAGENTA, "[" + Support.getDateTimeStamp() + "] ", Color.BLUE, "Binding to port " + this.getListeningPort() + "...\n");
-
+            
             try
             {
                 this.setListeningSocket(new ServerSocket(this.getListeningPort()));
             }
             catch (final Exception e)
             {
-                this.print(Color.MAGENTA, "[" + Support.getDateTimeStamp() + "] ", Color.RED, "Could not bind to port " + this.getListeningPort()
-                    + ": "
-                    + e.getMessage()
-                    + "\n");
+                this.print(Color.MAGENTA, "[" + Support.getDateTimeStamp() + "] ", Color.RED, "Could not bind to port " + this.getListeningPort() +
+                    ": " +
+                    e.getMessage() +
+                    "\n");
                 Support.displayException(this.getWindow(), e, false);
             }
-
-            this.print(Color.MAGENTA, "[" + Support.getDateTimeStamp() + "] ", Color.GREEN, "Server started: " + this.getListeningSocket().toString()
-                + "\n");
+            
+            this.print(Color.MAGENTA,
+                "[" + Support.getDateTimeStamp() + "] ",
+                Color.GREEN,
+                "Server started: " + this.getListeningSocket().toString() + "\n");
             this.start();
         }
-
+        
         protected abstract void addThread(final Socket socket);
-
+        
         protected int findClient(final String identifier)
         {
             for (int i = 0; i < this.getClients().size(); i++)
@@ -185,52 +187,52 @@ public final class Sockets
                     return i;
                 }
             }
-
+            
             return -1;
         }
-
+        
         public final List<SimpleAbstractServerThread> getClients()
         {
             return this.clients;
         }
-
+        
         public final int getListeningPort()
         {
             return this.listeningPort;
         }
-
+        
         public final ServerSocket getListeningSocket()
         {
             return this.listeningSocket;
         }
-
+        
         public final Thread getThread()
         {
             return this.thread;
         }
-
+        
         public final ApplicationWindow getWindow()
         {
             return this.window;
         }
-
+        
         public abstract void handle(final String identifier, final String input);
-
+        
         public abstract void print(final Object... args);
-
+        
         @SuppressWarnings("deprecation")
         public synchronized void remove(final String identifier)
         {
             int pos = this.findClient(identifier);
-
+            
             if (pos >= 0)
             {
-                this.print(Color.MAGENTA, "[" + Support.getDateTimeStamp() + "] ", Color.BLUE, "Removing client " + identifier
-                    + " at "
-                    + pos
-                    + "...\n");
+                this.print(Color.MAGENTA, "[" + Support.getDateTimeStamp() + "] ", Color.BLUE, "Removing client " + identifier +
+                    " at " +
+                    pos +
+                    "...\n");
                 SimpleAbstractServerThread toTerminate = this.getClients().remove(pos);
-
+                
                 try
                 {
                     toTerminate.close();
@@ -240,12 +242,12 @@ public final class Sockets
                     this.print(Color.MAGENTA, "[" + Support.getDateTimeStamp() + "] ", Color.RED, "Error removing client: " + e.getMessage() + "\n");
                     Support.displayException(this.getWindow(), e, false);
                 }
-
+                
                 toTerminate.stop();
                 toTerminate = null;
             }
         }
-
+        
         @Override
         public void run()
         {
@@ -264,32 +266,32 @@ public final class Sockets
                 }
             }
         }
-
+        
         protected final void setClients(final List<SimpleAbstractServerThread> clients)
         {
             this.clients = clients;
         }
-
+        
         protected final void setListeningPort(final int listeningPort)
         {
             this.listeningPort = listeningPort;
         }
-
+        
         protected final void setListeningSocket(final ServerSocket listeningSocket)
         {
             this.listeningSocket = listeningSocket;
         }
-
+        
         protected final void setThread(final Thread thread)
         {
             this.thread = thread;
         }
-
+        
         protected final void setWindow(final ApplicationWindow window)
         {
             this.window = window;
         }
-
+        
         public void start()
         {
             if (this.getThread() == null)
@@ -298,7 +300,7 @@ public final class Sockets
                 this.getThread().start();
             }
         }
-
+        
         @SuppressWarnings("deprecation")
         public void stop()
         {
@@ -309,7 +311,7 @@ public final class Sockets
             }
         }
     }
-
+    
     /*
      * This object encapsulates part of the necessary networking functionality for a simple socket-based TCP/IP server application. Specifically, this
      * class represents the portion of the server which services a connected user's requests. Every time a SimpleAbstractServer object accepts a new
@@ -324,7 +326,7 @@ public final class Sockets
         private SimpleAbstractServer server     = null;
         private Socket               socket     = null;
         private ApplicationWindow    window     = null;
-
+        
         public SimpleAbstractServerThread(final ApplicationWindow window, final SimpleAbstractServer server, final Socket socket)
         {
             super();
@@ -333,7 +335,7 @@ public final class Sockets
             this.setSocket(socket);
             this.setWindow(window);
         }
-
+        
         @SuppressWarnings("deprecation")
         public void close()
         {
@@ -343,12 +345,12 @@ public final class Sockets
                 {
                     this.getSocket().close();
                 }
-
+                
                 if (this.getInput() != null)
                 {
                     this.getInput().close();
                 }
-
+                
                 if (this.getOutput() != null)
                 {
                     this.getOutput().close();
@@ -373,37 +375,37 @@ public final class Sockets
                 this.stop();
             }
         }
-
+        
         public final String getIdentifier()
         {
             return this.identifier;
         }
-
+        
         public final DataInputStream getInput()
         {
             return this.input;
         }
-
+        
         public final DataOutputStream getOutput()
         {
             return this.output;
         }
-
+        
         public final SimpleAbstractServer getServer()
         {
             return this.server;
         }
-
+        
         public final Socket getSocket()
         {
             return this.socket;
         }
-
+        
         public final ApplicationWindow getWindow()
         {
             return this.window;
         }
-
+        
         public void open()
         {
             try
@@ -421,7 +423,7 @@ public final class Sockets
                 Support.displayException(this.getWindow(), e, false);
             }
         }
-
+        
         @Override
         public void run()
         {
@@ -447,7 +449,7 @@ public final class Sockets
                 }
             }
         }
-
+        
         public void send(final String message)
         {
             try
@@ -466,38 +468,38 @@ public final class Sockets
                 Support.displayException(this.getWindow(), e, false);
             }
         }
-
+        
         protected final void setIdentifier(final String identifier)
         {
             this.identifier = identifier;
         }
-
+        
         protected final void setInput(final DataInputStream input)
         {
             this.input = input;
         }
-
+        
         protected final void setOutput(final DataOutputStream output)
         {
             this.output = output;
         }
-
+        
         protected final void setServer(final SimpleAbstractServer server)
         {
             this.server = server;
         }
-
+        
         protected final void setSocket(final Socket socket)
         {
             this.socket = socket;
         }
-
+        
         protected final void setWindow(final ApplicationWindow window)
         {
             this.window = window;
         }
     }
-
+    
     public final static Socket connectSocketWithTimeout(final String remoteHost, final int remotePort, final int seconds) throws Exception
     {
         Socket socket = new Socket();

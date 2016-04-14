@@ -8,7 +8,7 @@
 
 package api.util.datastructures;
 
-import api.util.stdlib.StdOut;
+import edu.princeton.cs.algs4.StdOut;
 
 public class Tree<T>
 {

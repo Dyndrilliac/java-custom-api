@@ -13,7 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import api.util.datastructures.Token;
-import api.util.stdlib.StdOut;
+import edu.princeton.cs.algs4.StdOut;
 
 public class Lexer<T>
 {

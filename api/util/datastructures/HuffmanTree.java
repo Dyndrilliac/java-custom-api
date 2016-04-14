@@ -36,8 +36,8 @@ public class HuffmanTree<T> extends Tree<T>
         COMPRESSED, ORIGINAL, UNCOMPRESSED
     }
     
-    public static final String ALPHABET_ASCII = Support.constructAlphabetString(32, 126);
     public static final String ALPHABET_A5    = Support.constructAlphabetString('A', 'G');
+    public static final String ALPHABET_ASCII = Support.constructAlphabetString(32, 126);
     private Character          alphabetFirst  = null;
     private int                alphabetSize   = 0;
     private String             alphabetString = null;
