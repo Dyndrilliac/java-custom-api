@@ -36,15 +36,15 @@ This project represents an effort to recycle more of my Java code and promote mo
 
 5. ## api.util.datastructures
 
-	*
+	* TODO
 
 6. ## api.util.games
 
-	*
+	* TODO
 
 7. ## api.util.mathematics
 
-	*
+	* TODO
 
 8. ## api.util.networking
 
@@ -54,11 +54,9 @@ This project represents an effort to recycle more of my Java code and promote mo
 
 9. ## api.util.sicxe
 
-	*
+	* TODO
 
-*******************************************
-Using My Custom Java API
-*******************************************
+# Using My Custom Java API
 
 These instructions are going to apply primarily to the Eclipse IDE, because that is what I use. For other IDEs, you will need to consult the official documentation for your particular software.
 
