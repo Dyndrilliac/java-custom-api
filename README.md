@@ -2,33 +2,62 @@
 
 * Title:  Custom Java API
 * Author: [Matthew Boyette](mailto:Dyndrilliac@gmail.com)
-* Date:   2012-2015
+* Date:   2012-2016
 
 *******************************************************************
 
-This project represents an effort to recycle more of my Java code and promote modular design. Basically this is a collection of classes, methods, and interfaces that I have found useful or interesting. This code is a constant work in progress and updates happen frequently.
+This project represents an effort to recycle more of my Java code and promote modular design practices. Basically this is a collection of classes, methods, and interfaces that I have found useful or interesting. This code is a constant work in progress and updates happen frequently. I also use the the [standard Java library](http://introcs.cs.princeton.edu/java/stdlib/) from the text _Introduction to Computer Science in Java_ and the [sample algorithms](http://algs4.cs.princeton.edu/code/) from the text _Algorithms, 4th Edition_ both of which are written by __Robert Sedgewick__ and __Kevin Wayne__. These libraries are not included within this repository. You can dwnload them from the provided links and include them in your build path.
 
-Object Classes:
+# Package/Class Listing
 
-* ApplicationWindow: represents a GUI window for an application.
-* Clock: creates simple clocks suitable for presentation inside an application's GUI window.
-* HealthGrid: provides a graphical display to the user showing a simulation of an initial infection vector spreading through a population operating under certain fundamental rules.
-* EventHandler: simple mechanism for providing event hooks to objects.
-* RichTextPane: creates text panes for applications with rich formatting capabilities and built-in file I/O.
+1. ## api.gui.draw
 
-Static classes:
+	* Car: 
+	* Clock: creates simple clocks suitable for presentation inside an application's GUI window.
+	* Fan: 
+	* Fans: 
+	* HealthGrid: provides a graphical display to the user showing a simulation of an initial infection vector spreading through a population operating under certain fundamental rules.
+	* Parabola: 
 
-* Games: contains utility methods useful for games, animated applications, and applications accompanying games.
-* Mathematics: contains utility methods for performing mathematical tasks such as identifying whether an integer is prime and more.
-* Support: contains utility methods for validating data, simple I/O, displaying miscellaneous GUI components, executing shell commands, and more.
-* Sockets: contains utility classes/interfaces and methods for providing simple socket-based TCP network communication.
-* SQL: contains utility classes/interfaces and methods for providing simple Oracle SQL execution using JDBC.
-* RMI: contains utility classes/interfaces and methods for providing simple RMI-based TCP network communication.
+2. ## api.gui.swing
 
-Some generic data structures are also included, as well as a modified version of the [Standard Library for Java](http://introcs.cs.princeton.edu/java/stdlib/).
+	* ApplicationWindow: represents a GUI window for an application.
+	* CarGUI: 
+	* RichTextPane: creates text panes for applications with rich formatting capabilities and built-in file I/O.
+
+3. ## api.util
+
+	* EventHandler: simple mechanism for providing event hooks to objects.
+	* Games: contains utility methods useful for games, animated applications, and applications accompanying games.
+	* Lexer: contains the ground work for a very basic RegEx lexical analyzer to split data up into tokens which can then be further processed.
+	* Mathematics: contains utility methods for performing mathematical tasks such as identifying whether an integer is prime and more.
+	* ObjectCloner: contains a method to make a deep copy or clone of an object using Java's built-in serialization mechanism.
+	* Support: contains utility methods for validating data, simple I/O, displaying miscellaneous GUI components, executing shell commands, and more.
+
+5. ## api.util.datastructures
+
+	*
+
+6. ## api.util.games
+
+	*
+
+7. ## api.util.mathematics
+
+	*
+
+8. ## api.util.networking
+
+	* RMI: contains utility classes/interfaces and methods for providing simple RMI-based TCP network communication.
+	* Sockets: contains utility classes/interfaces and methods for providing simple socket-based TCP network communication.
+	* SQL: contains utility classes/interfaces and methods for providing simple Oracle SQL execution using JDBC.
+
+9. ## api.util.sicxe
+
+	*
 
 *******************************************
-Using the Custom Java API
+Using My Custom Java API
 *******************************************
 
 These instructions are going to apply primarily to the Eclipse IDE, because that is what I use. For other IDEs, you will need to consult the official documentation for your particular software.
