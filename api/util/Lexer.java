@@ -1,127 +1,106 @@
 /*
  * Title: Lexer
  * Author: Matthew Boyette
- * Date: 3/27/2015
+ * Date: 9/25/2016
  * 
- * This class functions as a generic lexical analyzer.
+ * This class functions as a generic extendible lexical analyzer.
+ * It's default settings are for the for the C language.
  */
 
 package api.util;
 
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import api.util.datastructures.Token;
-import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.In;
 
-public class Lexer<T>
+public abstract class Lexer<T>
 {
     /*
-     * This helper enum class represents the various special types of tokens we are interested in.
+     * This helper enumerator class represents each of the various special types of depth we are tracking for each token.
      */
-    public static enum TokenType
+    protected static enum DepthType
     {
-        GROUPING(Lexer.GROUPINGS), IDENTIFIER(Lexer.IDENTIFIERS), NUMBER(Lexer.NUMBERS), OPERATOR(Lexer.OPERATORS);
-        
-        private final String pattern;
-        
-        private TokenType(final String pattern)
-        {
-            this.pattern = pattern;
-        }
-        
-        public final String getPattern()
-        {
-            return this.pattern;
-        }
-        
-        @Override
-        public final String toString()
-        {
-            return this.name();
-        }
+        //@formatter:off
+        BRACE, BRACKET, COMMENT, PARENTH
+        //@formatter:on
     }
-    
-    public static final String GROUPINGS   = "[\\(\\)\\{\\}\\[\\]<>,\"\';:\\?]";
-    public static final String IDENTIFIERS = "\\b(\\w+\\.)?\\w+\\b";
-    public static final String INTEGERS    = "\\b\\d+\\b";
-    public static final String NUMBERS     = "\\b(\\d*\\.)?\\d+\\b";
-    public static final String OPERATORS   = "[`~!@#$%^&*\\-=+|]";
-    
-    public static void main(final String[] args)
-    {
-        // It comes with a limited test bed program so you can lex arbitrary input quickly.
-        StdOut.println("RegEx Grammars:");
-        StdOut.println("GROUPINGS:\t" + Lexer.GROUPINGS);
-        StdOut.println("IDENTIFIERS:\t" + Lexer.IDENTIFIERS);
-        StdOut.println("NUMBERS:\t" + Lexer.NUMBERS);
-        StdOut.println("OPERATORS:\t" + Lexer.OPERATORS);
-        
-        String input = Support.getInputString(null, "Please provide an expression.", "Expression Lexer Input");
-        
-        ArrayList<Token<TokenType>> tokens = (new Lexer<TokenType>()).lex(input);
-        
-        StdOut.println("\nInput:\t" + input + "\n");
-        
-        for (Token<TokenType> token: tokens)
-        {
-            StdOut.println(token);
-        }
-    }
-    
-    @SuppressWarnings("unchecked")
+
+    // RegExr patterns describing the various components of the C language grammar.
+    public static final String C_ASSIGNMENT_OPS = "(\\+\\=)|(\\-\\=)|(\\*\\=)|(\\/\\=)|(%\\=)|(&\\=)|(\\^\\=)|(\\|\\=)|(\\=)|(\\=)|(\\=)";
+    public static final String C_BIT_SHIFT_OPS  = "(\\<\\<)|(\\>\\>)";
+    public static final String C_COMMENTS       = "(\\/\\/)|(\\/\\*)|(\\*\\/)";
+    public static final String C_COMPARISON_OPS = "(&&)|(\\|\\|)|(&)|(\\^)|(\\|)";
+    public static final String C_CONDITION_OPS  = "(:)|(\\?)";
+    public static final String C_ERRORS         = "([^\\(\\)\\{\\}\\[\\]\\.\\?:;,&%\\+\\-\\*\\/\\<\\>\\=\\!\\^\\|\\s]+)";
+    public static final String C_GROUPINGS      = "([\\(\\)\\{\\}\\[\\]])|(\")|(\')|(,)|(;)|(\\.)|(\\-\\>)";
+    public static final String C_IDENTIFIERS    = "([A-Za-z_]\\w*)";
+    public static final String C_INCR_DECR_OPS  = "(\\+\\+)|(\\-\\-)";
+    public static final String C_KEYWORDS       = "(\\b((auto)|(break)|(case)|(char)|(const)|(continue)|(default)|(do)|(double)|(else)|(enum)|(extern)|(float)|(for)|(goto)|(if)|(int)|(long)|(register)|(return)|(short)|(signed)|(sizeof)|(static)|(struct)|(switch)|(typedef)|(union)|(unsigned)|(void)|(volatile)|(while))\\b)";
+    public static final String C_MATHEMATIC_OPS = "(\\+)|(\\-)|(\\*)|(\\/)|(%)";
+    public static final String C_NUMBERS        = "((\\-)?\\d+(\\.\\d+)?((E|e)(\\+|\\-)?\\d+)?)|((\\-)?\\.\\d+((E|e)(\\+|\\-)?\\d+)?)";
+    public static final String C_OPERATORS      = C_INCR_DECR_OPS + "|" + C_BIT_SHIFT_OPS + "|" + C_CONDITION_OPS + "|" + C_ASSIGNMENT_OPS + "|" + C_COMPARISON_OPS + "|" + C_MATHEMATIC_OPS;
+    public static final String C_WHITESPACES    = "(\\s+)";
+
+    // Internal Depth Tracking Array
+    protected int[] Depth = { 0, 0, 0, 0 };
+
     public ArrayList<Token<T>> lex(final String s)
     {
-        // Strip out whitespace.
-        String input = s.replaceAll("\\s+", " ");
-        
-        // The tokens to return.
+        return this.lex(s, false, false);
+    }
+
+    public ArrayList<Token<T>> lex(final String s, final boolean silent)
+    {
+        return this.lex(s, silent, false);
+    }
+
+    public abstract ArrayList<Token<T>> lex(final String s, final boolean silent, final boolean ignoreWhiteSpace);
+
+    public ArrayList<Token<T>> lexFile(final String fileName)
+    {
+        return this.lexFile(fileName, false);
+    }
+
+    public ArrayList<Token<T>> lexFile(final String fileName, final boolean silent)
+    {
+        return this.lexFile(fileName, silent, false);
+    }
+
+    public ArrayList<Token<T>> lexFile(final String fileName, final boolean silent, final boolean ignoreWhiteSpace)
+    {
+        // A buffer for the tokens we want to return.
         ArrayList<Token<T>> tokens = new ArrayList<Token<T>>();
+
+        In inputStream = null;
         
-        // Lexer logic begins here.
-        StringBuffer tokenPatternsBuffer = new StringBuffer();
-        
-        for (TokenType tokenType: TokenType.values())
+        try
         {
-            tokenPatternsBuffer.append(String.format("|(?<%s>%s)", tokenType, tokenType.getPattern()));
-        }
-        
-        Pattern tokenPatterns = Pattern.compile(new String(tokenPatternsBuffer.substring(1)));
-        
-        // Begin matching tokens.
-        Matcher matcher = tokenPatterns.matcher(input);
-        
-        while (matcher.find())
-        {
-            Token<T> token = null;
+            // Try to open the given input file for a read operation.
+            inputStream = new In(fileName);
             
-            if (matcher.group(TokenType.GROUPING.name()) != null)
+            // Pass each line of text from the input file to lex(), and add all the returned tokens to our output token buffer.
+            while ( inputStream.hasNextLine() )
             {
-                token = new Token<T>((T)TokenType.GROUPING, matcher.group(TokenType.GROUPING.name()));
-                tokens.add(token);
-                continue;
-            }
-            else if (matcher.group(TokenType.NUMBER.name()) != null)
-            {
-                token = new Token<T>((T)TokenType.NUMBER, matcher.group(TokenType.NUMBER.name()));
-                tokens.add(token);
-                continue;
-            }
-            else if (matcher.group(TokenType.IDENTIFIER.name()) != null)
-            {
-                token = new Token<T>((T)TokenType.IDENTIFIER, matcher.group(TokenType.IDENTIFIER.name()));
-                tokens.add(token);
-                continue;
-            }
-            else if (matcher.group(TokenType.OPERATOR.name()) != null)
-            {
-                token = new Token<T>((T)TokenType.OPERATOR, matcher.group(TokenType.OPERATOR.name()));
-                tokens.add(token);
-                continue;
+                tokens.addAll(this.lex(inputStream.readLine(), silent, ignoreWhiteSpace));
             }
         }
-        
+        catch ( final IllegalArgumentException iae )
+        {
+            iae.printStackTrace();
+        }
+        catch ( final NullPointerException npe )
+        {
+            npe.printStackTrace();
+        }
+        finally
+        {
+            if ( inputStream != null )
+            {
+                inputStream.close();
+                inputStream = null;
+            }
+        }
+
         return tokens;
     }
 }
