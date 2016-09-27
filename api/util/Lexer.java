@@ -28,7 +28,7 @@ public abstract class Lexer<T>
     // RegExr patterns describing the various components of the C language grammar.
     public static final String C_ASSIGNMENT_OPS = "(\\+\\=)|(\\-\\=)|(\\*\\=)|(\\/\\=)|(%\\=)|(&\\=)|(\\^\\=)|(\\|\\=)|(\\=)|(\\=)|(\\=)";
     public static final String C_BIT_SHIFT_OPS  = "(\\<\\<)|(\\>\\>)";
-    public static final String C_COMMENTS       = "(\\/\\/)|(\\/\\*)|(\\*\\/)";
+    public static final String C_COMMENTS       = "(\\/\\/.*$)|(\\/\\*)|(\\*\\/)";
     public static final String C_COMPARISON_OPS = "(&&)|(\\|\\|)|(&)|(\\^)|(\\|)";
     public static final String C_CONDITION_OPS  = "(:)|(\\?)";
     public static final String C_ERRORS         = "([^\\(\\)\\{\\}\\[\\]\\.\\?:;,&%\\+\\-\\*\\/\\<\\>\\=\\!\\^\\|\\s]+)";
@@ -54,7 +54,12 @@ public abstract class Lexer<T>
         return this.lex(s, silent, false);
     }
 
-    public abstract ArrayList<Token<T>> lex(final String s, final boolean silent, final boolean ignoreWhiteSpace);
+    public ArrayList<Token<T>> lex(final String s, final boolean silent, final boolean ignoreWhiteSpace)
+    {
+        return this.lex(s, silent, ignoreWhiteSpace, true);
+    }
+
+    public abstract ArrayList<Token<T>> lex(final String fileName, final boolean silent, final boolean ignoreWhiteSpace, final boolean ignoreComments);
 
     public ArrayList<Token<T>> lexFile(final String fileName)
     {
@@ -67,6 +72,11 @@ public abstract class Lexer<T>
     }
 
     public ArrayList<Token<T>> lexFile(final String fileName, final boolean silent, final boolean ignoreWhiteSpace)
+    {
+        return this.lexFile(fileName, silent, ignoreWhiteSpace, true);
+    }
+
+    public ArrayList<Token<T>> lexFile(final String fileName, final boolean silent, final boolean ignoreWhiteSpace, final boolean ignoreComments)
     {
         // A buffer for the tokens we want to return.
         ArrayList<Token<T>> tokens = new ArrayList<Token<T>>();
@@ -81,7 +91,7 @@ public abstract class Lexer<T>
             // Pass each line of text from the input file to lex(), and add all the returned tokens to our output token buffer.
             while ( inputStream.hasNextLine() )
             {
-                tokens.addAll(this.lex(inputStream.readLine(), silent, ignoreWhiteSpace));
+                tokens.addAll(this.lex(inputStream.readLine(), silent, ignoreWhiteSpace, ignoreComments));
             }
         }
         catch ( final IllegalArgumentException iae )
