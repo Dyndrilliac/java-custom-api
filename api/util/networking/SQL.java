@@ -20,6 +20,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.regex.Matcher;
+import edu.princeton.cs.algs4.StdOut;
 
 public final class SQL
 {
@@ -29,102 +30,102 @@ public final class SQL
         private String     delimiter           = ";";
         private boolean    isDebugging         = false;
         private boolean    isFullLineDelimiter = false;
-        
+
         public Script(final Connection connection, final boolean isDebugging)
         {
             this.setConnection(connection);
             this.setDebugging(isDebugging);
         }
-        
+
         public Script(final Connection connection, final boolean isDebugging, final Reader reader) throws IOException, SQLException
         {
             this(connection, isDebugging);
-            
+
             try
             {
                 this.execute(reader);
             }
-            catch (final IOException exception)
+            catch ( final IOException exception )
             {
                 throw exception;
             }
-            catch (final SQLException exception)
+            catch ( final SQLException exception )
             {
                 throw exception;
             }
         }
-        
+
         private void execute(final Reader reader) throws IOException, SQLException
         {
             StringBuffer query = null;
-            
+
             try
             {
                 LineNumberReader lineReader = new LineNumberReader(reader);
                 String line = null;
-                
-                while ((line = lineReader.readLine()) != null)
+
+                while ( ( line = lineReader.readLine() ) != null )
                 {
-                    if (query == null)
+                    if ( query == null )
                     {
                         query = new StringBuffer();
                     }
-                    
+
                     /*
-                     * String trimmedLine = line.trim(); Leads to
-                     * [http://stackoverflow.com/questions/3499483/error-unterminated-quoted-string-at-or-near]
+                     * String trimmedLine = line.trim();
+                     * Leads to [http://stackoverflow.com/questions/3499483/error-unterminated-quoted-string-at-or-near]
                      */
-                    
+
                     String trimmedLine = line.trim().replaceAll(";$", Matcher.quoteReplacement("; \\"));
-                    
-                    if (trimmedLine.startsWith("--"))
+
+                    if ( trimmedLine.startsWith("--") )
                     {
-                        if (this.isDebugging())
+                        if ( this.isDebugging() )
                         {
-                            System.out.println(trimmedLine);
+                            StdOut.println(trimmedLine);
                         }
                     }
-                    else if ((trimmedLine.length() < 1) || trimmedLine.startsWith("//"))
+                    else if ( ( trimmedLine.length() < 1 ) || trimmedLine.startsWith("//") )
                     {
                         // Do nothing.
                     }
-                    else if ((trimmedLine.length() < 1) || trimmedLine.startsWith("--"))
+                    else if ( ( trimmedLine.length() < 1 ) || trimmedLine.startsWith("--") )
                     {
                         // Do nothing.
                     }
-                    else if ((!this.isFullLineDelimiter() && trimmedLine.endsWith(this.getDelimiter())) || (this.isFullLineDelimiter() && trimmedLine.equals(this.getDelimiter())))
+                    else if ( ( !this.isFullLineDelimiter() && trimmedLine.endsWith(this.getDelimiter()) ) || ( this.isFullLineDelimiter() && trimmedLine.equals(this.getDelimiter()) ) )
                     {
                         query.append(line.substring(0, line.lastIndexOf(this.getDelimiter())));
                         query.append(" ");
-                        
+
                         ResultSet results = SQL.executeQuery(this.getConnection(), query.toString());
-                        
-                        if (this.isDebugging() && (results != null))
+
+                        if ( this.isDebugging() && ( results != null ) )
                         {
-                            System.out.println(query);
+                            StdOut.println(query);
                             ResultSetMetaData meta = results.getMetaData();
                             int cols = meta.getColumnCount();
-                            
-                            for (int i = 1; i <= cols; i++)
+
+                            for ( int i = 1; i <= cols; i++ )
                             {
                                 String colName = meta.getColumnLabel(i);
-                                System.out.print(colName + "\t");
+                                StdOut.print(colName + "\t");
                             }
-                            
-                            System.out.println("");
-                            
-                            while (results.next())
+
+                            StdOut.println("");
+
+                            while ( results.next() )
                             {
-                                for (int i = 1; i <= cols; i++)
+                                for ( int i = 1; i <= cols; i++ )
                                 {
                                     String colValue = results.getString(i);
-                                    System.out.print(colValue + "\t");
+                                    StdOut.print(colValue + "\t");
                                 }
-                                
-                                System.out.println("");
+
+                                StdOut.println("");
                             }
                         }
-                        
+
                         query = null;
                     }
                     else
@@ -133,17 +134,17 @@ public final class SQL
                         query.append(" ");
                     }
                 }
-                if (this.getConnection().getAutoCommit())
+                if ( this.getConnection().getAutoCommit() )
                 {
                     this.getConnection().commit();
                 }
             }
-            catch (final SQLException exception)
+            catch ( final SQLException exception )
             {
                 exception.fillInStackTrace();
                 throw exception;
             }
-            catch (final IOException exception)
+            catch ( final IOException exception )
             {
                 exception.fillInStackTrace();
                 throw exception;
@@ -153,99 +154,98 @@ public final class SQL
                 this.getConnection().rollback();
             }
         }
-        
+
         public final Connection getConnection()
         {
             return this.connection;
         }
-        
+
         public final String getDelimiter()
         {
             return this.delimiter;
         }
-        
+
         public final boolean isDebugging()
         {
             return this.isDebugging;
         }
-        
+
         public final boolean isFullLineDelimiter()
         {
             return this.isFullLineDelimiter;
         }
-        
+
         protected final void setConnection(final Connection connection)
         {
             this.connection = connection;
         }
-        
+
         protected final void setDebugging(final boolean isDebugging)
         {
             this.isDebugging = isDebugging;
         }
-        
+
         protected final void setDelimiter(final String delimiter)
         {
             this.delimiter = delimiter;
         }
-        
+
         protected final void setFullLineDelimiter(final boolean isFullLineDelimiter)
         {
             this.isFullLineDelimiter = isFullLineDelimiter;
         }
     }
-    
-    public static Connection
-        createConnection(final Driver driver, final String url, final String username, final String password) throws SQLException
+
+    public static Connection createConnection(final Driver driver, final String url, final String username, final String password) throws SQLException
     {
         /*
          * NOTE: You must include the JDBC driver JAR on the build path in order to get this code to work!!!
          * http://www.oracle.com/technetwork/database/features/jdbc/index-091264.html
          */
-        
+
         DriverManager.registerDriver(driver);
         return DriverManager.getConnection(url, username, password);
     }
-    
+
     public static ResultSet executeQuery(final Connection connection, final String query) throws SQLException
     {
         Statement statement = connection.createStatement();
         ResultSet results = null;
-        
+
         try
         {
-            if (statement.execute(query))
+            if ( statement.execute(query) )
             {
                 results = statement.getResultSet();
             }
-            
-            if (connection.getAutoCommit())
+
+            if ( connection.getAutoCommit() )
             {
                 connection.commit();
             }
         }
-        catch (final SQLException exception)
+        catch ( final SQLException exception )
         {
             exception.fillInStackTrace();
             throw exception;
         }
         finally
         {
-            if (statement != null)
+            if ( statement != null )
             {
                 try
                 {
                     statement.close();
                 }
-                catch (final Exception exception)
+                catch ( final Exception exception )
                 {
                     // Ignore to workaround a bug in Jakarta DBCP.
                 }
             }
-            
+
             connection.rollback();
         }
-        
+
         Thread.yield();
         return results;
     }

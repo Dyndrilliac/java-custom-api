@@ -9,181 +9,181 @@
 package api.util.datastructures;
 
 import java.util.LinkedList;
+import api.util.Mathematics;
 
-public class SeparateChainingSymbolTable<K,V>
+public class SeparateChainingSymbolTable<K, V>
 {
-    // Largest primes <= 2^i for i = 7 to 31.
-    private static final int[]                 PRIMES    = {
-        127, 251, 509, 1021, 2039, 4093, 8191, 16381, 32749, 65521, 131071, 262139, 524287, 1048573, 2097143, 4194301, 8388593, 16777213, 33554393,
-        67108859, 134217689, 268435399, 536870909, 1073741789, 2147483647
-                                                         };
-    
-    private int                                capacity  = 0;   // Current capacity factor.
-    private int                                curSize   = 0;   // Current table size (number of key-value pairs).
-    private int                                maxSize   = 0;   // Maximum table size (number of key-value pairs).
-    private SequentialSearchSymbolTable<K,V>[] symTables = null; // Internal array of linked-list symbol tables.
-                                                                 
+    private static final long PRIMES(final long capacity)
+    {
+        return Mathematics.makePrimeLesser((long) Math.pow(2, capacity));
+    }
+
+    private long                                capacity  = 0;    // Current capacity factor.
+    private long                                curSize   = 0;    // Current table size (number of key-value pairs).
+    private long                                maxSize   = 0;    // Maximum table size (number of key-value pairs).
+    private SequentialSearchSymbolTable<K, V>[] symTables = null; // Internal array of linked-list symbol tables.
+
     // Create separate chaining hash table with the default capacity factor.
     public SeparateChainingSymbolTable()
     {
         this(0);
     }
-    
+
     // Create separate chaining hash table with a specific capacity factor.
     @SuppressWarnings("unchecked")
-    public SeparateChainingSymbolTable(final int capacity)
+    public SeparateChainingSymbolTable(final long capacity)
     {
         this.setCapacity(capacity);
-        this.setMaxSize(SeparateChainingSymbolTable.PRIMES[this.getCapacity()]);
-        this.setSymTables(new SequentialSearchSymbolTable[this.getMaxSize()]);
-        
-        for (int i = 0; i < this.getMaxSize(); i++)
+        this.setMaxSize(SeparateChainingSymbolTable.PRIMES(this.getCapacity()));
+        this.setSymTables(new SequentialSearchSymbolTable[(int)this.getMaxSize()]);
+
+        for ( int i = 0; i < this.getMaxSize(); i++ )
         {
-            this.getSymTables()[i] = new SequentialSearchSymbolTable<K,V>();
+            this.getSymTables()[i] = new SequentialSearchSymbolTable<K, V>();
         }
     }
-    
+
     // Is the key in the symbol table?
     public final boolean contains(final K key)
     {
-        return (this.get(key) != null);
+        return ( this.get(key) != null );
     }
-    
+
     // Delete key (and associated value) if key is in the table.
     public final void delete(final K key)
     {
-        int i = this.hash(key);
-        
-        if (this.getSymTables()[i].contains(key))
+        long i = this.hash(key);
+
+        if ( this.getSymTables()[(int)i].contains(key) )
         {
             this.setCurSize(this.getCurSize() - 1);
         }
-        
-        this.getSymTables()[i].delete(key);
-        
+
+        this.getSymTables()[(int)i].delete(key);
+
         // Reduce table size if average length of list <= 2 and the table is larger than the initial capacity.
-        if ((this.getMaxSize() > SeparateChainingSymbolTable.PRIMES[0]) && (this.getCurSize() <= (2 * this.getMaxSize())))
+        if ( ( this.getMaxSize() > SeparateChainingSymbolTable.PRIMES(7) ) && ( this.getCurSize() <= ( 2 * this.getMaxSize() ) ) )
         {
             this.setCapacity(this.getCapacity() - 1);
-            this.resize(SeparateChainingSymbolTable.PRIMES[this.getCapacity()]);
+            this.resize(SeparateChainingSymbolTable.PRIMES(this.getCapacity()));
         }
     }
-    
+
     // Return value associated with key, null if no such key.
     public final V get(final K key)
     {
-        int i = this.hash(key);
-        return this.getSymTables()[i].get(key);
+        long i = this.hash(key);
+        return this.getSymTables()[(int)i].get(key);
     }
-    
+
     // Return the current capacity factor of the symbol table.
-    public final int getCapacity()
+    public final long getCapacity()
     {
         return this.capacity;
     }
-    
+
     // Return the current size of the symbol table.
-    public final int getCurSize()
+    public final long getCurSize()
     {
         return this.curSize;
     }
-    
+
     // Return the maximum size of the symbol table.
-    public final int getMaxSize()
+    public final long getMaxSize()
     {
         return this.maxSize;
     }
-    
+
     // Return the internal symbol table array.
-    protected final SequentialSearchSymbolTable<K,V>[] getSymTables()
+    protected final SequentialSearchSymbolTable<K, V>[] getSymTables()
     {
         return this.symTables;
     }
-    
+
     // Hash value between 0 and m-1.
-    public final int hash(final K key)
+    public final long hash(final K key)
     {
-        return ((key.hashCode() & 0x7FFFFFFF) % this.getMaxSize());
+        return ( ( key.hashCode() & 0x7FFFFFFF ) % this.getMaxSize() );
     }
-    
+
     // Is the symbol table empty?
     public final boolean isEmpty()
     {
-        return (this.getCurSize() == 0);
+        return ( this.getCurSize() == 0 );
     }
-    
+
     // Return keys in symbol table as an Iterable.
     public final Iterable<K> keys()
     {
         LinkedList<K> queue = new LinkedList<K>();
-        
-        for (int i = 0; i < this.getMaxSize(); i++)
+
+        for ( int i = 0; i < this.getMaxSize(); i++ )
         {
-            for (K key: this.getSymTables()[i].keys())
+            for ( K key : this.getSymTables()[i].keys() )
             {
                 queue.add(key);
             }
         }
-        
+
         return queue;
     }
-    
+
     // Insert key-value pair into the table.
     public final void put(final K key, final V value)
     {
-        if (value == null)
+        if ( value == null )
         {
             this.delete(key);
             return;
         }
-        
+
         // Increase table size if average length of list >= 10.
-        if (this.getCurSize() >= (10 * this.getMaxSize()))
+        if ( this.getCurSize() >= ( 10 * this.getMaxSize() ) )
         {
             this.setCapacity(this.getCapacity() + 1);
-            this.resize(SeparateChainingSymbolTable.PRIMES[this.getCapacity()]);
+            this.resize(SeparateChainingSymbolTable.PRIMES(this.getCapacity()));
         }
-        
-        int i = this.hash(key);
-        
-        if (!this.getSymTables()[i].contains(key))
+
+        long i = this.hash(key);
+
+        if ( !this.getSymTables()[(int)i].contains(key) )
         {
             this.setCurSize(this.getCurSize() + 1);
         }
-        
-        this.getSymTables()[i].put(key, value);
+
+        this.getSymTables()[(int)i].put(key, value);
     }
-    
+
     // Resize the hash table to have the given number of chains by rehashing all of the keys.
-    protected final void resize(final int chains)
+    protected final void resize(final long chains)
     {
-        SeparateChainingSymbolTable<K,V> temp = new SeparateChainingSymbolTable<K,V>(chains);
-        
-        for (int i = 0; i < this.getMaxSize(); i++)
+        SeparateChainingSymbolTable<K, V> temp = new SeparateChainingSymbolTable<K, V>(chains);
+
+        for ( int i = 0; i < this.getMaxSize(); i++ )
         {
-            for (K key: this.getSymTables()[i].keys())
+            for ( K key : this.getSymTables()[i].keys() )
             {
                 temp.put(key, this.getSymTables()[i].get(key));
             }
         }
-        
+
         this.setMaxSize(temp.getMaxSize());
         this.setCurSize(temp.getCurSize());
         this.setSymTables(temp.getSymTables());
     }
-    
+
     // Set the current capacity factor of the symbol table.
-    protected final void setCapacity(final int capacity)
+    protected final void setCapacity(final long capacity)
     {
-        if ((capacity < 0) || (capacity >= SeparateChainingSymbolTable.PRIMES.length))
+        if ( ( capacity <= 7 ) || ( capacity >= 31 ) )
         {
-            if (capacity < 0)
+            if ( capacity <= 7 )
             {
-                this.capacity = 0;
+                this.capacity = 7;
             }
-            else if (capacity >= SeparateChainingSymbolTable.PRIMES.length)
+            else if ( capacity >= 31 )
             {
-                this.capacity = (SeparateChainingSymbolTable.PRIMES.length - 1);
+                this.capacity = 31;
             }
         }
         else
@@ -191,21 +191,21 @@ public class SeparateChainingSymbolTable<K,V>
             this.capacity = capacity;
         }
     }
-    
+
     // Set the current size of the symbol table.
-    protected final void setCurSize(final int curSize)
+    protected final void setCurSize(final long curSize)
     {
         this.curSize = curSize;
     }
-    
+
     // Set the maximum size of the symbol table.
-    protected final void setMaxSize(final int maxSize)
+    protected final void setMaxSize(final long maxSize)
     {
         this.maxSize = maxSize;
     }
-    
+
     // Set the internal symbol table array.
-    protected final void setSymTables(final SequentialSearchSymbolTable<K,V>[] symTables)
+    protected final void setSymTables(final SequentialSearchSymbolTable<K, V>[] symTables)
     {
         this.symTables = symTables;
     }

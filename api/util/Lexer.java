@@ -9,7 +9,8 @@
 
 package api.util;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import api.util.datastructures.Token;
 import edu.princeton.cs.algs4.In;
 
@@ -20,9 +21,7 @@ public abstract class Lexer<T>
      */
     protected static enum DepthType
     {
-        //@formatter:off
         BRACE, BRACKET, COMMENT, PARENTH
-        //@formatter:on
     }
 
     // RegExr patterns describing the various components of the C language grammar.
@@ -44,54 +43,61 @@ public abstract class Lexer<T>
     // Internal Depth Tracking Array
     protected int[] Depth = { 0, 0, 0, 0 };
 
-    public ArrayList<Token<T>> lex(final String s)
+    public List<Token<T>> lex(final String s)
     {
-        return this.lex(s, false, false);
+        return this.lex(s, 0);
     }
 
-    public ArrayList<Token<T>> lex(final String s, final boolean silent)
+    public List<Token<T>> lex(final String s, final int lineNo)
     {
-        return this.lex(s, silent, false);
+        return this.lex(s, lineNo, true);
     }
 
-    public ArrayList<Token<T>> lex(final String s, final boolean silent, final boolean ignoreWhiteSpace)
+    public List<Token<T>> lex(final String s, final int lineNo, final boolean silent)
     {
-        return this.lex(s, silent, ignoreWhiteSpace, true);
+        return this.lex(s, lineNo, silent, true);
     }
 
-    public abstract ArrayList<Token<T>> lex(final String fileName, final boolean silent, final boolean ignoreWhiteSpace, final boolean ignoreComments);
+    public List<Token<T>> lex(final String s, final int lineNo, final boolean silent, final boolean ignoreWhiteSpace)
+    {
+        return this.lex(s, lineNo, silent, ignoreWhiteSpace, true);
+    }
 
-    public ArrayList<Token<T>> lexFile(final String fileName)
+    public abstract List<Token<T>> lex(final String s, final int lineNo, final boolean silent, final boolean ignoreWhiteSpace, final boolean ignoreComments);
+
+    public List<Token<T>> lexFile(final String fileName)
     {
         return this.lexFile(fileName, false);
     }
 
-    public ArrayList<Token<T>> lexFile(final String fileName, final boolean silent)
+    public List<Token<T>> lexFile(final String fileName, final boolean silent)
     {
         return this.lexFile(fileName, silent, false);
     }
 
-    public ArrayList<Token<T>> lexFile(final String fileName, final boolean silent, final boolean ignoreWhiteSpace)
+    public List<Token<T>> lexFile(final String fileName, final boolean silent, final boolean ignoreWhiteSpace)
     {
         return this.lexFile(fileName, silent, ignoreWhiteSpace, true);
     }
 
-    public ArrayList<Token<T>> lexFile(final String fileName, final boolean silent, final boolean ignoreWhiteSpace, final boolean ignoreComments)
+    public List<Token<T>> lexFile(final String fileName, final boolean silent, final boolean ignoreWhiteSpace, final boolean ignoreComments)
     {
         // A buffer for the tokens we want to return.
-        ArrayList<Token<T>> tokens = new ArrayList<Token<T>>();
+        List<Token<T>> tokens = new LinkedList<Token<T>>();
 
         In inputStream = null;
-        
+        int lineNo = 0;
+
         try
         {
             // Try to open the given input file for a read operation.
             inputStream = new In(fileName);
-            
+
             // Pass each line of text from the input file to lex(), and add all the returned tokens to our output token buffer.
             while ( inputStream.hasNextLine() )
             {
-                tokens.addAll(this.lex(inputStream.readLine(), silent, ignoreWhiteSpace, ignoreComments));
+                lineNo++;
+                tokens.addAll(this.lex(inputStream.readLine(), lineNo, silent, ignoreWhiteSpace, ignoreComments));
             }
         }
         catch ( final IllegalArgumentException iae )
