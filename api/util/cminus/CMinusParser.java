@@ -9,7 +9,7 @@
  * TODO: Add identifiers to symbol tables.
  * TODO: Add identifiers to symbol tables.
  * TODO: Finish code for simple expressions.
- * TODO: Finish code to check for the first set of simple expressions.
+ * TODO: Finish code to check if a given token is in the first set of simple expressions.
  */
 
 package api.util.cminus;
@@ -441,7 +441,7 @@ public class CMinusParser
                     }
                 }
                 // First of expression statement.
-                else if ( CMinusParser.isIdentifier(token) || CMinusParser.isGroupingSymbol(token, ";") || CMinusParser.isFirstOfSimpleExpression(tokens, newIndex) )
+                else if ( CMinusParser.isIdentifier(token) || CMinusParser.isGroupingSymbol(token, ";") || CMinusParser.isInFirstSetOfSimpleExpression(tokens, newIndex) )
                 {
                     type = EXPRESSION_TYPE;
                 }
@@ -624,9 +624,9 @@ public class CMinusParser
         return false;
     }
 
-    protected static final boolean isFirstOfSimpleExpression(final List<Token<CMinusLexer.TokenType>> tokens, final int index)
+    protected static final boolean isInFirstSetOfSimpleExpression(final List<Token<CMinusLexer.TokenType>> tokens, final int index)
     {
-        // TODO: Finish code to check for the first set of simple expressions.
+        // TODO: Finish code to check if a given token is in the first set of simple expressions.
 
         return false;
     }
