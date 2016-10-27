@@ -86,7 +86,7 @@ public class CMinusLexer<T> extends Lexer<T>
     public static final String C_IDENTIFIERS = "([A-Za-z])([A-Za-z0-9]*)";
     public static final String C_INTEGERS    = "([^\\s\\S])";
     public static final String C_KEYWORDS    = "(\\b((else)|(float)|(if)|(int)|(return)|(void)|(while))\\b)";
-    public static final String C_NUMBERS     = "((\\-)?\\d+(\\.\\d+)?((E|e)(\\+|\\-)?\\d+)?)";
+    public static final String C_NUMBERS     = "((\\B\\-)?\\d+(\\.\\d+)?((E|e)(\\+|\\-)?\\d+)?)";
     public static final String C_OPERATORS   = "(\\<\\=)|(\\>\\=)|(\\=\\=)|(\\!\\=)|([\\+\\-\\*\\/\\<\\>\\=])";
 
     public static void main(final String[] args)
