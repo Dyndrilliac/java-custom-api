@@ -9,6 +9,7 @@
 package api.util.datastructures;
 
 import java.util.LinkedList;
+import java.util.List;
 import api.util.Mathematics;
 
 public class SeparateChainingSymbolTable<K, V>
@@ -113,9 +114,25 @@ public class SeparateChainingSymbolTable<K, V>
     }
 
     // Return keys in symbol table as an Iterable.
-    public final Iterable<K> keys()
+    public final Iterable<K> keysIterable()
     {
         LinkedList<K> queue = new LinkedList<K>();
+
+        for ( int i = 0; i < this.getMaxSize(); i++ )
+        {
+            for ( K key : this.getSymTables()[i].keys() )
+            {
+                queue.add(key);
+            }
+        }
+
+        return queue;
+    }
+    
+    // Return keys in symbol table as a list.
+    public final List<K> keysList()
+    {
+        List<K> queue = new LinkedList<K>();
 
         for ( int i = 0; i < this.getMaxSize(); i++ )
         {

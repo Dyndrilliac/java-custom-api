@@ -3,16 +3,19 @@
  * Author: Matthew Boyette
  * Date: 10/09/2016
  *
- * This class functions as a generic syntactical analyzer for the C-Minus language. The parser is built in the model of a Turing machine processing a finite strand of tape
- * which represents the list of tokens. I keep track of which index of the tape I am currently looking at and can read, write, go forwards, go backwards, and can look back
- * or ahead at any previous or future token, respectively. This effectively parses any language that is LL(k) parsable for any finite constant non-negative integer k. This
- * parser could be made GLL(k) capable by executing all of the calls to the static declaration method in parallel.
+ * This class functions as a generic syntactical analyzer for the C-Minus language. The parser is built in the model of a linear-bounded automaton processing a finite strand of
+ * tape which represents the list of tokens. I keep track of which index of the tape I am currently looking at and can read, write, go forwards, go backwards, and can look back
+ * or ahead at any previous or future token, respectively. This effectively parses any language that is LL(k) parsable for any finite constant non-negative integer k. This parser
+ * could be made GLL(k) capable by executing all of the calls to the static declaration method in parallel.
  */
 
 package api.util.cminus;
 
+import java.util.LinkedList;
 import java.util.List;
-import api.util.datastructures.SeparateChainingSymbolTable;
+import api.util.cminus.CMinusLexer.TokenType;
+import api.util.cminus.CMinusSemantics.SymTab;
+import api.util.cminus.CMinusSemantics.SymTabRec;
 import api.util.datastructures.Token;
 import edu.princeton.cs.algs4.StdOut;
 
@@ -39,7 +42,7 @@ public class CMinusParser
 
         public final Token<CMinusLexer.TokenType> getToken()
         {
-            return token;
+            return this.token;
         }
 
         protected final void setToken(final Token<CMinusLexer.TokenType> token)
@@ -51,10 +54,10 @@ public class CMinusParser
     // This class contains the parsing algorithms, organized by which grammar production rule each one is associated with.
     protected static class CMinusParseProduction
     {
-        public static final CMinusParseResult additiveExpression(final List<Token<CMinusLexer.TokenType>> tokens, final int index)
+        public static final CMinusParseResult additiveExpression(final SymTab<SymTabRec> symbolTables, final List<Token<CMinusLexer.TokenType>> tokens, final int index)
         {
             int newIndex = index;
-            CMinusParseResult termResult = CMinusParseProduction.term(tokens, newIndex);
+            CMinusParseResult termResult = CMinusParseProduction.term(symbolTables, tokens, newIndex);
 
             while ( ( termResult.resultType == CMinusParseResult.Type.ACCEPT ) && ( ( termResult.endIndex ) < tokens.size() ) )
             {
@@ -64,7 +67,7 @@ public class CMinusParser
                 if ( CMinusParser.isAdditionOperator(token) )
                 {
                     newIndex++;
-                    termResult = CMinusParseProduction.term(tokens, newIndex);
+                    termResult = CMinusParseProduction.term(symbolTables, tokens, newIndex);
                     newIndex = termResult.endIndex;
                 }
                 else
@@ -76,10 +79,10 @@ public class CMinusParser
             return new CMinusParseResult(termResult.resultType, index, newIndex);
         }
 
-        public static final CMinusParseResult argList(final List<Token<CMinusLexer.TokenType>> tokens, final int index)
+        public static final CMinusParseResult argList(final SymTab<SymTabRec> symbolTables, final List<Token<CMinusLexer.TokenType>> tokens, final int index)
         {
             int newIndex = index;
-            CMinusParseResult expressionResult = CMinusParseProduction.expression(tokens, newIndex);
+            CMinusParseResult expressionResult = CMinusParseProduction.expression(symbolTables, tokens, newIndex);
 
             while ( ( expressionResult.resultType == CMinusParseResult.Type.ACCEPT ) && ( ( expressionResult.endIndex ) < tokens.size() ) )
             {
@@ -89,7 +92,7 @@ public class CMinusParser
                 if ( CMinusParser.isGroupingSymbol(token, ",") )
                 {
                     newIndex++;
-                    expressionResult = CMinusParseProduction.expression(tokens, newIndex);
+                    expressionResult = CMinusParseProduction.expression(symbolTables, tokens, newIndex);
                     newIndex = expressionResult.endIndex;
                 }
                 else
@@ -101,7 +104,7 @@ public class CMinusParser
             return new CMinusParseResult(expressionResult.resultType, index, newIndex);
         }
 
-        public static final CMinusParseResult args(final List<Token<CMinusLexer.TokenType>> tokens, final int index)
+        public static final CMinusParseResult args(final SymTab<SymTabRec> symbolTables, final List<Token<CMinusLexer.TokenType>> tokens, final int index)
         {
             int newIndex = index;
             Token<CMinusLexer.TokenType> token = CMinusParser.getToken(tokens, newIndex);
@@ -109,23 +112,24 @@ public class CMinusParser
             // Empty arg-list
             if ( CMinusParser.isGroupingSymbol(token, ")") ) { return new CMinusParseResult(CMinusParseResult.Type.ACCEPT, index, newIndex); }
 
-            return argList(tokens, newIndex);
+            return argList(symbolTables, tokens, newIndex);
         }
 
-        public static final CMinusParseResult call(final List<Token<CMinusLexer.TokenType>> tokens, final int index)
+        public static final CMinusParseResult call(final SymTab<SymTabRec> symbolTables, final List<Token<CMinusLexer.TokenType>> tokens, final int index)
         {
             int newIndex = index;
             Token<CMinusLexer.TokenType> token = CMinusParser.getToken(tokens, newIndex);
 
             if ( CMinusParser.isIdentifier(token) )
             {
+                symbolTables.get(token.getData());
                 newIndex++;
                 token = CMinusParser.getToken(tokens, newIndex);
 
                 if ( ( CMinusParser.isGroupingSymbol(token, "(") ) )
                 {
                     newIndex++;
-                    CMinusParseResult cmpr = CMinusParseProduction.args(tokens, newIndex);
+                    CMinusParseResult cmpr = CMinusParseProduction.args(symbolTables, tokens, newIndex);
 
                     if ( cmpr.resultType == CMinusParseResult.Type.ACCEPT )
                     {
@@ -140,8 +144,22 @@ public class CMinusParser
             return new CMinusParseResult(CMinusParseResult.Type.REJECT, index, newIndex);
         }
 
-        public static final CMinusParseResult compoundStatement(final List<SeparateChainingSymbolTable<String, CMinusIdentifierParameters>> symbolTables, final List<Token<CMinusLexer.TokenType>> tokens, final int index)
+        public static final CMinusParseResult compoundStatement(final SymTab<SymTabRec> symbolTables, final List<SymTabRec> params, final List<Token<CMinusLexer.TokenType>> tokens, final int index)
         {
+            symbolTables.enterScope();
+            
+            for ( SymTabRec param : params )
+            {
+                if ( param.isVar() )
+                {
+                    
+                }
+                else
+                {
+                    
+                }
+            }
+            
             int newIndex = index;
             Token<CMinusLexer.TokenType> token = CMinusParser.getToken(tokens, newIndex);
 
@@ -153,14 +171,18 @@ public class CMinusParser
                 if ( cmpr.resultType == CMinusParseResult.Type.ACCEPT )
                 {
                     newIndex = Math.max(newIndex, cmpr.endIndex);
-                    cmpr = CMinusParseProduction.statementList(symbolTables, tokens, newIndex);
+                    cmpr = CMinusParseProduction.statementList(symbolTables, params, tokens, newIndex);
 
                     if ( cmpr.resultType == CMinusParseResult.Type.ACCEPT )
                     {
                         newIndex = Math.max(newIndex, cmpr.endIndex);
                         token = CMinusParser.getToken(tokens, newIndex);
 
-                        if ( CMinusParser.isGroupingSymbol(token, "}") ) { return new CMinusParseResult(CMinusParseResult.Type.ACCEPT, index, newIndex); }
+                        if ( CMinusParser.isGroupingSymbol(token, "}") )
+                        {
+                            symbolTables.exitScope();
+                            return new CMinusParseResult(CMinusParseResult.Type.ACCEPT, index, newIndex);
+                        }
                     }
                 }
             }
@@ -168,18 +190,22 @@ public class CMinusParser
             return new CMinusParseResult(CMinusParseResult.Type.REJECT, index, newIndex);
         }
 
-        public static final CMinusParseResult declaration(final List<SeparateChainingSymbolTable<String, CMinusIdentifierParameters>> symbolTables, final List<Token<CMinusLexer.TokenType>> tokens, final int index, final boolean isLocal)
+        public static final CMinusParseResult declaration(final SymTab<SymTabRec> symbolTables, final List<Token<CMinusLexer.TokenType>> tokens, final int index, final boolean isLocal)
         {
-            int newIndex = index;
+            int newIndex = index, arraySize = -1;
+            String symbolName, symbolType;
+            List<SymTabRec> params = new LinkedList<SymTabRec>();
             Token<CMinusLexer.TokenType> token = CMinusParser.getToken(tokens, newIndex);
 
             if ( CMinusParser.isTypeSpecifier(token) )
             {
+                symbolType = token.getData();
                 newIndex++;
                 token = CMinusParser.getToken(tokens, newIndex);
 
                 if ( CMinusParser.isIdentifier(token) )
                 {
+                    symbolName = token.getData();
                     newIndex++;
                     token = CMinusParser.getToken(tokens, newIndex);
 
@@ -188,7 +214,7 @@ public class CMinusParser
                         if ( !isLocal ) // Necessary to re-use this method for local declarations.
                         {
                             newIndex++;
-                            CMinusParseResult cmpr = CMinusParseProduction.parameters(symbolTables, tokens, newIndex);
+                            CMinusParseResult cmpr = CMinusParseProduction.parameters(symbolTables, params, tokens, newIndex);
 
                             if ( cmpr.resultType == CMinusParseResult.Type.ACCEPT )
                             {
@@ -197,8 +223,32 @@ public class CMinusParser
 
                                 if ( CMinusParser.isGroupingSymbol(token, ")") )
                                 {
-                                    CMinusParser.addSymbol(symbolTables, tokens.subList(index, newIndex), CMinusIdentifierParameters.PARAM_TYPE.FUNCTION_DECLARATION);
-                                    return CMinusParseProduction.compoundStatement(symbolTables, tokens, newIndex + 1);
+                                    CMinusSemantics.FunRec functionRecord = new CMinusSemantics.FunRec(symbolName, symbolTables.getScope(), symbolType, params);
+                                    CMinusSemantics.addSymbol(functionRecord, symbolTables);
+                                    if ( symbolName.contentEquals("main") )
+                                    {
+                                        if ( CMinusSemantics.seenMain == true )
+                                        {
+                                            CMinusSemantics.errorFlag = true;
+                                        }
+                                        else
+                                        {
+                                            if ( !functionRecord.isGlobal() )
+                                            {
+                                                CMinusSemantics.errorFlag = true;
+                                            }
+                                            if ( !functionRecord.getParams().isEmpty() )
+                                            {
+                                                CMinusSemantics.errorFlag = true;
+                                            }
+                                            if ( !functionRecord.type.contentEquals("void") )
+                                            {
+                                                CMinusSemantics.errorFlag = true;
+                                            }
+                                            CMinusSemantics.seenMain = true;
+                                        }
+                                    }
+                                    return CMinusParseProduction.compoundStatement(symbolTables, params, tokens, newIndex + 1);
                                 }
                             }
                         }
@@ -207,7 +257,7 @@ public class CMinusParser
                     {
                         if ( CMinusParser.isGroupingSymbol(token, ";") )
                         {
-                            CMinusParser.addSymbol(symbolTables, tokens.subList(index, newIndex), CMinusIdentifierParameters.PARAM_TYPE.VARIABLE_DECLARATION);
+                            CMinusSemantics.addSymbol(new CMinusSemantics.VarRec(symbolName, symbolTables.getScope(), symbolType), symbolTables);
                             return new CMinusParseResult(CMinusParseResult.Type.ACCEPT, index, newIndex);
                         }
                         else if ( CMinusParser.isGroupingSymbol(token, "[") )
@@ -217,6 +267,14 @@ public class CMinusParser
 
                             if ( CMinusParser.isNumber(token) )
                             {
+                                if ( token.getType() != TokenType.INTEGER )
+                                {
+                                    CMinusSemantics.errorFlag = true;
+                                }
+                                else
+                                {
+                                    arraySize = Integer.parseInt(token.getData());
+                                }
                                 newIndex++;
                                 token = CMinusParser.getToken(tokens, newIndex);
 
@@ -227,7 +285,7 @@ public class CMinusParser
 
                                     if ( CMinusParser.isGroupingSymbol(token, ";") )
                                     {
-                                        CMinusParser.addSymbol(symbolTables, tokens.subList(index, newIndex), CMinusIdentifierParameters.PARAM_TYPE.VARIABLE_DECLARATION);
+                                        CMinusSemantics.addSymbol(new CMinusSemantics.ArrRec(symbolName, symbolTables.getScope(), symbolType, arraySize), symbolTables);
                                         return new CMinusParseResult(CMinusParseResult.Type.ACCEPT, index, newIndex);
                                     }
                                 }
@@ -241,7 +299,7 @@ public class CMinusParser
             {
                 if ( index == newIndex )
                 {
-                    CMinusParseResult cmpr = CMinusParseProduction.statement(symbolTables, tokens, newIndex, true);
+                    CMinusParseResult cmpr = CMinusParseProduction.statement(symbolTables, params, tokens, newIndex, true);
 
                     if ( ( cmpr.resultType == CMinusParseResult.Type.ACCEPT ) || CMinusParser.isGroupingSymbol(token, "}") ) { return new CMinusParseResult(CMinusParseResult.Type.EMPTY, index, newIndex); }
                 }
@@ -250,7 +308,7 @@ public class CMinusParser
             return new CMinusParseResult(CMinusParseResult.Type.REJECT, index, newIndex);
         }
 
-        public static final CMinusParseResult declarationList(final List<SeparateChainingSymbolTable<String, CMinusIdentifierParameters>> symbolTables, final List<Token<CMinusLexer.TokenType>> tokens, final int index, final boolean isLocal)
+        public static final CMinusParseResult declarationList(final SymTab<SymTabRec> symbolTables, final List<Token<CMinusLexer.TokenType>> tokens, final int index, final boolean isLocal)
         {
             CMinusParseResult declarationResult = CMinusParseProduction.declaration(symbolTables, tokens, index, isLocal);
 
@@ -275,27 +333,27 @@ public class CMinusParser
             return declarationResult;
         }
 
-        public static final CMinusParseResult expression(final List<Token<CMinusLexer.TokenType>> tokens, final int index)
+        public static final CMinusParseResult expression(final SymTab<SymTabRec> symbolTables, final List<Token<CMinusLexer.TokenType>> tokens, final int index)
         {
             int newIndex = index;
-            CMinusParseResult cmpr = CMinusParseProduction.variable(tokens, newIndex);
+            CMinusParseResult cmpr = CMinusParseProduction.variable(symbolTables, tokens, newIndex);
 
             if ( cmpr.resultType == CMinusParseResult.Type.ACCEPT )
             {
                 newIndex = cmpr.endIndex + 1;
                 Token<CMinusLexer.TokenType> token = CMinusParser.getToken(tokens, newIndex);
 
-                if ( CMinusParser.isAssignmentOperator(token) ) { return CMinusParseProduction.expression(tokens, newIndex + 1); }
+                if ( CMinusParser.isAssignmentOperator(token) ) { return CMinusParseProduction.expression(symbolTables, tokens, newIndex + 1); }
             }
 
-            cmpr = CMinusParseProduction.simpleExpression(tokens, index);
+            cmpr = CMinusParseProduction.simpleExpression(symbolTables, tokens, index);
 
             if ( cmpr.resultType == CMinusParseResult.Type.ACCEPT ) { return cmpr; }
 
             return new CMinusParseResult(CMinusParseResult.Type.REJECT, index, newIndex);
         }
 
-        public static final CMinusParseResult expressionStatement(final List<Token<CMinusLexer.TokenType>> tokens, final int index)
+        public static final CMinusParseResult expressionStatement(final SymTab<SymTabRec> symbolTables, final List<Token<CMinusLexer.TokenType>> tokens, final int index)
         {
             int newIndex = index;
             Token<CMinusLexer.TokenType> token = CMinusParser.getToken(tokens, newIndex);
@@ -306,7 +364,7 @@ public class CMinusParser
             }
             else
             {
-                CMinusParseResult cmpr = CMinusParseProduction.expression(tokens, newIndex);
+                CMinusParseResult cmpr = CMinusParseProduction.expression(symbolTables, tokens, newIndex);
 
                 if ( cmpr.resultType == CMinusParseResult.Type.ACCEPT )
                 {
@@ -320,7 +378,7 @@ public class CMinusParser
             return new CMinusParseResult(CMinusParseResult.Type.REJECT, index, newIndex);
         }
 
-        public static final CMinusParseResult factor(final List<Token<CMinusLexer.TokenType>> tokens, final int index)
+        public static final CMinusParseResult factor(final SymTab<SymTabRec> symbolTables, final List<Token<CMinusLexer.TokenType>> tokens, final int index)
         {
             int newIndex = index;
             Token<CMinusLexer.TokenType> token = CMinusParser.getToken(tokens, newIndex);
@@ -328,7 +386,7 @@ public class CMinusParser
             if ( CMinusParser.isGroupingSymbol(token, "(") )
             {
                 newIndex++;
-                CMinusParseResult cmpr = CMinusParseProduction.expression(tokens, newIndex);
+                CMinusParseResult cmpr = CMinusParseProduction.expression(symbolTables, tokens, newIndex);
 
                 if ( cmpr.resultType == CMinusParseResult.Type.ACCEPT )
                 {
@@ -345,11 +403,11 @@ public class CMinusParser
 
                 if ( CMinusParser.isGroupingSymbol(nextToken, "(") )
                 {
-                    cmpr = CMinusParseProduction.call(tokens, newIndex);
+                    cmpr = CMinusParseProduction.call(symbolTables, tokens, newIndex);
                 }
                 else
                 {
-                    cmpr = CMinusParseProduction.variable(tokens, newIndex);
+                    cmpr = CMinusParseProduction.variable(symbolTables, tokens, newIndex);
                 }
 
                 return new CMinusParseResult(cmpr.resultType, cmpr.begIndex, cmpr.endIndex + 1);
@@ -359,7 +417,7 @@ public class CMinusParser
             return new CMinusParseResult(CMinusParseResult.Type.REJECT, index, newIndex);
         }
 
-        public static final CMinusParseResult iterationOrSelectionStatement(final List<SeparateChainingSymbolTable<String, CMinusIdentifierParameters>> symbolTables, final List<Token<CMinusLexer.TokenType>> tokens, final int index, final boolean isSelectionStatement)
+        public static final CMinusParseResult iterationOrSelectionStatement(final SymTab<SymTabRec> symbolTables, final List<SymTabRec> params, final List<Token<CMinusLexer.TokenType>> tokens, final int index, final boolean isSelectionStatement)
         {
             int newIndex = index;
             Token<CMinusLexer.TokenType> token = CMinusParser.getToken(tokens, newIndex);
@@ -367,7 +425,7 @@ public class CMinusParser
             if ( CMinusParser.isGroupingSymbol(token, "(") )
             {
                 newIndex++;
-                CMinusParseResult cmpr = CMinusParseProduction.expression(tokens, newIndex);
+                CMinusParseResult cmpr = CMinusParseProduction.expression(symbolTables, tokens, newIndex);
 
                 if ( cmpr.resultType == CMinusParseResult.Type.ACCEPT )
                 {
@@ -377,7 +435,7 @@ public class CMinusParser
                     if ( CMinusParser.isGroupingSymbol(token, ")") )
                     {
                         newIndex++;
-                        cmpr = CMinusParseProduction.statement(symbolTables, tokens, newIndex, false);
+                        cmpr = CMinusParseProduction.statement(symbolTables, params, tokens, newIndex, false);
 
                         if ( isSelectionStatement )
                         {
@@ -386,7 +444,7 @@ public class CMinusParser
 
                             if ( CMinusParser.isKeyword(token, "else") )
                             {
-                                return CMinusParseProduction.statement(symbolTables, tokens, newIndex + 1, false);
+                                return CMinusParseProduction.statement(symbolTables, params, tokens, newIndex + 1, false);
                             }
                             else
                             {
@@ -404,18 +462,21 @@ public class CMinusParser
             return new CMinusParseResult(CMinusParseResult.Type.REJECT, index, newIndex);
         }
 
-        public static final CMinusParseResult parameter(final List<SeparateChainingSymbolTable<String, CMinusIdentifierParameters>> symbolTables, final List<Token<CMinusLexer.TokenType>> tokens, final int index)
+        public static final CMinusParseResult parameter(final SymTab<SymTabRec> symbolTables, final List<SymTabRec> params, final List<Token<CMinusLexer.TokenType>> tokens, final int index)
         {
             int newIndex = index;
+            String symbolName, symbolType;
             Token<CMinusLexer.TokenType> token = CMinusParser.getToken(tokens, newIndex);
 
             if ( CMinusParser.isTypeSpecifier(token) )
             {
+                symbolType = token.getData();
                 newIndex++;
                 token = CMinusParser.getToken(tokens, newIndex);
 
                 if ( CMinusParser.isIdentifier(token) )
                 {
+                    symbolName = token.getData();
                     newIndex++;
                     token = CMinusParser.getToken(tokens, newIndex);
 
@@ -426,14 +487,14 @@ public class CMinusParser
 
                         if ( CMinusParser.isGroupingSymbol(token, "]") )
                         {
-                            CMinusParser.addSymbol(symbolTables, tokens.subList(index, newIndex), CMinusIdentifierParameters.PARAM_TYPE.FUNCTION_PARAMETER);
+                            params.add(new CMinusSemantics.ArrRec(symbolName, symbolTables.getScope() + 1, symbolType, -1));
                             return new CMinusParseResult(CMinusParseResult.Type.ACCEPT, index, newIndex);
                         }
                     }
                     else
                     {
                         newIndex--;
-                        CMinusParser.addSymbol(symbolTables, tokens.subList(index, newIndex), CMinusIdentifierParameters.PARAM_TYPE.FUNCTION_PARAMETER);
+                        params.add(new CMinusSemantics.VarRec(symbolName, symbolTables.getScope() + 1, symbolType));
                         return new CMinusParseResult(CMinusParseResult.Type.ACCEPT, index, newIndex);
                     }
                 }
@@ -442,9 +503,9 @@ public class CMinusParser
             return new CMinusParseResult(CMinusParseResult.Type.REJECT, index, newIndex);
         }
 
-        public static final CMinusParseResult parameterList(final List<SeparateChainingSymbolTable<String, CMinusIdentifierParameters>> symbolTables, final List<Token<CMinusLexer.TokenType>> tokens, final int index)
+        public static final CMinusParseResult parameterList(final SymTab<SymTabRec> symbolTables, final List<SymTabRec> params, final List<Token<CMinusLexer.TokenType>> tokens, final int index)
         {
-            CMinusParseResult parameterResult = CMinusParseProduction.parameter(symbolTables, tokens, index);
+            CMinusParseResult parameterResult = CMinusParseProduction.parameter(symbolTables, params, tokens, index);
 
             while ( ( parameterResult.resultType == CMinusParseResult.Type.ACCEPT ) && ( ( parameterResult.endIndex + 2 ) < tokens.size() ) )
             {
@@ -452,7 +513,7 @@ public class CMinusParser
 
                 if ( CMinusParser.isGroupingSymbol(token, ",") )
                 {
-                    parameterResult = CMinusParseProduction.parameter(symbolTables, tokens, parameterResult.endIndex + 2);
+                    parameterResult = CMinusParseProduction.parameter(symbolTables, params, tokens, parameterResult.endIndex + 2);
                 }
                 else
                 {
@@ -463,9 +524,9 @@ public class CMinusParser
             return parameterResult;
         }
 
-        public static final CMinusParseResult parameters(final List<SeparateChainingSymbolTable<String, CMinusIdentifierParameters>> symbolTables, final List<Token<CMinusLexer.TokenType>> tokens, final int index)
+        public static final CMinusParseResult parameters(final SymTab<SymTabRec> symbolTables, final List<SymTabRec> params, final List<Token<CMinusLexer.TokenType>> tokens, final int index)
         {
-            CMinusParseResult cmpr = CMinusParseProduction.parameterList(symbolTables, tokens, index);
+            CMinusParseResult cmpr = CMinusParseProduction.parameterList(symbolTables, params, tokens, index);
 
             if ( cmpr.resultType == CMinusParseResult.Type.ACCEPT )
             {
@@ -484,10 +545,10 @@ public class CMinusParser
             return new CMinusParseResult(CMinusParseResult.Type.REJECT, index, index);
         }
 
-        public static final CMinusParseResult simpleExpression(final List<Token<CMinusLexer.TokenType>> tokens, final int index)
+        public static final CMinusParseResult simpleExpression(final SymTab<SymTabRec> symbolTables, final List<Token<CMinusLexer.TokenType>> tokens, final int index)
         {
             int newIndex = index;
-            CMinusParseResult additiveResult = CMinusParseProduction.additiveExpression(tokens, newIndex);
+            CMinusParseResult additiveResult = CMinusParseProduction.additiveExpression(symbolTables, tokens, newIndex);
 
             if ( additiveResult.resultType == CMinusParseResult.Type.ACCEPT )
             {
@@ -496,7 +557,7 @@ public class CMinusParser
 
                 if ( CMinusParser.isRelationalOperator(token) )
                 {
-                    return CMinusParseProduction.additiveExpression(tokens, newIndex + 1);
+                    return CMinusParseProduction.additiveExpression(symbolTables, tokens, newIndex + 1);
                 }
                 else
                 {
@@ -507,7 +568,7 @@ public class CMinusParser
             return new CMinusParseResult(CMinusParseResult.Type.REJECT, index, newIndex);
         }
 
-        public static final CMinusParseResult statement(final List<SeparateChainingSymbolTable<String, CMinusIdentifierParameters>> symbolTables, final List<Token<CMinusLexer.TokenType>> tokens, final int index, final boolean checkFirstsOnly)
+        public static final CMinusParseResult statement(final SymTab<SymTabRec> symbolTables, final List<SymTabRec> params, final List<Token<CMinusLexer.TokenType>> tokens, final int index, final boolean checkFirstsOnly)
         {
             int newIndex = index;
             int type = 0;
@@ -561,19 +622,19 @@ public class CMinusParser
                 switch ( type )
                 {
                     case COMPOUND_TYPE:
-                        return CMinusParseProduction.compoundStatement(symbolTables, tokens, newIndex);
+                        return CMinusParseProduction.compoundStatement(symbolTables, params, tokens, newIndex);
 
                     case SELECTION_TYPE:
-                        return CMinusParseProduction.iterationOrSelectionStatement(symbolTables, tokens, newIndex + 1, true);
+                        return CMinusParseProduction.iterationOrSelectionStatement(symbolTables, params, tokens, newIndex + 1, true);
 
                     case RETURN_TYPE:
-                        return CMinusParseProduction.expressionStatement(tokens, newIndex + 1);
+                        return CMinusParseProduction.expressionStatement(symbolTables, tokens, newIndex + 1);
 
                     case ITERATION_TYPE:
-                        return CMinusParseProduction.iterationOrSelectionStatement(symbolTables, tokens, newIndex + 1, false);
+                        return CMinusParseProduction.iterationOrSelectionStatement(symbolTables, params, tokens, newIndex + 1, false);
 
                     case EXPRESSION_TYPE:
-                        return CMinusParseProduction.expressionStatement(tokens, newIndex);
+                        return CMinusParseProduction.expressionStatement(symbolTables, tokens, newIndex);
 
                     default:
                         break;
@@ -587,13 +648,13 @@ public class CMinusParser
             return new CMinusParseResult(CMinusParseResult.Type.REJECT, index, newIndex);
         }
 
-        public static final CMinusParseResult statementList(final List<SeparateChainingSymbolTable<String, CMinusIdentifierParameters>> symbolTables, final List<Token<CMinusLexer.TokenType>> tokens, final int index)
+        public static final CMinusParseResult statementList(final SymTab<SymTabRec> symbolTables, final List<SymTabRec> params, final List<Token<CMinusLexer.TokenType>> tokens, final int index)
         {
-            CMinusParseResult statementResult = CMinusParseProduction.statement(symbolTables, tokens, index, false);
+            CMinusParseResult statementResult = CMinusParseProduction.statement(symbolTables, params, tokens, index, false);
 
             while ( ( statementResult.resultType == CMinusParseResult.Type.ACCEPT ) && ( ( statementResult.endIndex + 1 ) < tokens.size() ) )
             {
-                statementResult = CMinusParseProduction.statement(symbolTables, tokens, statementResult.endIndex + 1, false);
+                statementResult = CMinusParseProduction.statement(symbolTables, params, tokens, statementResult.endIndex + 1, false);
             }
 
             if ( statementResult.begIndex == statementResult.endIndex )
@@ -604,10 +665,10 @@ public class CMinusParser
             return statementResult;
         }
 
-        public static final CMinusParseResult term(final List<Token<CMinusLexer.TokenType>> tokens, final int index)
+        public static final CMinusParseResult term(final SymTab<SymTabRec> symbolTables, final List<Token<CMinusLexer.TokenType>> tokens, final int index)
         {
             int newIndex = index;
-            CMinusParseResult factorResult = CMinusParseProduction.factor(tokens, newIndex);
+            CMinusParseResult factorResult = CMinusParseProduction.factor(symbolTables, tokens, newIndex);
 
             while ( ( factorResult.resultType == CMinusParseResult.Type.ACCEPT ) && ( ( factorResult.endIndex ) < tokens.size() ) )
             {
@@ -617,7 +678,7 @@ public class CMinusParser
                 if ( CMinusParser.isMultiplicationOperator(token) )
                 {
                     newIndex++;
-                    factorResult = CMinusParseProduction.factor(tokens, newIndex);
+                    factorResult = CMinusParseProduction.factor(symbolTables, tokens, newIndex);
                     newIndex = factorResult.endIndex;
                 }
                 else
@@ -629,20 +690,21 @@ public class CMinusParser
             return new CMinusParseResult(factorResult.resultType, index, newIndex);
         }
 
-        public static final CMinusParseResult variable(final List<Token<CMinusLexer.TokenType>> tokens, final int index)
+        public static final CMinusParseResult variable(final SymTab<SymTabRec> symbolTables, final List<Token<CMinusLexer.TokenType>> tokens, final int index)
         {
             int newIndex = index;
             Token<CMinusLexer.TokenType> token = CMinusParser.getToken(tokens, newIndex);
 
             if ( CMinusParser.isIdentifier(token) )
             {
+                symbolTables.get(token.getData());
                 newIndex++;
                 token = CMinusParser.getToken(tokens, newIndex);
 
                 if ( CMinusParser.isGroupingSymbol(token, "[") )
                 {
                     newIndex++;
-                    CMinusParseResult cmpr = CMinusParseProduction.expression(tokens, newIndex);
+                    CMinusParseResult cmpr = CMinusParseProduction.expression(symbolTables, tokens, newIndex);
 
                     if ( cmpr.resultType == CMinusParseResult.Type.ACCEPT )
                     {
@@ -682,31 +744,9 @@ public class CMinusParser
         }
     }
 
-    protected final static String EOF_TOKEN = "$";
-    protected final static SeparateChainingSymbolTable<String, CMinusIdentifierParameters> GLOBAL_SYMTABLE = new SeparateChainingSymbolTable<String, CMinusIdentifierParameters>();
+    public final static String EOF_TOKEN = "$";
 
-    protected static final void addSymbol(final List<SeparateChainingSymbolTable<String, CMinusIdentifierParameters>> symbolTables, final List<Token<CMinusLexer.TokenType>> tokens, final CMinusIdentifierParameters.PARAM_TYPE paramType)
-    {
-        // TODO: Add symbols to symbol table(s).
-        int size = tokens.size();
-
-        switch ( paramType )
-        {
-            case FUNCTION_DECLARATION:
-                break;
-
-            case FUNCTION_PARAMETER:
-                break;
-
-            case VARIABLE_DECLARATION:
-                break;
-
-            default:
-                return;
-        }
-    }
-
-    protected static final Token<CMinusLexer.TokenType> getToken(final List<Token<CMinusLexer.TokenType>> tokens, final int index)
+    public static final Token<CMinusLexer.TokenType> getToken(final List<Token<CMinusLexer.TokenType>> tokens, final int index)
     {
         boolean indexLowerCheck = ( index >= 0 );
         boolean indexUpperCheck = ( index < tokens.size() );
@@ -733,7 +773,7 @@ public class CMinusParser
         }
     }
 
-    protected static final boolean isAdditionOperator(final Token<CMinusLexer.TokenType> token)
+    public static final boolean isAdditionOperator(final Token<CMinusLexer.TokenType> token)
     {
         if ( token.getType() == CMinusLexer.TokenType.OPERATOR )
         {
@@ -753,7 +793,7 @@ public class CMinusParser
         return false;
     }
 
-    protected static final boolean isAssignmentOperator(final Token<CMinusLexer.TokenType> token)
+    public static final boolean isAssignmentOperator(final Token<CMinusLexer.TokenType> token)
     {
         if ( token.getType() == CMinusLexer.TokenType.OPERATOR )
         {
@@ -770,42 +810,42 @@ public class CMinusParser
         return false;
     }
 
-    protected static final boolean isGroupingSymbol(final Token<CMinusLexer.TokenType> token)
+    public static final boolean isGroupingSymbol(final Token<CMinusLexer.TokenType> token)
     {
         if ( token.getType() == CMinusLexer.TokenType.GROUPING ) { return true; }
 
         return false;
     }
 
-    protected static final boolean isGroupingSymbol(final Token<CMinusLexer.TokenType> token, final String symbol)
+    public static final boolean isGroupingSymbol(final Token<CMinusLexer.TokenType> token, final String symbol)
     {
         if ( CMinusParser.isGroupingSymbol(token) ) { return token.getData().contentEquals(symbol); }
 
         return false;
     }
 
-    protected static final boolean isIdentifier(final Token<CMinusLexer.TokenType> token)
+    public static final boolean isIdentifier(final Token<CMinusLexer.TokenType> token)
     {
         if ( token.getType() == CMinusLexer.TokenType.IDENTIFIER ) { return true; }
 
         return false;
     }
 
-    protected static final boolean isKeyword(final Token<CMinusLexer.TokenType> token)
+    public static final boolean isKeyword(final Token<CMinusLexer.TokenType> token)
     {
         if ( token.getType() == CMinusLexer.TokenType.KEYWORD ) { return true; }
 
         return false;
     }
 
-    protected static final boolean isKeyword(final Token<CMinusLexer.TokenType> token, final String symbol)
+    public static final boolean isKeyword(final Token<CMinusLexer.TokenType> token, final String symbol)
     {
         if ( CMinusParser.isKeyword(token) ) { return token.getData().contentEquals(symbol); }
 
         return false;
     }
 
-    protected static final boolean isMultiplicationOperator(final Token<CMinusLexer.TokenType> token)
+    public static final boolean isMultiplicationOperator(final Token<CMinusLexer.TokenType> token)
     {
         if ( token.getType() == CMinusLexer.TokenType.OPERATOR )
         {
@@ -825,12 +865,12 @@ public class CMinusParser
         return false;
     }
 
-    protected static final boolean isNumber(final Token<CMinusLexer.TokenType> token)
+    public static final boolean isNumber(final Token<CMinusLexer.TokenType> token)
     {
         return token.getData().matches(CMinusLexer.C_NUMBERS);
     }
 
-    protected static final boolean isRelationalOperator(final Token<CMinusLexer.TokenType> token)
+    public static final boolean isRelationalOperator(final Token<CMinusLexer.TokenType> token)
     {
         if ( token.getType() == CMinusLexer.TokenType.OPERATOR )
         {
@@ -862,7 +902,7 @@ public class CMinusParser
         return false;
     }
 
-    protected static final boolean isTypeSpecifier(final Token<CMinusLexer.TokenType> token)
+    public static final boolean isTypeSpecifier(final Token<CMinusLexer.TokenType> token)
     {
         if ( token.getType() == CMinusLexer.TokenType.KEYWORD )
         {
@@ -885,26 +925,32 @@ public class CMinusParser
         return false;
     }
 
-    private List<SeparateChainingSymbolTable<String, CMinusIdentifierParameters>> symbolTables = null;
-    private List<Token<CMinusLexer.TokenType>>                                    tokens       = null;
+    private String                             result       = "REJECT";
+    private SymTab<SymTabRec>                  symbolTables = null;
+    private List<Token<CMinusLexer.TokenType>> tokens       = null;
 
-    public CMinusParser(final List<Token<CMinusLexer.TokenType>> tokens, final List<SeparateChainingSymbolTable<String, CMinusIdentifierParameters>> symbolTables, final boolean silent)
+    public CMinusParser(final List<Token<CMinusLexer.TokenType>> tokens, final SymTab<SymTabRec> symbolTables, final boolean silent)
     {
         super();
         this.parse(tokens, symbolTables, silent);
     }
 
-    public final List<SeparateChainingSymbolTable<String, CMinusIdentifierParameters>> getSymbolTables()
+    public final String getResult()
     {
-        return symbolTables;
+        return this.result;
+    }
+
+    public final SymTab<SymTabRec> getSymbolTables()
+    {
+        return this.symbolTables;
     }
 
     public final List<Token<CMinusLexer.TokenType>> getTokens()
     {
-        return tokens;
+        return this.tokens;
     }
 
-    public final void parse(final List<Token<CMinusLexer.TokenType>> tokens, final List<SeparateChainingSymbolTable<String, CMinusIdentifierParameters>> symbolTables, final boolean silent)
+    public final boolean parse(final List<Token<CMinusLexer.TokenType>> tokens, final SymTab<SymTabRec> symbolTables, final boolean silent)
     {
         if ( ( ( tokens != null ) && ( symbolTables != null ) ) )
         {
@@ -917,13 +963,15 @@ public class CMinusParser
 
                 int lastLineNo = tokens.get(tokens.size() - 1).getLineNo();
                 tokens.add(new Token<CMinusLexer.TokenType>(CMinusLexer.TokenType.WHITESPACE, CMinusParser.EOF_TOKEN, lastLineNo));
-                symbolTables.add(CMinusParser.GLOBAL_SYMTABLE);
+                symbolTables.enterScope();
                 CMinusParseResult cmpr = CMinusParseProduction.declarationList(symbolTables, tokens, 0, false);
-
+                symbolTables.exitScope();
+                
                 if ( cmpr.resultType != CMinusParseResult.Type.ACCEPT ) { throw new CMinusParseException(CMinusParser.getToken(tokens, cmpr.endIndex)); }
-
-                StdOut.println("ACCEPT");
+                
                 tokens.remove(tokens.size() - 1);
+                this.setResult("ACCEPT");
+                return true;
             }
             catch ( final CMinusParseException cmpe )
             {
@@ -931,13 +979,18 @@ public class CMinusParser
                 {
                     StdOut.println(cmpe.getMessage());
                 }
-
-                StdOut.println("REJECT");
             }
         }
+
+        return false;
     }
 
-    protected final void setSymbolTables(final List<SeparateChainingSymbolTable<String, CMinusIdentifierParameters>> symbolTables)
+    public final void setResult(String result)
+    {
+        this.result = result;
+    }
+
+    protected final void setSymbolTables(final SymTab<SymTabRec> symbolTables)
     {
         this.symbolTables = symbolTables;
     }

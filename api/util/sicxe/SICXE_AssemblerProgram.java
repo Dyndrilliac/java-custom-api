@@ -21,7 +21,7 @@
 package api.util.sicxe;
 
 import java.util.Collections;
-import java.util.LinkedList;
+import java.util.List;
 import api.util.Lexer;
 import api.util.Support;
 import api.util.datastructures.SeparateChainingSymbolTable;
@@ -49,7 +49,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
     {
         // This method builds the literal table string for printing.
         // First get a list of all the keys in the literal table.
-        LinkedList<String> literals = (LinkedList<String>) asmProgram.getLiteralTable().keys();
+        List<String> literals = asmProgram.getLiteralTable().keysList();
 
         // Sort the keys so the table can be easily searched visually.
         Collections.sort(literals);
@@ -77,7 +77,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
     {
         // This method builds the symbol table string for printing.
         // First get a list of all the keys in the symbol table.
-        LinkedList<String> symbols = (LinkedList<String>) asmProgram.getSymbolTable().keys();
+        List<String> symbols = asmProgram.getSymbolTable().keysList();
 
         // Sort the keys so the table can be easily searched visually.
         Collections.sort(symbols);
@@ -445,7 +445,7 @@ public class SICXE_AssemblerProgram extends SimpleSymbolTable
         // Create literal pools as appropriate following the LTORG and END directives.
         if ( pass1 )
         {
-            LinkedList<String> literals = (LinkedList<String>) this.getLiteralTable().keys();
+            List<String> literals = this.getLiteralTable().keysList();
 
             for ( String literal : literals )
             {

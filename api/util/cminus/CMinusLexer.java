@@ -70,7 +70,7 @@ public class CMinusLexer<T> extends Lexer<T>
 
         public final Token<TokenType> getToken()
         {
-            return token;
+            return this.token;
         }
 
         protected final void setToken(final Token<TokenType> token)
