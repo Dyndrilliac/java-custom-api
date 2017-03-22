@@ -83,10 +83,10 @@ public class CMinusLexer<T> extends Lexer<T>
     public static final String C_ERRORS      = "([^\\(\\)\\{\\}\\[\\]\\+\\-\\*\\/\\<\\>\\=,;\\s]+)";
     public static final String C_FLOATS      = "([^\\s\\S])";
     public static final String C_GROUPINGS   = "([\\(\\)\\{\\}\\[\\],;])";
-    public static final String C_IDENTIFIERS = "([A-Za-z])([A-Za-z0-9]*)";
+    public static final String C_IDENTIFIERS = "([A-Za-z]+)";
     public static final String C_INTEGERS    = "([^\\s\\S])";
     public static final String C_KEYWORDS    = "(\\b((else)|(float)|(if)|(int)|(return)|(void)|(while))\\b)";
-    public static final String C_NUMBERS     = "((\\B\\-)?\\d+(\\.\\d+)?((E|e)(\\+|\\-)?\\d+)?)";
+    public static final String C_NUMBERS     = "((\\B)?\\d+(\\.\\d+)?((E|e)(\\+|\\-)?\\d+)?)";
     public static final String C_OPERATORS   = "(\\<\\=)|(\\>\\=)|(\\=\\=)|(\\!\\=)|([\\+\\-\\*\\/\\<\\>\\=])";
 
     public static void main(final String[] args)
@@ -101,7 +101,6 @@ public class CMinusLexer<T> extends Lexer<T>
         StdOut.println("FLOATS     :  " + CMinusLexer.C_NUMBERS);
         StdOut.println("OPERATORS  :  " + CMinusLexer.C_OPERATORS);
         StdOut.println("WHITESPACES:  " + Lexer.C_WHITESPACES);
-        StdOut.println("ERRORS     :  " + CMinusLexer.C_ERRORS);
         StdOut.println();
 
         String input = Support.getInputString(null, "Please provide an expression.", "Expression Lexer Input");
