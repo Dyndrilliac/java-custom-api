@@ -109,30 +109,57 @@ public final class Mathematics
         return ( Math.log(n) / Math.log(base) );
     }
 
-    // This method returns the first prime number greater than a given integer.
+    // This method returns the first prime number greater than a given integer, if the given integer is not already prime.
+    // Note that this method is subject to the size constraints of the primitive long type.
+    // If the given integer is greater than the largest prime less than Long.MAX_VALUE (2^63-1), an IllegalArgumentException is thrown.
     public final static long makePrimeGreater(final long n)
     {
         long retVal = n;
+
+        if ( retVal < 0 )
+        {
+            retVal = 0;
+        }
+
+        if ( retVal > 9223372036854775783L ) { throw new IllegalArgumentException("Argument causes buffer overflow; it's greater than the largest prime less than " + Long.MAX_VALUE + "."); }
 
         while ( Mathematics.isPrime(retVal) == false )
         {
             if ( Mathematics.isEven(retVal) )
             {
-                retVal++;
+                if ( retVal == 0 )
+                {
+                    retVal += 2;
+                }
+                else
+                {
+                    retVal++;
+                }
             }
             else
             {
-                retVal += 2;
+                if ( retVal == 1 )
+                {
+                    retVal++;
+                }
+                else
+                {
+                    retVal += 2;
+                }
             }
         }
 
         return retVal;
     }
 
-    // This method returns the first prime number less than a given integer.
+    // This method returns the first prime number less than a given integer, if the given integer is not already prime.
+    // Note that there are no prime numbers less than two.
+    // If the given integer is less than two, an IllegalArgumentException is thrown.
     public final static long makePrimeLesser(final long n)
     {
         long retVal = n;
+
+        if ( retVal < 2 ) { throw new IllegalArgumentException("There are no prime numbers less than two."); }
 
         while ( Mathematics.isPrime(retVal) == false )
         {
