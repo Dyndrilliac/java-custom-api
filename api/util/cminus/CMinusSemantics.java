@@ -23,12 +23,12 @@ public class CMinusSemantics
         public ArrRec(final String name, final int scope, final String type, final int size)
         {
             super(name, scope, type);
-            
+
             if ( type.contentEquals("void") )
             {
                 CMinusSemantics.errorFlag = true;
             }
-            
+
             this.size = size;
         }
 
@@ -156,7 +156,7 @@ public class CMinusSemantics
         {
             this.scope--;
             this.deletedSymTabs.add(this.symTabs.remove(this.symTabs.size() - 1));
-            
+
             if ( this.scope >= 0 )
             {
                 this.currSymTab = this.symTabs.get(this.symTabs.size() - 1);
@@ -235,7 +235,7 @@ public class CMinusSemantics
         public VarRec(final String name, final int scope, final String type)
         {
             super(name, scope, type);
-            
+
             if ( type.contentEquals("void") )
             {
                 CMinusSemantics.errorFlag = true;
@@ -271,11 +271,11 @@ public class CMinusSemantics
             CMinusSemantics.errorFlag = true;
             return;
         }
-        
+
         symbolTables.insert(symbolRecord.name, symbolRecord);
     }
 
-    private String                             result       = "REJECT";
+    private String                             result       = "ACCEPT";
     private SymTab<SymTabRec>                  symbolTables = null;
     private List<Token<CMinusLexer.TokenType>> tokens       = null;
 
@@ -310,8 +310,12 @@ public class CMinusSemantics
             try
             {
                 if ( ( tokens.isEmpty() ) ) { throw new CMinusSemanticException(); }
-                if ( CMinusSemantics.errorFlag ) { return false; }
-                this.setResult("ACCEPT");
+                if ( CMinusSemantics.errorFlag )
+                {
+                    this.setResult("REJECT");
+                    return false;
+                }
+
                 return true;
             }
             catch ( final CMinusSemanticException cmse )
@@ -323,6 +327,7 @@ public class CMinusSemantics
             }
         }
 
+        this.setResult("REJECT");
         return false;
     }
 

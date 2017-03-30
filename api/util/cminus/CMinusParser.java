@@ -147,19 +147,12 @@ public class CMinusParser
         public static final CMinusParseResult compoundStatement(final SymTab<SymTabRec> symbolTables, final List<SymTabRec> params, final List<Token<CMinusLexer.TokenType>> tokens, final int index)
         {
             symbolTables.enterScope();
-            
+
             for ( SymTabRec param : params )
             {
-                if ( param.isVar() )
-                {
-                    
-                }
-                else
-                {
-                    
-                }
+                CMinusSemantics.addSymbol(param, symbolTables);
             }
-            
+
             int newIndex = index;
             Token<CMinusLexer.TokenType> token = CMinusParser.getToken(tokens, newIndex);
 
@@ -952,6 +945,9 @@ public class CMinusParser
 
     public final boolean parse(final List<Token<CMinusLexer.TokenType>> tokens, final SymTab<SymTabRec> symbolTables, final boolean silent)
     {
+        CMinusSemantics.errorFlag = false;
+        CMinusSemantics.seenMain  = false;
+
         if ( ( ( tokens != null ) && ( symbolTables != null ) ) )
         {
             this.setTokens(tokens);
@@ -966,9 +962,9 @@ public class CMinusParser
                 symbolTables.enterScope();
                 CMinusParseResult cmpr = CMinusParseProduction.declarationList(symbolTables, tokens, 0, false);
                 symbolTables.exitScope();
-                
+
                 if ( cmpr.resultType != CMinusParseResult.Type.ACCEPT ) { throw new CMinusParseException(CMinusParser.getToken(tokens, cmpr.endIndex)); }
-                
+
                 tokens.remove(tokens.size() - 1);
                 this.setResult("ACCEPT");
                 return true;
