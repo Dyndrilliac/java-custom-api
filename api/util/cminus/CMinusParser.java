@@ -945,9 +945,6 @@ public class CMinusParser
 
     public final boolean parse(final List<Token<CMinusLexer.TokenType>> tokens, final SymTab<SymTabRec> symbolTables, final boolean silent)
     {
-        CMinusSemantics.errorFlag = false;
-        CMinusSemantics.seenMain  = false;
-
         if ( ( ( tokens != null ) && ( symbolTables != null ) ) )
         {
             this.setTokens(tokens);
