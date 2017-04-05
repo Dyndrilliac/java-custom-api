@@ -1,7 +1,7 @@
 /*
  * Title: CMinusLexer
  * Author: Matthew Boyette
- * Date: 9/08/2016
+ * Date: 09/08/2016 - 03/22/2017
  * 
  * This class functions as a generic lexical analyzer for the C-Minus language.
  */
