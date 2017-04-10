@@ -422,7 +422,7 @@ public class CMinusSemantics
         return this.tokens;
     }
 
-    public final boolean semantics(final List<Token<CMinusLexer.TokenType>> tokens, final SymTab<SymTabRec> symbolTables, final boolean silent)
+    protected final boolean semantics(final List<Token<CMinusLexer.TokenType>> tokens, final SymTab<SymTabRec> symbolTables, final boolean silent)
     {
         if ( ( ( tokens != null ) && ( symbolTables != null ) ) )
         {
@@ -438,13 +438,9 @@ public class CMinusSemantics
                     CMinusSemantics.errorFlag = true;
                 }
 
-                if ( CMinusSemantics.errorFlag )
-                {
-                    this.setResult("REJECT");
-                    return false;
-                }
+                if ( CMinusSemantics.errorFlag ) { return this.setResult("REJECT"); }
 
-                return true;
+                return this.setResult("ACCEPT");
             }
             catch ( final RuntimeException re )
             {
@@ -455,13 +451,22 @@ public class CMinusSemantics
             }
         }
 
-        this.setResult("REJECT");
-        return false;
+        return this.setResult("REJECT");
     }
 
-    public final void setResult(final String result)
+    protected final boolean setResult(final String result)
     {
         this.result = result;
+        CMinusSemantics.reinitialize();
+
+        if ( result.contentEquals("ACCEPT") )
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     protected final void setSymbolTables(final SymTab<SymTabRec> symbolTables)
