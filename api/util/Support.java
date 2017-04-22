@@ -36,7 +36,7 @@ import edu.princeton.cs.algs4.StdOut;
 public final class Support
 {
     private final static Map<Color, String> COLORMAP          = new HashMap<Color, String>();
-    public final static Font                DEFAULT_TEXT_FONT = new Font("Lucida Console", Font.PLAIN, 14);
+    public  final static Font               DEFAULT_TEXT_FONT = new Font("Lucida Console", Font.PLAIN, 14);
 
     static
     {
@@ -53,6 +53,11 @@ public final class Support
         Support.COLORMAP.put(Color.RED, "Red");
         Support.COLORMAP.put(Color.WHITE, "White");
         Support.COLORMAP.put(Color.YELLOW, "Yellow");
+    }
+
+    public static enum PROPERTY
+    {
+        SUN_JAVA2D_D3D
     }
 
     public final static void clearConsole(final Component parent)
@@ -132,6 +137,19 @@ public final class Support
         return -1;
     }
 
+    public final static void disableProperty(final PROPERTY p)
+    {
+        switch ( p )
+        {
+            case SUN_JAVA2D_D3D:
+                System.setProperty("sun.java2d.d3d", "false");
+                break;
+
+            default:
+                break;
+        }
+    }
+
     // This method displays special debugging messages to be used for diagnostic purposes.
     public final static void displayDebugMessage(final Component parent, final Object object)
     {
@@ -194,6 +212,19 @@ public final class Support
         if ( isFatal )
         {
             System.exit( -1);
+        }
+    }
+
+    public final static void enableProperty(final PROPERTY p)
+    {
+        switch ( p )
+        {
+            case SUN_JAVA2D_D3D:
+                System.setProperty("sun.java2d.d3d", "true");
+                break;
+
+            default:
+                break;
         }
     }
 

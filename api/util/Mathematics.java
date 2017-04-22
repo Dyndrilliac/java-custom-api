@@ -13,6 +13,34 @@ import edu.princeton.cs.algs4.StdRandom;
 
 public final class Mathematics
 {
+    // Recursive Fibonacci solver.
+    /*
+     * fib(0) == 0
+     * fib(1) == 1
+     * fib(n) == fib(n - 2) + fib(n - 1)
+     * 
+     * fib(0) = 0
+     * fib(1) = 1
+     * fib(2) = 0 + 1
+     * fib(3) = 1 + 1
+     * fib(4) = 1 + 2
+     * fib(5) = 2 + 3
+     * fib(6) = 3 + 5
+     * fib(7) = 5 + 8
+     */
+    public final static long fib(long n)
+    {
+        assert ( n >= 0 );
+
+        if ( n == 0 )
+            return 0;
+
+        if ( n == 1 )
+            return 1;
+
+        return ( fib(n - 2) + fib(n - 1) );
+    }
+
     // Pretty self-explanatory. Returns a random integer between 'min' and 'max'.
     // The user tells the method whether the desired maximum is inclusive or exclusive.
     // Exclusive range in interval notation: [min, max)
