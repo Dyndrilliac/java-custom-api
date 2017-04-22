@@ -1,7 +1,7 @@
 /*
  * Title: CMinusSemantics
  * Author: Matthew Boyette
- * Date: 11/02/2016 - 04/04/2017
+ * Date: 11/02/2016 - 04/14/2017
  *
  * This class functions as a generic semantical analyzer for the C-Minus language.
  */
@@ -246,7 +246,7 @@ public class CMinusSemantics
         symbolTables.insert(symbolRecord.name, symbolRecord);
     }
 
-    public static final void checkArrayVarHasIndex(final CMinusSemantics.SymTabRec record)
+    public static final void checkArrayVariableHasIndex(final CMinusSemantics.SymTabRec record)
     {
         if ( record.isArr() )
         {
@@ -254,7 +254,7 @@ public class CMinusSemantics
         }
     }
 
-    public static final int checkDeclArrayIndexType(final Token<CMinusLexer.TokenType> token, final int defaultValue)
+    public static final int checkDeclarationArrayIndexType(final Token<CMinusLexer.TokenType> token, final int defaultValue)
     {
         int retVal = defaultValue;
 
@@ -270,38 +270,30 @@ public class CMinusSemantics
         return retVal;
     }
 
-    public static final void checkFunctionParamArgumentAgreement(final CMinusSemantics.FunRec functionRecord, final List<Token<CMinusLexer.TokenType>> tokens, final Token<CMinusLexer.TokenType> token, final int argListStart, final int argListStop)
+    public static final void checkFunctionParamArgumentNumberAgreement(final CMinusSemantics.FunRec functionRecord, final int argTokens, final int argCount)
     {
-        if ( ( argListStop - argListStart ) <= 0 )
+        if ( argTokens <= 0 )
         {
             if ( functionRecord.getNumParams() != 0 )
             {
                 CMinusSemantics.errorFlag = true;
             }
         }
-        else if ( ( argListStop - argListStart ) > 0 )
+        else if ( argTokens > 0 )
         {
-            int commaCount = 0;
-
-            for ( Token<CMinusLexer.TokenType> item : tokens.subList(argListStart, argListStop) )
-            {
-                if ( ( item.getParenthDepth() - token.getParenthDepth() ) == 0 )
-                {
-                    if ( item.getData().contentEquals(",") )
-                    {
-                        commaCount++;
-                    }
-                }
-            }
-
-            if ( functionRecord.getNumParams() != ( commaCount + 1 ) )
+            if ( functionRecord.getNumParams() != argCount )
             {
                 CMinusSemantics.errorFlag = true;
             }
         }
     }
 
-    public static final void checkFunctionReturns(final CMinusSemantics.FunRec functionRecord, final CMinusSemantics.SymTab<CMinusSemantics.SymTabRec> symbolTables, final List<Token<CMinusLexer.TokenType>> tokens)
+    public static final void checkFunctionParamArgumentTypeAgreement(final CMinusSemantics.FunRec functionRecord, final List<Token<CMinusLexer.TokenType>> args)
+    {
+        // TODO: Check to see if the type of each parameter agrees with the type of each argument.
+    }
+
+    public static final void checkFunctionReturns(final CMinusSemantics.FunRec functionRecord, final List<Token<CMinusLexer.TokenType>> tokens, final CMinusParser.CMinusParseResult cmpr)
     {
         List<Integer> indexList = new LinkedList<Integer>();
 
@@ -333,14 +325,9 @@ public class CMinusSemantics
                 CMinusSemantics.errorFlag = true;
             }
 
-            for ( Integer index : indexList )
+            if ( !CMinusSemantics.errorFlag )
             {
-                if ( !CMinusSemantics.errorFlag )
-                {
-                    CMinusParser.CMinusParseResult cmpr = CMinusParser.CMinusParseProduction.expressionStatement(symbolTables, tokens, index + 1);
-                    CMinusSemantics.errorFlag = false;
-                    CMinusSemantics.checkTypeAgreement(cmpr.returnType, CMinusParser.CMinusParseResult.convertTypeSpecifierStringToReturnTypeEnum(functionRecord.type));
-                }
+                CMinusSemantics.checkTypeAgreement(cmpr.returnType, CMinusParser.CMinusParseResult.convertTypeSpecifierStringToReturnTypeEnum(functionRecord.type));
             }
         }
     }
@@ -375,20 +362,41 @@ public class CMinusSemantics
         }
     }
 
-    public static final void checkTypeAgreement(final CMinusParser.CMinusParseResult.ReturnType returnTypeA, final CMinusParser.CMinusParseResult.ReturnType returnTypeB)
+    public static final boolean checkTypeAgreement(final CMinusParser.CMinusParseResult.ReturnType returnTypeA, final CMinusParser.CMinusParseResult.ReturnType returnTypeB)
     {
         if ( returnTypeA != returnTypeB )
         {
             CMinusSemantics.errorFlag = true;
+            return false;
         }
+        else
+            return true;
     }
 
-    public static final void checkVarArrayIndexType(final CMinusParser.CMinusParseResult cmpr)
+    public static final void checkVariableArrayIndexType(final CMinusParser.CMinusParseResult cmpr)
     {
         if ( cmpr.returnType != CMinusParser.CMinusParseResult.ReturnType.INT )
         {
             CMinusSemantics.errorFlag = true;
         }
+    }
+
+    public static final int getArgumentCount(final List<Token<CMinusLexer.TokenType>> tokens, final int depth)
+    {
+        int commaCount = 0;
+
+        for ( Token<CMinusLexer.TokenType> item : tokens )
+        {
+            if ( ( item.getParenthDepth() - depth ) == 0 )
+            {
+                if ( item.getData().contentEquals(",") )
+                {
+                    commaCount++;
+                }
+            }
+        }
+
+        return ( commaCount + 1 );
     }
 
     public static final void reinitialize()
