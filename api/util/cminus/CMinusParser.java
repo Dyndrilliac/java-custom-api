@@ -195,6 +195,9 @@ public class CMinusParser
 
                                 if ( argCount > 0 )
                                 {
+                                    /*
+                                     * TODO: Check to see if the type of each parameter agrees with the type of each argument.
+                                     */
                                     CMinusSemantics.checkFunctionParamArgumentTypeAgreement(record, args);
                                 }
 
@@ -506,6 +509,9 @@ public class CMinusParser
 
         public static final CMinusParseResult iterationOrSelectionStatement(final CMinusSemantics.SymTab<CMinusSemantics.SymTabRec> symbolTables, final List<CMinusSemantics.SymTabRec> params, final List<Token<CMinusLexer.TokenType>> tokens, final int index, final boolean isSelectionStatement)
         {
+            /*
+             * TODO: IF/ELSE/ELSE-IF
+             */
             int newIndex = index, bpStart = CMinusCodeGeneration.statementCounter;
             Token<CMinusLexer.TokenType> token = CMinusParser.getToken(tokens, newIndex);
 

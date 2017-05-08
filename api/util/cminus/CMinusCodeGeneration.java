@@ -4,6 +4,8 @@
  * Date: 04/10/2017 - 04/14/2017
  *
  * This class functions as a generic intermediate code generator for the C-Minus language.
+ * 
+ *
  */
 
 package api.util.cminus;
@@ -138,6 +140,10 @@ public class CMinusCodeGeneration
             }
         }
 
+        /*
+         * TODO: IF/ELSE/ELSE-IF
+         */
+
         public static final void writeAddOrSub(final boolean isAdd, final String op1, final String op2, final boolean isNewVar)
         {
             String _op1 = CMinusCodeGeneration.checkOperand(op1);
@@ -196,7 +202,14 @@ public class CMinusCodeGeneration
             else if ( expression.size() > 1 )
             {
                 // Operand1 is a new temporary variable
-                op1 = CMinusCodeGeneration.getTempVar(true, 0);
+                if ( CMinusCodeGeneration.variableCounter < 0 )
+                {
+                    op1 = CMinusCodeGeneration.getTempVar(true, -1);
+                }
+                else // Operand1 is current temporary variable
+                {
+                    op1 = CMinusCodeGeneration.getTempVar(true, 0);
+                }
             }
 
             if ( variable.size() == 1 )
