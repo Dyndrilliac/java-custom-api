@@ -22,7 +22,7 @@ public class HashTable<T>
     private int      totalProbeLenFailure = 0;
     private int      totalProbeLenSuccess = 0;
 
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings({ "unchecked" })
     public HashTable(final Class<T> type, final double loadFactor, final boolean useLinearProbe, final int fillSize)
     {
         this.currentSize = 0;

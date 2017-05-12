@@ -8,79 +8,121 @@
 
 package api.util.datastructures;
 
-public class TreeIterator<T>
+public class TreeIterator<T extends Comparable<? super T>>
 {
-    private TreeNode<T> current = null;
-    private TreeNode<T> left    = null;
-    private TreeNode<T> parent  = null;
-    private TreeNode<T> right   = null;
-    private Tree<T>     tree    = null;
+    private Node    current = null;
+    private Tree<T> tree    = null;
 
     public TreeIterator(final Tree<T> tree)
     {
         this.setTree(tree);
-        this.reset();
+        this.reset(this.getTree().getSize());
     }
 
-    public boolean delete(final T data)
+    boolean find(final T data, final boolean doRemoval)
     {
-        TreeNode<T> TreeNodeDeleted = this.find(data);
-        boolean retVal = false;
         int newSize = this.getTree().getSize();
 
-        if ( TreeNodeDeleted != null )
+        while ( this.getCurrent() != null )
         {
-            // TODO: Needs revision.
-            newSize--;
-            retVal = true;
-        }
-
-        this.getTree().setSize(newSize);
-        this.reset();
-        return retVal;
-    }
-
-    @SuppressWarnings("unchecked")
-    public TreeNode<T> find(final T data)
-    {
-        while ( this.getCurrent().getData().equals(data) == false )
-        {
-            boolean goLeft = true; // TODO: Needs revision.
-
-            if ( goLeft )
+            if ( data.equals(this.getData()) )
             {
-                this.setCurrent((TreeNode<T>) this.getCurrent().getLeft());
+                // Data found. Do we want to remove it?
+                if ( doRemoval )
+                {
+                    if ( this.removeNode(this.getCurrent()) )
+                    {
+                        newSize--;
+
+                        if ( newSize == 0 )
+                        {
+                            this.getTree().setRoot(null);
+                        }
+
+                        this.reset(newSize);
+                        return true;
+                    }
+
+                    this.reset(newSize);
+                    return false;
+                }
+
+                this.reset(newSize);
+                return true;
             }
             else
             {
-                this.setCurrent((TreeNode<T>) this.getCurrent().getRight());
+                // Keep traversing tree.
+                if ( data.compareTo(this.getData()) > 0 )
+                {
+                    this.setCurrent(this.getRight());
+                }
+                else
+                {
+                    this.setCurrent(this.getLeft());
+                }
             }
-
-            if ( this.getCurrent() == null ) { return null; }
         }
 
-        this.reset();
-        return this.getCurrent();
+        this.reset(newSize);
+        return false;
     }
 
-    public TreeNode<T> getCurrent()
+    public final Node getCurrent()
     {
         return this.current;
     }
 
-    public final TreeNode<T> getLeft()
+    @SuppressWarnings("unchecked")
+    public final T getData()
     {
-        return this.left;
+        if ( this.getCurrent() != null )
+        {
+            return ( (TreeNode<T>) this.getCurrent() ).getData();
+        }
+        else
+        {
+            return null;
+        }
     }
 
-    public final TreeNode<T> getParent()
+    @SuppressWarnings("unchecked")
+    public final Node getLeft()
     {
-        return this.parent;
+        if ( this.getCurrent() != null )
+        {
+            return ( (TreeNode<T>) this.getCurrent() ).getLeft();
+        }
+        else
+        {
+            return null;
+        }
     }
 
-    public final TreeNode<T> getRight()
+    @SuppressWarnings("unchecked")
+    public final Node getParent()
     {
-        return this.right;
+        if ( this.getCurrent() != null )
+        {
+            return ( (TreeNode<T>) this.getCurrent() ).getParent();
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public final Node getRight()
+    {
+        if ( this.getCurrent() != null )
+        {
+            return ( (TreeNode<T>) this.getCurrent() ).getRight();
+        }
+        else
+        {
+            return null;
+        }
     }
 
     public final Tree<T> getTree()
@@ -88,100 +130,176 @@ public class TreeIterator<T>
         return this.tree;
     }
 
-    @SuppressWarnings("unchecked")
-    public void insert(final T data)
+    public boolean insert(final T data)
     {
-        TreeNode<T> TreeNodeFound = this.find(data);
+        int newSize = this.getTree().getSize();
 
-        if ( TreeNodeFound == null )
+        if ( this.getTree().isEmpty() )
         {
-            TreeNode<T> newNode = new TreeNode<T>(data, null, null, null);
-            int newSize = this.getTree().getSize();
-
-            if ( this.getTree().isEmpty() )
-            {
-                this.getTree().setRoot(newNode);
-                newSize++;
-            }
-            else
-            {
-                while ( true ) // TODO: Needs revision.
-                {
-                    this.setParent((TreeNode<T>) this.getCurrent().getParent());
-                    this.setLeft((TreeNode<T>) this.getCurrent().getLeft());
-                    this.setRight((TreeNode<T>) this.getCurrent().getRight());
-
-                    boolean comparison = true; // (newNode.compareTo(this.getCurrent()) < 0)
-
-                    if ( comparison )
-                    {
-                        this.setCurrent(this.getLeft());
-
-                        if ( this.getCurrent() == null )
-                        {
-                            this.getParent().setLeft(newNode);
-                            newNode.setParent(this.getParent());
-                            newSize++;
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        this.setCurrent(this.getRight());
-
-                        if ( this.getCurrent() == null )
-                        {
-                            this.getParent().setRight(newNode);
-                            newNode.setParent(this.getParent());
-                            newSize++;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            this.getTree().setSize(newSize);
-            this.reset();
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public final void reset()
-    {
-        this.setCurrent(this.getTree().getRoot());
-
-        if ( this.getCurrent() != null )
-        {
-            this.setParent((TreeNode<T>) this.getCurrent().getParent());
-            this.setLeft((TreeNode<T>) this.getCurrent().getLeft());
-            this.setRight((TreeNode<T>) this.getCurrent().getRight());
+            this.getTree().setRoot(new TreeNode<T>(data, null, null, null));
         }
         else
         {
-            this.setParent(null);
-            this.setLeft(null);
-            this.setRight(null);
+            while ( this.getCurrent() != null )
+            {
+                if ( data.compareTo(this.getData()) <= 0 )
+                {
+                    if ( this.getLeft() == null )
+                    {
+                        this.setLeft(new TreeNode<T>(data, this.getCurrent(), null, null));
+                        break;
+                    }
+                    else
+                    {
+                        // Insert the new node to the left of this.getCurrent(), because this.getCurrent() already has a left child.
+                        this.setCurrent(this.getLeft());
+                    }
+                }
+                else if ( data.compareTo(this.getData()) > 0 )
+                {
+                    if ( this.getRight() == null )
+                    {
+                        this.setRight(new TreeNode<T>(data, this.getCurrent(), null, null));
+                        break;
+                    }
+                    else
+                    {
+                        // Insert the new node to the right of this.getCurrent(), because this.getCurrent() already has a right child.
+                        this.setCurrent(this.getRight());
+                    }
+                }
+            }
         }
+
+        newSize++;
+        this.reset(newSize);
+        return true;
     }
 
-    public final void setCurrent(final TreeNode<T> current)
+    @SuppressWarnings("unchecked")
+    protected boolean removeNode(final Node node)
+    {
+        // Zero Child Case
+        if ( ( (TreeNode<T>) node ).isLeaf() )
+        {
+            if ( !( (TreeNode<T>) node ).isRoot() )
+            {
+                if ( ( (TreeNode<T>) node ).isLeft() )
+                {
+                    ( (TreeNode<T>) ( (TreeNode<T>) node ).getParent() ).setLeft(null);
+                }
+                else if ( ( (TreeNode<T>) node ).isRight() )
+                {
+                    ( (TreeNode<T>) ( (TreeNode<T>) node ).getParent() ).setRight(null);
+                }
+            }
+
+            return true;
+        }
+        // One Child Case
+        else if ( ( ( (TreeNode<T>) node ).getLeft() == null ) ^ ( ( (TreeNode<T>) node ).getRight() == null ) )
+        {
+            if ( ( (TreeNode<T>) node ).isLeft() )
+            {
+                if ( ( (TreeNode<T>) node ).getLeft() != null )
+                {
+                    ( (TreeNode<T>) ( (TreeNode<T>) node ).getParent() ).setLeft(( (TreeNode<T>) node ).getLeft());
+                    ( (TreeNode<T>) ( (TreeNode<T>) node ).getLeft() ).setParent(( (TreeNode<T>) node ).getParent());
+                }
+                else
+                {
+                    ( (TreeNode<T>) ( (TreeNode<T>) node ).getParent() ).setLeft(( (TreeNode<T>) node ).getRight());
+                    ( (TreeNode<T>) ( (TreeNode<T>) node ).getRight() ).setParent(( (TreeNode<T>) node ).getParent());
+                }
+            }
+            else if ( ( (TreeNode<T>) node ).isRight() )
+            {
+                if ( ( (TreeNode<T>) node ).getLeft() != null )
+                {
+                    ( (TreeNode<T>) ( (TreeNode<T>) node ).getParent() ).setRight(( (TreeNode<T>) node ).getLeft());
+                    ( (TreeNode<T>) ( (TreeNode<T>) node ).getLeft() ).setParent(( (TreeNode<T>) node ).getParent());
+                }
+                else
+                {
+                    ( (TreeNode<T>) ( (TreeNode<T>) node ).getParent() ).setRight(( (TreeNode<T>) node ).getRight());
+                    ( (TreeNode<T>) ( (TreeNode<T>) node ).getRight() ).setParent(( (TreeNode<T>) node ).getParent());
+                }
+            }
+            else if ( ( (TreeNode<T>) node ).isRoot() )
+            {
+                Node temp = null;
+
+                if ( ( (TreeNode<T>) node ).getLeft() != null )
+                {
+                    ( (TreeNode<T>) ( (TreeNode<T>) node ).getLeft() ).setParent(null);
+                    temp = ( (TreeNode<T>) node ).getLeft();
+                }
+                else
+                {
+                    ( (TreeNode<T>) ( (TreeNode<T>) node ).getRight() ).setParent(null);
+                    temp = ( (TreeNode<T>) node ).getRight();
+                }
+
+                this.getTree().setRoot(temp);
+            }
+
+            return true;
+        }
+        // Two Child Case
+        else if ( ( ( (TreeNode<T>) node ).getLeft() != null ) && ( ( (TreeNode<T>) node ).getRight() != null ) )
+        {
+            // http://www.algolist.net/Data_structures/Binary_search_tree/Removal
+            Node temp = ( (TreeNode<T>) node ).getRight();
+
+            while ( ( (TreeNode<T>) temp ).getLeft() != null )
+            {
+                temp = ( (TreeNode<T>) temp ).getLeft();
+            }
+
+            // Now 'temp' is the node containing the minimum value of the right sub-branch.
+            ( (TreeNode<T>) node ).setData(( (TreeNode<T>) temp ).getData());
+            return this.removeNode(temp);
+        }
+
+        return false;
+    }
+
+    public final void reset(final int newSize)
+    {
+        this.getTree().setSize(newSize);
+        this.setCurrent(this.getTree().getRoot());
+    }
+
+    public final void setCurrent(final Node current)
     {
         this.current = current;
     }
 
-    public final void setLeft(final TreeNode<T> left)
+    @SuppressWarnings("unchecked")
+    public final void setLeft(final Node left)
     {
-        this.left = left;
+        if ( this.getCurrent() != null )
+        {
+            ( (TreeNode<T>) this.getCurrent() ).setLeft(left);
+        }
     }
 
-    public final void setParent(final TreeNode<T> parent)
+    @SuppressWarnings("unchecked")
+    public final void setParent(final Node parent)
     {
-        this.parent = parent;
+        if ( this.getCurrent() != null )
+        {
+            ( (TreeNode<T>) this.getCurrent() ).setParent(parent);
+        }
     }
 
-    public final void setRight(final TreeNode<T> right)
+    @SuppressWarnings("unchecked")
+    public final void setRight(final Node right)
     {
-        this.right = right;
+        if ( this.getCurrent() != null )
+        {
+            ( (TreeNode<T>) this.getCurrent() ).setRight(right);
+        }
     }
 
     public final void setTree(final Tree<T> tree)

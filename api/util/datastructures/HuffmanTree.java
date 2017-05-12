@@ -27,8 +27,7 @@ import api.util.Support;
  * 
  * I used ALPHABET_ASCII to test my program with the example data given in the book on pages 416-421.
  */
-
-public class HuffmanTree<T> extends Tree<T>
+public class HuffmanTree<T extends Comparable<? super T>> extends Tree<T>
 {
     public static enum DataFormats
     {
@@ -266,6 +265,7 @@ public class HuffmanTree<T> extends Tree<T>
         return this.inputString;
     }
 
+    @SuppressWarnings("unchecked")
     protected void initialize()
     {
         this.createHuffmanTree();

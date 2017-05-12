@@ -8,7 +8,7 @@
 
 package api.util.datastructures;
 
-public class HuffmanNode<T> extends TreeNode<T> implements Comparable<HuffmanNode<T>>
+public class HuffmanNode<T extends Comparable<? super T>> extends TreeNode<T> implements Comparable<HuffmanNode<T>>
 {
     private int count = 0;
 
@@ -24,6 +24,28 @@ public class HuffmanNode<T> extends TreeNode<T> implements Comparable<HuffmanNod
         return ( this.getCount() - node.getCount() );
     }
 
+    @Override
+    protected String generateDataString(final int minWidth)
+    {
+        String data = "";
+
+        if ( this.getData() != null )
+        {
+            data = this.getData().toString() + " (" + Integer.toString(this.getCount()) + ")";
+        }
+        else
+        {
+            data = "(" + Integer.toString(this.getCount()) + ")";
+        }
+
+        if ( !data.matches("\\[.+\\]") )
+        {
+            data = String.format("[%-" + ( minWidth - 3 ) + "s]", data);
+        }
+
+        return data;
+    }
+
     public final int getCount()
     {
         return this.count;
@@ -32,18 +54,5 @@ public class HuffmanNode<T> extends TreeNode<T> implements Comparable<HuffmanNod
     public final void setCount(final int count)
     {
         this.count = count;
-    }
-
-    @Override
-    public String toString()
-    {
-        if ( this.getData() != null )
-        {
-            return ( "[" + this.getData().toString() + " (" + this.getCount() + ")]" );
-        }
-        else
-        {
-            return ( "[(" + this.getCount() + ")]" );
-        }
     }
 }

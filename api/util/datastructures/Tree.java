@@ -8,20 +8,23 @@
 
 package api.util.datastructures;
 
-import edu.princeton.cs.algs4.StdOut;
+import api.util.datastructures.TreeNode.TRAVERSAL_ORDER;
 
-public class Tree<T>
+public class Tree<T extends Comparable<? super T>>
 {
-    private TreeNode<T> root = null;
-    private int         size = 0;
+    private Node root = null;
+    private int  size = 0;
 
     public Tree()
     {
+        this.clear();
     }
 
     @SafeVarargs
     public Tree(final T... args)
     {
+        super();
+
         for ( T arg : args )
         {
             this.insert(arg);
@@ -37,15 +40,16 @@ public class Tree<T>
     public final boolean delete(final T data)
     {
         TreeIterator<T> iterator = this.getIterator();
-        return ( iterator.delete(data) );
+        return ( iterator.find(data, true) );
     }
 
-    public final TreeNode<T> find(final T data)
+    public final boolean find(final T data)
     {
         TreeIterator<T> iterator = this.getIterator();
-        return ( iterator.find(data) );
+        return ( iterator.find(data, false) );
     }
 
+    @SuppressWarnings("unchecked")
     public final int getDepth()
     {
         if ( this.isEmpty() )
@@ -54,10 +58,11 @@ public class Tree<T>
         }
         else
         {
-            return this.getRoot().getDepth();
+            return ( (TreeNode<T>) this.getRoot() ).getDepth();
         }
     }
 
+    @SuppressWarnings("unchecked")
     public final int getHeight()
     {
         if ( this.isEmpty() )
@@ -66,7 +71,7 @@ public class Tree<T>
         }
         else
         {
-            return this.getRoot().getHeight();
+            return ( (TreeNode<T>) this.getRoot() ).getHeight();
         }
     }
 
@@ -75,7 +80,7 @@ public class Tree<T>
         return ( new TreeIterator<T>(this) );
     }
 
-    public final TreeNode<T> getRoot()
+    public final Node getRoot()
     {
         return this.root;
     }
@@ -85,10 +90,10 @@ public class Tree<T>
         return this.size;
     }
 
-    public final void insert(final T data)
+    public final boolean insert(final T data)
     {
         TreeIterator<T> iterator = this.getIterator();
-        iterator.insert(data);
+        return ( iterator.insert(data) );
     }
 
     public final boolean isEmpty()
@@ -96,7 +101,7 @@ public class Tree<T>
         return ( this.getSize() == 0 );
     }
 
-    public final void setRoot(final TreeNode<T> root)
+    public final void setRoot(final Node root)
     {
         this.root = root;
     }
@@ -109,43 +114,29 @@ public class Tree<T>
     @Override
     public String toString()
     {
-        String retVal = "";
+        return this.toString(this.getRoot(), TRAVERSAL_ORDER.DEFAULT, 15);
+    }
 
-        // TODO: Needs revision.
-
-        return retVal;
+    public String toString(final Node root)
+    {
+        return this.toString(root, TRAVERSAL_ORDER.DEFAULT, 15);
     }
 
     @SuppressWarnings("unchecked")
-    public void traversal_inOrder(final TreeNode<T> root)
+    public String toString(final Node root, final TRAVERSAL_ORDER travOrder, final int minWidth)
     {
-        if ( root != null )
-        {
-            this.traversal_preOrder((TreeNode<T>) root.getLeft());
-            StdOut.print(root.toString() + "\n");
-            this.traversal_preOrder((TreeNode<T>) root.getRight());
-        }
+        if ( root != null ) { return ( (TreeNode<T>) root ).toString(travOrder, minWidth); }
+
+        return "";
     }
 
-    @SuppressWarnings("unchecked")
-    public void traversal_postOrder(final TreeNode<T> root)
+    public String toString(final TRAVERSAL_ORDER travOrder)
     {
-        if ( root != null )
-        {
-            this.traversal_preOrder((TreeNode<T>) root.getLeft());
-            this.traversal_preOrder((TreeNode<T>) root.getRight());
-            StdOut.print(root.toString() + "\n");
-        }
+        return this.toString(this.getRoot(), travOrder, 15);
     }
 
-    @SuppressWarnings("unchecked")
-    public void traversal_preOrder(final TreeNode<T> root)
+    public String toString(final TRAVERSAL_ORDER travOrder, final int minWidth)
     {
-        if ( root != null )
-        {
-            StdOut.print(root.toString() + "\n");
-            this.traversal_preOrder((TreeNode<T>) root.getLeft());
-            this.traversal_preOrder((TreeNode<T>) root.getRight());
-        }
+        return this.toString(this.getRoot(), travOrder, minWidth);
     }
 }

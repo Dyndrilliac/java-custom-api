@@ -35,8 +35,13 @@ import edu.princeton.cs.algs4.StdOut;
 
 public final class Support
 {
+    public static enum PROPERTY
+    {
+        SUN_JAVA2D_D3D
+    }
     private final static Map<Color, String> COLORMAP          = new HashMap<Color, String>();
-    public  final static Font               DEFAULT_TEXT_FONT = new Font("Lucida Console", Font.PLAIN, 14);
+
+    public final static Font                DEFAULT_TEXT_FONT = new Font("Lucida Console", Font.PLAIN, 14);
 
     static
     {
@@ -53,11 +58,6 @@ public final class Support
         Support.COLORMAP.put(Color.RED, "Red");
         Support.COLORMAP.put(Color.WHITE, "White");
         Support.COLORMAP.put(Color.YELLOW, "Yellow");
-    }
-
-    public static enum PROPERTY
-    {
-        SUN_JAVA2D_D3D
     }
 
     public final static void clearConsole(final Component parent)
@@ -584,6 +584,30 @@ public final class Support
                 Support.displayException(parent, exception, false);
             }
         }
+    }
+
+    public final static String padLeft(final String input, final int width, final char padChar)
+    {
+        final StringBuilder sb = new StringBuilder();
+
+        for ( int i = input.length(); i < width; i++ )
+        {
+            sb.append(padChar);
+        }
+
+        return sb.append(input).toString();
+    }
+
+    public final static String padRight(final String input, final int width, final char padChar)
+    {
+        final StringBuilder sb = new StringBuilder(input);
+
+        for ( int i = input.length(); i < width; i++ )
+        {
+            sb.append(padChar);
+        }
+
+        return sb.toString();
     }
 
     public final static void pauseConsole()
