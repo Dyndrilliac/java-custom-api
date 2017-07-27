@@ -167,7 +167,7 @@ public class TreeNode<T extends Comparable<? super T>> extends DataNode<T>
     }
 
     @SuppressWarnings("unchecked")
-    public StringBuilder toStringBuilder(final StringBuilder prefix, final boolean isTail, final StringBuilder sb, final TRAVERSAL_ORDER travOrder, final int minWidth)
+    protected StringBuilder toStringBuilder(final StringBuilder prefix, final boolean isTail, final StringBuilder sb, final TRAVERSAL_ORDER travOrder, final int minWidth)
     {
         String connector1, connector2, padding1, padding2, dataString = "";
         connector1 = new StringBuilder(Support.padRight("└", minWidth - 1, '─')).append(" ").toString();
