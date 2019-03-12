@@ -65,15 +65,13 @@ public final class Support
     {
         if ( inputString.length() > 1 )
         {
-            char[] inputArray = inputString.toCharArray();
-            int pivot = inputString.length() / 2, i = pivot - 1, j = pivot;
-            if ( ( inputString.length() % 2 ) != 0 ) j++;
+            int pivot = inputString.length() / 2, i = pivot;
+            if ( Mathematics.isOdd(inputString.length()) ) i++;
 
-            for ( ; ( ( i >= 0 ) && ( j < inputString.length() ) ); i--, j++ )
-            {
+            String firstHalf = inputString.substring(0, pivot);
+            String secondHalf = new StringBuilder(inputString.substring(i)).reverse().toString();
 
-                if ( inputArray[i] != inputArray[j] ) return false;
-            }
+            if ( !firstHalf.equals(secondHalf) ) return false;
         }
 
         return true;
@@ -245,6 +243,17 @@ public final class Support
             default:
                 break;
         }
+    }
+
+    // Given a string, return true if it ends in "ly".
+    public final static boolean endsLy(final String inputString)
+    {
+        if ( inputString.length() > 1 )
+        {
+            if ( inputString.endsWith("ly") ) return true;
+        }
+
+        return false;
     }
 
     public final static Process executeShellCommand(final String command) throws Exception
@@ -576,6 +585,20 @@ public final class Support
 
         // Base case; return true if the string was parsed without an exception being thrown.
         return true;
+    }
+
+    // Given a string of any length, return a new string where the last 2 chars, if present, are swapped, so "coding" yields "codign".
+    public final static String lastTwo(final String inputString)
+    {
+        final int pos = inputString.length();
+
+        if ( pos > 1 )
+        {
+            String lastTwo = new StringBuilder(inputString.substring(pos - 2)).reverse().toString();
+            return inputString.replaceAll("\\w{2}\\b", lastTwo);
+        }
+
+        return inputString;
     }
 
     public final static void normalizeUIX(final Component parent)
