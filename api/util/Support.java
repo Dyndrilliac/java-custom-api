@@ -39,9 +39,10 @@ public final class Support
     {
         SUN_JAVA2D_D3D
     }
-    private final static Map<Color, String> COLORMAP          = new HashMap<Color, String>();
 
-    public final static Font                DEFAULT_TEXT_FONT = new Font("Lucida Console", Font.PLAIN, 14);
+    private final static Map<Color, String> COLORMAP = new HashMap<Color, String>();
+
+    public final static Font DEFAULT_TEXT_FONT = new Font("Lucida Console", Font.PLAIN, 14);
 
     static
     {
@@ -58,6 +59,24 @@ public final class Support
         Support.COLORMAP.put(Color.RED, "Red");
         Support.COLORMAP.put(Color.WHITE, "White");
         Support.COLORMAP.put(Color.YELLOW, "Yellow");
+    }
+
+    public final static boolean checkPalindrome(final String inputString)
+    {
+        if ( inputString.length() > 1 )
+        {
+            char[] inputArray = inputString.toCharArray();
+            int pivot = inputString.length() / 2, i = pivot - 1, j = pivot;
+            if ( ( inputString.length() % 2 ) != 0 ) j++;
+
+            for ( ; ( ( i >= 0 ) && ( j < inputString.length() ) ); i--, j++ )
+            {
+
+                if ( inputArray[i] != inputArray[j] ) return false;
+            }
+        }
+
+        return true;
     }
 
     public final static void clearConsole(final Component parent)
