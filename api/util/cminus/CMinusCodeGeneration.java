@@ -5,7 +5,7 @@
  *
  * This class functions as a generic intermediate code generator for the C-Minus language.
  * 
- *
+ * TODO: IF/ELSE/ELSE-IF
  */
 
 package api.util.cminus;
@@ -139,10 +139,6 @@ public class CMinusCodeGeneration
                 return String.format("%-10d %-15s %-15s %-15s %-15s", this.statementIndex, this.statementInstruction, this.statementOperandA, this.statementOperandB, this.statementResult);
             }
         }
-
-        /*
-         * TODO: IF/ELSE/ELSE-IF
-         */
 
         public static final void writeAddOrSub(final boolean isAdd, final String op1, final String op2, final boolean isNewVar)
         {
