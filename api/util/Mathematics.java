@@ -13,6 +13,29 @@ import edu.princeton.cs.algs4.StdRandom;
 
 public final class Mathematics
 {
+    // Given an array of integers, find the pair of adjacent elements that has the largest product and return that product.
+    public final static int adjacentElementsProduct(int[] inputArray)
+    {
+        int maxProduct = Integer.MIN_VALUE;
+        int curProduct = 0;
+
+        for ( int i = 0; i < ( inputArray.length - 1 ); i++ )
+        {
+            curProduct = inputArray[i] * inputArray[i + 1];
+            maxProduct = Math.max(maxProduct, curProduct);
+        }
+
+        return maxProduct;
+    }
+
+    // Given a year, return the century it is in.
+    // The first century spans from the year 1 up to and including the year 100, the second - from the year 101 up to and including the year 200, etc.
+    // Guaranteed constraints: 1 ≤ year ≤ Integer.MAX_VALUE
+    public final static int centuryFromYear(final int year)
+    {
+        return ( ( year % 100 ) != 0 ) ? ( ( year / 100 ) + 1 ) : year / 100;
+    }
+
     // Recursive Fibonacci solver.
     /*
      * fib(0) == 0
@@ -28,15 +51,13 @@ public final class Mathematics
      * fib(6) = 3 + 5
      * fib(7) = 5 + 8
      */
-    public final static long fib(long n)
+    public final static long fib(final long n)
     {
         assert ( n >= 0 );
 
-        if ( n == 0 )
-            return 0;
+        if ( n == 0 ) return 0;
 
-        if ( n == 1 )
-            return 1;
+        if ( n == 1 ) return 1;
 
         return ( fib(n - 2) + fib(n - 1) );
     }
