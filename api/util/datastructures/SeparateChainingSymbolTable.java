@@ -128,7 +128,7 @@ public class SeparateChainingSymbolTable<K, V>
 
         return queue;
     }
-    
+
     // Return keys in symbol table as a list.
     public final List<K> keysList()
     {

@@ -20,7 +20,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.regex.Matcher;
-import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.introcs.StdOut;
 
 public final class SQL
 {

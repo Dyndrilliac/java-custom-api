@@ -12,7 +12,7 @@ package api.util;
 import java.util.LinkedList;
 import java.util.List;
 import api.util.datastructures.Token;
-import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.introcs.In;
 
 public abstract class Lexer<T>
 {

@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import api.util.cminus.CMinusSemantics.VarRec;
 import api.util.datastructures.Token;
-import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.introcs.StdOut;
 
 public class CMinusParser
 {

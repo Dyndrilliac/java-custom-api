@@ -1,10 +1,10 @@
 package api.util;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import java.util.LinkedList;
 import java.util.List;
-import org.junit.Test;
-import edu.princeton.cs.algs4.StdOut;
+import org.junit.jupiter.api.Test;
+import edu.princeton.cs.introcs.StdOut;
 
 public class SupportTest
 {

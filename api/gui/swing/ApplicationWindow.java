@@ -40,7 +40,7 @@ public class ApplicationWindow extends JFrame implements ActionListener
         if ( parent == null )
         {
             this.setLocationByPlatform(true);
-            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         }
         else
         {

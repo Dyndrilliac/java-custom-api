@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 import api.util.Lexer;
 import api.util.Support;
 import api.util.datastructures.Token;
-import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.introcs.StdOut;
 
 public class SICXE_Lexer<T> extends Lexer<T>
 {
